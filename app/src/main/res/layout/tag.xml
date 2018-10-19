@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="6dip"
+    android:layout_marginStart="6dip">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello"
+        android:maxLines="1"
+        android:minLines="1"
+        android:id="@+id/tag"
+        android:textStyle="bold"
+        android:background="#32a3af"/>
+</LinearLayout>

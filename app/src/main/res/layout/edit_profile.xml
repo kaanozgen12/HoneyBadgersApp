@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/unknown_person"
+            android:id="@+id/edit_photo_photo"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Photo"
+            android:clickable="true"
+            android:layout_below="@id/edit_photo_photo"
+            android:id="@+id/edit_photo_photo_button"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"/>
+    </RelativeLayout><TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Email"
+    android:layout_marginStart="10dp"
+    android:textSize="20sp"/>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dip"
+            android:layout_marginEnd="20dip"
+            android:inputType="textEmailAddress"
+            android:id="@+id/edit_profile_email"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:maxLines="1"
+            android:singleLine="true" />
+
+    </android.support.design.widget.TextInputLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:layout_marginStart="10dp"
+        android:textSize="20sp"/>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dip"
+            android:layout_marginEnd="20dip"
+            android:id="@+id/edit_profile_name"
+            android:inputType="textPersonName"
+            android:maxLines="1"
+            android:singleLine="true" />
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bio"
+        android:layout_marginStart="10dp"
+        android:textSize="20sp"/>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dip"
+            android:layout_marginEnd="20dip"
+            android:id="@+id/edit_profile_bio"
+            android:inputType="textMultiLine"
+            />
+
+    </android.support.design.widget.TextInputLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Birthday"
+        android:layout_marginStart="10dp"
+        android:textSize="20sp"/>
+    <DatePicker
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dip"
+        android:id="@+id/edit_profile_birthday"
+        android:layout_marginEnd="20dip"
+        android:datePickerMode="calendar"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dip">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/edit_profile_save_button"
+            android:text="Save"
+            android:background="#e9982e"/>
+    </RelativeLayout>
+
+
+
+
+</LinearLayout>
+</ScrollView>

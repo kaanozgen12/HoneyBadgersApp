@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/email_login_form"
+    android:id="@+id/dashboard_board"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -37,15 +37,21 @@
 
 
 </android.support.v7.widget.Toolbar>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="DASHBOARD"
+        android:textSize="20sp"
+        android:id="@+id/Dashboard_title"
+        android:layout_below="@id/action_toolbar"/>
 
     <android.support.v4.widget.DrawerLayout
         android:layout_below="@+id/action_toolbar"
         android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        tools:context=".Activities.DashBoard"
-        tools:openDrawer="start">
+        tools:context=".Activities.DashBoard">
 
         <android.support.design.widget.NavigationView
             android:id="@+id/navigation_view"
@@ -53,7 +59,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="end"
             android:background="#ffffff"
-            android:fitsSystemWindows="true"
             app:headerLayout="@layout/nav_header"
             app:itemIconTint="#3e2723"
             app:itemTextColor="#3e2723"
@@ -64,7 +69,9 @@
         android:id="@+id/includeddashLayout"
         android:visibility="visible"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/action_toolbar" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/Dashboard_title" />
+
+
 
    </RelativeLayout>

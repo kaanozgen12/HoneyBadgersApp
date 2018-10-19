@@ -4,7 +4,7 @@
     android:layout_height="200dip"
     android:orientation="vertical"
     android:background="@drawable/material_design_header"
-    android:padding="20dp">
+    android:paddingStart="20dip">
     <ImageView
         android:id="@+id/person_logo"
         android:layout_width="75dp"
@@ -28,4 +28,11 @@
         android:text="User@email.com"
         android:textStyle="bold"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+    <Switch
+        android:id="@+id/switch_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Freelancer" />
+
 </LinearLayout>
