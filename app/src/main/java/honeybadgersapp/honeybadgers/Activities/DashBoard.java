@@ -42,6 +42,7 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         setNavigationViewListener();
         mToggle = new ActionBarDrawerToggle(this,mDrawerlayout,R.string.Open,R.string.Close);
         mDrawerlayout.addDrawerListener(mToggle);
+        mDrawerlayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mToggle.syncState();
         mToolbar = findViewById(R.id.action_toolbar);
         setSupportActionBar(mToolbar);

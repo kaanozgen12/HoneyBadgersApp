@@ -37,6 +37,7 @@ public class CreateAccount extends AppCompatActivity {
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    private EditText mPasswordConfirmView;
 
 
     @Override
@@ -53,6 +54,7 @@ public class CreateAccount extends AppCompatActivity {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mPasswordView = (EditText) findViewById(R.id.password_account_create);
+        mPasswordConfirmView  = findViewById(R.id.password_account_create_retype);
 
         Button mEmailSignUpButton = (Button) findViewById(R.id.email_sign_up_button);
         mEmailSignUpButton.setOnClickListener(new OnClickListener() {
@@ -66,6 +68,8 @@ public class CreateAccount extends AppCompatActivity {
         mEmailView.startAnimation(textanimation);
         mPasswordView.setAnimation(textanimation);
         mPasswordView.startAnimation(textanimation);
+        mPasswordConfirmView.setAnimation(textanimation);
+        mPasswordConfirmView.startAnimation(textanimation);
         mEmailSignUpButton.setAnimation(textanimation);
         mEmailSignUpButton.startAnimation(textanimation);
 
@@ -89,6 +93,7 @@ public class CreateAccount extends AppCompatActivity {
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String passwordConfirm = mPasswordConfirmView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -97,6 +102,11 @@ public class CreateAccount extends AppCompatActivity {
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
+            cancel = true;
+        }
+        if (TextUtils.isEmpty(passwordConfirm) || !passwordConfirm.equals(password)) {
+            mPasswordConfirmView.setError(getString(R.string.error_password_mismatch));
+            focusView = mPasswordConfirmView;
             cancel = true;
         }
 
