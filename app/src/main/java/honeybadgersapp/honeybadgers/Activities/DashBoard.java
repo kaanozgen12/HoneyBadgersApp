@@ -39,6 +39,7 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         mDrawerlayout = findViewById(R.id.drawerLayout );
         final RelativeLayout board  = findViewById(R.id.dashboard_board);
         menu = findViewById(R.id.navigation_view);
+        menu.inflateMenu(R.menu.navigation_drawer_items_freelancer);
         setNavigationViewListener();
         mToggle = new ActionBarDrawerToggle(this,mDrawerlayout,R.string.Open,R.string.Close);
         mDrawerlayout.addDrawerListener(mToggle);
@@ -94,22 +95,11 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         skills.add("C++");
         skills.add("Painting");
         skills.add("C++");
-        skills.add("Java");
-        skills.add("C++");
-        skills.add("Java");
-        skills.add("C++");
-        list1.add(new Compact_Project_Object("1.list için proje 1","bu proje 1 tanımı adfşsdpfksfksdpofkdsopkfsopdkfdofdfoskfosdkfopdskfopdsfopdksfopdsfpdopfdkfpodkfposdkfpodskfodskfpdofks",skills));
-        list1.add(new Compact_Project_Object("1.list için proje 1","bu proje 1 tanımı adfşsdpfksfksdpofkdsopkfsopdkfdofdfoskfosdkfopdskfopdsfopdksfopdsfpdopfdkfpodkfposdkfpodskfodskfpdofks",skills));
-        list1.add(new Compact_Project_Object("1.list için proje 1","bu proje 1 tanımı adfşsdpfksfksdpofkdsopkfsopdkfdofdfoskfosdkfopdskfopdsfopdksfopdsfpdopfdkfpodkfposdkfpodskfodskfpdofks",skills));
-        list1.add(new Compact_Project_Object("1.list için proje 1","bu proje 1 tanımı adfşsdpfksfksdpofkdsopkfsopdkfdofdfoskfosdkfopdskfopdsfopdksfopdsfpdopfdkfpodkfposdkfpodskfodskfpdofks",skills));
-        list1.add(new Compact_Project_Object("1.list için proje 1","bu proje 1 tanımı adfşsdpfksfksdpofkdsopkfsopdkfdofdfoskfosdkfopdskfopdsfopdksfopdsfpdopfdkfpodkfposdkfpodskfodskfpdofks",skills));
-
-        list2.add(new Compact_Project_Object("2.list için proje 2","bu proje 2 tanımı",skills));
-        list2.add(new Compact_Project_Object("1.list için proje 1","bu proje 1 tanımı adfşsdpfksfksdpofkdsopkfsopdkfdofdfoskfosdkfopdskfopdsfopdksfopdsfpdopfdkfpodkfposdkfpodskfodskfpdofks",skills));
-        list2.add(new Compact_Project_Object("1.list için proje 1","bu proje 1 tanımı adfşsdpfksfksdpofkdsopkfsopdkfdofdfoskfosdkfopdskfopdsfopdksfopdsfpdopfdkfpodkfposdkfpodskfodskfpdofks",skills));
-        list2.add(new Compact_Project_Object("1.list için proje 1","bu proje 1 tanımı adfşsdpfksfksdpofkdsopkfsopdkfdofdfoskfosdkfopdskfopdsfopdksfopdsfpdopfdkfpodkfposdkfpodskfodskfpdofks",skills));
-        list2.add(new Compact_Project_Object("1.list için proje 1","bu proje 1 tanımı adfşsdpfksfksdpofkdsopkfsopdkfdofdfoskfosdkfopdskfopdsfopdksfopdsfpdopfdkfpodkfposdkfpodskfodskfpdofks",skills));
-        list2.add(new Compact_Project_Object("1.list için proje 1","bu proje 1 tanımı adfşsdpfksfksdpofkdsopkfsopdkfdofdfoskfosdkfopdskfopdsfopdksfopdsfpdopfdkfpodkfposdkfpodskfodskfpdofks",skills));
+        list1.add(new Compact_Project_Object("Python project for skilled developers",100,"8 bids-30 minutes ago",skills));
+        list1.add(new Compact_Project_Object("Python project for skilled developers",100,"8 bids-30 minutes ago",skills));
+        list2.add(new Compact_Project_Object("Python project for skilled developers",100,"8 bids-30 minutes ago",skills));
+        list2.add(new Compact_Project_Object("Python project for skilled developers",100,"8 bids-30 minutes ago",skills));
+        list2.add(new Compact_Project_Object("Python project for skilled developers",100,"8 bids-30 minutes ago",skills));
 
     }
 
@@ -123,6 +113,11 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         switch (item.getItemId()) {
             case R.id.item_navigation_drawer_edit_profile: {
                 Intent i = new Intent(DashBoard.this, EditProfile.class);
+                startActivity(i);
+                break;
+            }
+            case R.id.item_navigation_drawer_create_project: {
+                Intent i = new Intent(DashBoard.this, CreateProject.class);
                 startActivity(i);
                 break;
             }

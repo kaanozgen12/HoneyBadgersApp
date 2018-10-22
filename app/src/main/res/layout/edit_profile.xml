@@ -54,7 +54,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name"
+        android:text="Name*"
         android:layout_marginStart="10dp"
         android:textSize="20sp"/>
     <android.support.design.widget.TextInputLayout
@@ -75,7 +75,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bio"
+        android:text="Bio*"
         android:layout_marginStart="10dp"
         android:textSize="20sp"/>
     <android.support.design.widget.TextInputLayout
@@ -95,7 +95,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Birthday"
+        android:text="Birthday*"
         android:layout_marginStart="10dp"
         android:textSize="20sp"/>
     <DatePicker

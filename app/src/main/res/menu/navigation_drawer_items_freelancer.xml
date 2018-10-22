@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <item
+        android:id="@+id/item_navigation_drawer_inbox"
+        android:icon="@drawable/ic_inbox_black_24dp"
+        android:title="Dashboard" />
+    <item
+        android:id="@+id/item_navigation_drawer_edit_profile"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="Edit Profile" />
+    <item
+        android:id="@+id/item_navigation_drawer_search"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title="Search" />
+    <item
+        android:id="@+id/item_navigation_drawer_activities"
+        android:icon="@drawable/ic_star_black_24dp"
+        android:title="Activities" />
+    <item
+        android:id="@+id/item_out"
+        android:icon="@drawable/ic_exit_to_app_black_24dp"
+        android:title="Log Out" />
+</menu>

@@ -62,7 +62,7 @@
             app:headerLayout="@layout/nav_header"
             app:itemIconTint="#3e2723"
             app:itemTextColor="#3e2723"
-            app:menu="@menu/navigation_drawer_items" />
+            />
     </android.support.v4.widget.DrawerLayout>
     <include
         layout="@layout/content_dash_board"

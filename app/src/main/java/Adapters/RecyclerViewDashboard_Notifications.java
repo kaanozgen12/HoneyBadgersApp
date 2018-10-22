@@ -58,7 +58,8 @@ public class RecyclerViewDashboard_Notifications extends RecyclerView.Adapter<Re
 //
 //        }
         holder.project_name.setText(notification_cards.get(position).getName());
-        holder.project_description.setText(notification_cards.get(position).getDescription());
+        holder.project_highestbid.setText("" + notification_cards.get(position).getHighestbid());
+        holder.updateinfo.setText(notification_cards.get(position).getNumberofbidsandlastupdate());
         RecyclerView_tags recyclerAdapter =new RecyclerView_tags(mContext,notification_cards.get(position).getTags());
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         holder.recyclerViewTags.setLayoutManager(horizontalLayoutManager);
@@ -74,14 +75,16 @@ public class RecyclerViewDashboard_Notifications extends RecyclerView.Adapter<Re
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         private TextView project_name;
-        private TextView project_description;
+        private TextView project_highestbid;
+        private TextView updateinfo;
         private RecyclerView recyclerViewTags;
 
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             project_name = itemView.findViewById(R.id.compact_project_object_name);
-            project_description = itemView.findViewById(R.id.compact_project_object_description);
+            project_highestbid = itemView.findViewById(R.id.compact_project_given_bid);
+            updateinfo = itemView.findViewById(R.id.compact_project_bids_time);
             recyclerViewTags= itemView.findViewById(R.id.compact_project_object_tags_recyclerview);
 
         }
