@@ -3,19 +3,10 @@ package honeybadgersapp.honeybadgers.Activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,29 +17,26 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import RetrofitModels.LoginResponse;
+import api.RetrofitClient;
 import honeybadgersapp.honeybadgers.R;
-
-import static android.Manifest.permission.READ_CONTACTS;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity {
 
     Animation textanimation;
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
+
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -75,14 +63,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
+        mEmailView =  findViewById(R.id.email);
 
         //Prevent keyboard from automatically opening
-        getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -94,12 +80,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        Button mCreateAccountButton = (Button) findViewById(R.id.create_account_button);
+        Button mEmailSignInButton =  findViewById(R.id.email_sign_in_button);
+        Button mCreateAccountButton =  findViewById(R.id.create_account_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                directLogin();
+                attemptLogin();
             }
         });
         mCreateAccountButton.setOnClickListener(new OnClickListener() {
@@ -111,7 +97,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.email_login_form);
         mProgressView = findViewById(R.id.login_progress);
-
         mEmailView.setAnimation(textanimation);
         mEmailView.startAnimation(textanimation);
         mPasswordView.setAnimation(textanimation);
@@ -123,20 +108,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     }
 
-    private void directLogin() {
-        Log.d("MyTag","Geldim");
-        Thread timer = new Thread(){
-            @Override
-            public void run() {
-                    Intent intent = new Intent(getApplicationContext(),DashBoard.class);
-                    startActivity(intent);
-                    finish();
-                    super.run();
-            }
-        };
-        timer.start();
 
-    }
     private void createAccount() {
         Log.d("MyTag","Geldim");
         Thread timer = new Thread(){
@@ -145,54 +117,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Intent intent = new Intent(getApplicationContext(),CreateAccount.class);
                 startActivity(intent);
                 super.run();
+                finish();
             }
         };
         timer.start();
 
     }
 
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
 
-        getLoaderManager().initLoader(0, null, this);
-    }
-
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
-            }
-        }
-    }
 
 
     /**
@@ -249,12 +181,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        return email.contains("@")&&email.contains(".com");
     }
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() >= 6;
     }
 
     /**
@@ -293,7 +225,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    @Override
+  /*  @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this,
                 // Retrieve data rows for the device user's 'profile' contact.
@@ -308,9 +240,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // Show primary email addresses first. Note that there won't be
                 // a primary email address if the user hasn't specified one.
                 ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
+    }*/
 
-    @Override
+   /* @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         List<String> emails = new ArrayList<>();
         cursor.moveToFirst();
@@ -322,7 +254,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         addEmailsToAutoComplete(emails);
     }
 
-    @Override
+  @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
     }
@@ -345,7 +277,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
-    }
+    }*/
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
@@ -367,31 +299,50 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             try {
                 // Simulate network access.
-                Thread.sleep(2000);
+                Thread.sleep(1500);
             } catch (InterruptedException e) {
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
             return true;
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            showProgress(false);
 
+            Log.d("MyTag", "burdayım "+success);
             if (success) {
-            directLogin();
-            //finish();
+                Call<LoginResponse> call= RetrofitClient.getInstance().getApi().userLogin(mEmail,mPassword);
+                Log.d("MyTag", "call: "+call.toString());
+                call.enqueue(new Callback<LoginResponse>() {
+                    @Override
+                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                        //LoginResponse loginResponse = response.body();
+                        Log.d("MyTag", "response: "+response.message());
+                        showProgress(false);
+                        if (response.isSuccessful()){
+                            Log.d("MyTag","Geldim");
+                            Thread timer = new Thread(){
+                                @Override
+                                public void run() {
+                                    Intent intent = new Intent(getApplicationContext(),DashBoard.class);
+                                    startActivity(intent);
+                                    finish();
+                                    super.run();
+                                }
+                            };
+                            timer.start();
+                        }else{
+                            Toast.makeText(LoginActivity.this,"Invalid Credentials",Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<LoginResponse> call, Throwable t) {
+                        Log.d("MyTag","Failed");
+                    }
+                });
 
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

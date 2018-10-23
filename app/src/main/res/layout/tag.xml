@@ -13,6 +13,5 @@
         android:maxLines="1"
         android:minLines="1"
         android:id="@+id/tag"
-        android:textStyle="bold"
-        android:background="#32a3af"/>
+        android:textStyle="bold" />
 </LinearLayout>

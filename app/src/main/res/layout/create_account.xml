@@ -96,6 +96,29 @@
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Which user type do you want"
+                android:textSize="20sp"
+                android:layout_marginStart="20dip"/>
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/radioFreelancer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:text="Freelancer" />
+                <RadioButton
+                    android:id="@+id/radioClient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:text="Client" />
+            </RadioGroup>
 
             <Button
                 android:id="@+id/email_sign_up_button"
@@ -108,7 +131,12 @@
                 android:background="#e9982e"
                 android:text="@string/sign_up"
                 android:textStyle="bold" />
+
+
+
         </LinearLayout>
+
+
 
     </RelativeLayout>
 

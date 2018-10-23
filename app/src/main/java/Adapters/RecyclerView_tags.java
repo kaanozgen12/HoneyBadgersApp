@@ -1,6 +1,7 @@
 package Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,7 +36,28 @@ public class RecyclerView_tags extends RecyclerView.Adapter<RecyclerView_tags.My
 
 
     public void onBindViewHolder(MyViewHolder holder, int position){
-               holder.Tag_Text.setText(tags_list.get(position).getName());
+
+        switch (tags_list.get(position).getName()) {
+            case "Java": {
+                holder.Tag_Text.setTextColor(Color.parseColor("#FFAF5E32"));
+                break;
+            }
+            case "Python": {
+                holder.Tag_Text.setTextColor(Color.parseColor("#FFAB6EBE"));
+                break;
+            }
+            case "C++": {
+                holder.Tag_Text.setTextColor(Color.parseColor("#FF1827C4"));
+                break;
+            }
+            case "Painting": {
+                holder.Tag_Text.setTextColor(Color.parseColor("#FF8ECDD4"));
+                break;
+            }
+            default:
+                break;
+        }
+        holder.Tag_Text.setText(tags_list.get(position).getName());
     }
 
     @Override

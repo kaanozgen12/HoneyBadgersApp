@@ -1,9 +1,11 @@
 package honeybadgersapp.honeybadgers.Activities;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -13,7 +15,12 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
+import RetrofitModels.LoginResponse;
+import api.RetrofitClient;
 import honeybadgersapp.honeybadgers.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A login screen that offers login via email/password.
@@ -23,16 +30,6 @@ public class CreateAccount extends AppCompatActivity {
     Animation textanimation;
 
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
     private CreateAccount.UserLogUpTask mAuthTask = null;
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -47,16 +44,16 @@ public class CreateAccount extends AppCompatActivity {
 
         setContentView(R.layout.create_account);
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email_account_create);
+        mEmailView = findViewById(R.id.email_account_create);
 
         //Prevent keyboard from automatically opening
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        mPasswordView = (EditText) findViewById(R.id.password_account_create);
+        mPasswordView = findViewById(R.id.password_account_create);
         mPasswordConfirmView  = findViewById(R.id.password_account_create_retype);
 
-        Button mEmailSignUpButton = (Button) findViewById(R.id.email_sign_up_button);
+        Button mEmailSignUpButton =  findViewById(R.id.email_sign_up_button);
         mEmailSignUpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,8 +69,14 @@ public class CreateAccount extends AppCompatActivity {
         mPasswordConfirmView.startAnimation(textanimation);
         mEmailSignUpButton.setAnimation(textanimation);
         mEmailSignUpButton.startAnimation(textanimation);
-
+        mEmailSignUpButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptSignUp();
+            }
+        });
     }
+
 
 
     /**
@@ -140,7 +143,7 @@ public class CreateAccount extends AppCompatActivity {
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 6;
+        return password.length() >= 6;
     }
 
 
@@ -164,20 +167,10 @@ public class CreateAccount extends AppCompatActivity {
 
             try {
                 // Simulate network access.
-                Thread.sleep(2000);
+                Thread.sleep(1500);
             } catch (InterruptedException e) {
                 return false;
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
             return true;
         }
 
@@ -186,12 +179,41 @@ public class CreateAccount extends AppCompatActivity {
             mAuthTask = null;
 
 
+            Log.d("MyTag", "burdayım "+success);
             if (success) {
-                finish();
+                Call<LoginResponse> call= RetrofitClient.getInstance().getApi().userRegister(mEmail," ",mPassword);
+                Log.d("MyTag", "call: "+call.toString());
+                call.enqueue(new Callback<LoginResponse>() {
+                    @Override
+                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                        //LoginResponse loginResponse = response.body();
+                        Log.d("MyTag", "response: "+response.message());
+                        if (response.isSuccessful()){
+                            Log.d("MyTag","Geldim");
+                            Thread timer = new Thread(){
+                                @Override
+                                public void run() {
+                                    Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                    super.run();
+                                }
+                            };
+                            timer.start();
+                        }else{
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<LoginResponse> call, Throwable t) {
+                        Log.d("MyTag","Failed");
+                    }
+                });
 
             } else {
-                //mPasswordView.setError(getString(R.string.error_incorrect_password));
-                //mPasswordView.requestFocus();
+                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.requestFocus();
             }
         }
 
