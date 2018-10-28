@@ -14,8 +14,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import RetrofitModels.LoginResponse;
+import RetrofitModels.ProfileObject;
+import RetrofitModels.User;
 import api.RetrofitClient;
 import honeybadgersapp.honeybadgers.R;
 import retrofit2.Call;
@@ -40,6 +43,7 @@ public class CreateAccount extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         textanimation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.main_page_button_anim);
 
         setContentView(R.layout.create_account);
@@ -167,7 +171,7 @@ public class CreateAccount extends AppCompatActivity {
 
             try {
                 // Simulate network access.
-                Thread.sleep(1500);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 return false;
             }
@@ -179,21 +183,60 @@ public class CreateAccount extends AppCompatActivity {
             mAuthTask = null;
 
 
-            Log.d("MyTag", "burdayım "+success);
             if (success) {
-                Call<LoginResponse> call= RetrofitClient.getInstance().getApi().userRegister(mEmail," ",mPassword);
-                Log.d("MyTag", "call: "+call.toString());
-                call.enqueue(new Callback<LoginResponse>() {
+                Call<User> call= RetrofitClient.getInstance().getApi().userRegister(mEmail,"Random",mPassword);
+                call.enqueue(new Callback<User>() {
                     @Override
-                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                        //LoginResponse loginResponse = response.body();
-                        Log.d("MyTag", "response: "+response.message());
+                    public void onResponse(Call<User> call, Response<User> response) {
                         if (response.isSuccessful()){
-                            Log.d("MyTag","Geldim");
+
+
+                            synchronized (this) {
+                                Call<LoginResponse> call3 = RetrofitClient.getInstance().getApi().userLogin(mEmail, mPassword);
+                                call3.enqueue(new Callback<LoginResponse>() {
+                                    @Override
+                                    public void onResponse(Call<LoginResponse> call3, Response<LoginResponse> response3) {
+
+                                        if (response3.isSuccessful()) {
+                                            LoginActivity.getCREDENTIALS()[0] = response3.body().getToken();
+                                            Log.d("MyTag", "LOGIN SUCCESSFUL. token "+LoginActivity.getCREDENTIALS()[0]);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<LoginResponse> call2, Throwable t) {
+                                        Log.d("MyTag", "LOGIN FAILED");
+                                        finish();
+                                        Toast.makeText(CreateAccount.this, "LOGIN FAIL", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                            synchronized (this) {
+                                Call<ProfileObject> call2 = RetrofitClient.getInstance().getApi().userProfileCreate("token "+LoginActivity.getCREDENTIALS()[0],"EMPTY", null, "EMPTY");
+                                call2.enqueue(new Callback<ProfileObject>() {
+                                    @Override
+                                    public void onResponse(Call<ProfileObject> call2, Response<ProfileObject> response2) {
+
+                                        if (response2.isSuccessful()) {
+                                            LoginActivity.getCREDENTIALS()[1] = mEmail;
+                                            LoginActivity.getCREDENTIALS()[4] = "" + response2.body().getId();
+                                            Log.d("MyTag", "SUCCESSFUL PROFILE CREATE");
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ProfileObject> call2, Throwable t) {
+                                        Log.d("MyTag", "FAIL PROFILE CREATE");
+                                        Toast.makeText(CreateAccount.this, "FAIL PROFILE CREATE", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
+                                });
+
+                            }
                             Thread timer = new Thread(){
                                 @Override
                                 public void run() {
-                                    Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                                    Intent intent = new Intent(getApplicationContext(),InitialLogin.class);
                                     startActivity(intent);
                                     finish();
                                     super.run();
@@ -201,13 +244,15 @@ public class CreateAccount extends AppCompatActivity {
                             };
                             timer.start();
                         }else{
-
+                            Log.d("MyTag","FAIL USER REGISTER");
+                            Toast.makeText(CreateAccount.this,"FAIL USER REGISTER",Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<LoginResponse> call, Throwable t) {
-                        Log.d("MyTag","Failed");
+                    public void onFailure(Call<User> call, Throwable t) {
+                        Log.d("MyTag","FAIL USER REGISTER RESPONSE");
+                        Toast.makeText(CreateAccount.this,"FAIL USER REGISTER RESPONSE",Toast.LENGTH_SHORT).show();
                     }
                 });
 

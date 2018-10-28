@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="It appears that you are new here"
+        android:id="@+id/welcoming_message"
+        android:visibility="invisible"
+        android:textSize="20sp"
+        android:layout_marginStart="20dip"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"
+        android:id="@+id/first_register_popup_form">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="You have to pick a side first."
+            android:textSize="20sp"
+            android:id="@+id/welcoming_message2" />
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/radio_group"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/radioFreelancer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Freelancer" />
+            <RadioButton
+                android:id="@+id/radioClient"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:text="Client" />
+        </RadioGroup>
+        <Button
+            android:id="@+id/first_register_button"
+            style="?android:textAppearanceSmall"
+            android:layout_width="100dip"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dip"
+            android:layout_gravity="center"
+            android:background="#e9982e"
+            android:text="OK"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+
+</RelativeLayout>

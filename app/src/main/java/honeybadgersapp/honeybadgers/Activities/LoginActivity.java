@@ -3,10 +3,14 @@ package honeybadgersapp.honeybadgers.Activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,8 +27,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import RetrofitModels.LoginResponse;
+import RetrofitModels.User;
 import api.RetrofitClient;
+import api.SimpleCredentialCrypting;
 import honeybadgersapp.honeybadgers.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,18 +46,12 @@ public class LoginActivity extends AppCompatActivity {
     Animation textanimation;
 
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
+    private static  String[] CREDENTIALS = new String[5];
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
-
+    private  SharedPreferences prefs ;
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -59,16 +61,31 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         textanimation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.main_page_button_anim);
 
         setContentView(R.layout.activity_login);
+        prefs = new SimpleCredentialCrypting(this, this.getSharedPreferences("HONEY_BADGERS_PREFS_FILE", Context.MODE_PRIVATE) );
         // Set up the login form.
         mEmailView =  findViewById(R.id.email);
+        mPasswordView = findViewById(R.id.password);
+        Button mEmailSignInButton =  findViewById(R.id.email_sign_in_button);
+        Button mCreateAccountButton =  findViewById(R.id.create_account_button);
+        mLoginFormView = findViewById(R.id.email_login_form);
+        mProgressView = findViewById(R.id.login_progress);
 
         //Prevent keyboard from automatically opening
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        synchronized (this){
+            if(checkExistingAccount()){
+                mEmailView.setText(prefs.getString("accountname",null));
+                mPasswordView.setText(prefs.getString("password",null));
+                attemptLogin();
+            }
 
-        mPasswordView = findViewById(R.id.password);
+        }
+
+
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -80,8 +97,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        Button mEmailSignInButton =  findViewById(R.id.email_sign_in_button);
-        Button mCreateAccountButton =  findViewById(R.id.create_account_button);
+
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,9 +110,6 @@ public class LoginActivity extends AppCompatActivity {
                 createAccount();
             }
         });
-
-        mLoginFormView = findViewById(R.id.email_login_form);
-        mProgressView = findViewById(R.id.login_progress);
         mEmailView.setAnimation(textanimation);
         mEmailView.startAnimation(textanimation);
         mPasswordView.setAnimation(textanimation);
@@ -106,8 +119,26 @@ public class LoginActivity extends AppCompatActivity {
         mCreateAccountButton.setAnimation(textanimation);
         mCreateAccountButton.startAnimation(textanimation);
 
+
+    }
+    private boolean checkExistingAccount(){
+        String username= prefs.getString("accountname",null);
+        String password= prefs.getString("password",null);
+        return (!(username==null)&&!(password==null));
     }
 
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Exit?")
+                .setMessage("Are you sure you want to exit?")
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        LoginActivity.super.onBackPressed();
+                    }
+                }).create().show();
+    }
 
     private void createAccount() {
         Log.d("MyTag","Geldim");
@@ -117,15 +148,11 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(),CreateAccount.class);
                 startActivity(intent);
                 super.run();
-                finish();
             }
         };
         timer.start();
 
     }
-
-
-
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -319,13 +346,39 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                         //LoginResponse loginResponse = response.body();
-                        Log.d("MyTag", "response: "+response.message());
+                        final LoginResponse response1 = response.body();
+                       // Log.d("MyTag", "response: "+response1.getToken());
                         showProgress(false);
                         if (response.isSuccessful()){
                             Log.d("MyTag","Geldim");
                             Thread timer = new Thread(){
                                 @Override
                                 public void run() {
+                                    synchronized (this) {
+                                    prefs.edit().putString("accountname",mEmail).commit();
+                                    prefs.edit().putString("password",mPassword).commit();
+                                    CREDENTIALS[0]=response1.getToken();
+                                    CREDENTIALS[1]=mEmail;
+                                    //Get user's id from database
+
+                                        Call<List<User>> call2 = RetrofitClient.getInstance().getApi().user_id(mEmail);
+                                        call2.enqueue(new Callback<List<User>>() {
+                                            @Override
+                                            public void onResponse(Call<List<User>> call2, Response<List<User>> response2) {
+                                                User editResponse2 = response2.body().get(0);
+                                                if (response2.isSuccessful()) {
+                                                    CREDENTIALS[4] = "" + editResponse2.getId();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<List<User>> call2, Throwable t) {
+                                                Log.d("MyTag", "Failed");
+                                                Toast.makeText(LoginActivity.this, mEmail+": FAILED TO FETCH USER ID !!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+
                                     Intent intent = new Intent(getApplicationContext(),DashBoard.class);
                                     startActivity(intent);
                                     finish();
@@ -355,6 +408,18 @@ public class LoginActivity extends AppCompatActivity {
             mAuthTask = null;
             showProgress(false);
         }
+    }
+
+    public static String[] getCREDENTIALS() {
+        return CREDENTIALS;
+    }
+
+    public static void setCREDENTIALSNAME(String temp) {
+        CREDENTIALS[2]=temp;
+
+    }
+    public static void setCREDENTIALSROLE(String temp) {
+        CREDENTIALS[3]=temp;
     }
 }
 

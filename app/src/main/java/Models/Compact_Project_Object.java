@@ -2,17 +2,21 @@ package Models;
 
 import java.util.ArrayList;
 
+import RetrofitModels.Tag_Object;
+
 public class Compact_Project_Object {
+    private  int id;
     private String name;
     private int highestbid;
     private String numberofbidsandlastupdate;
     private ArrayList<Tag_Object> tags = new ArrayList<>();
 
-    public Compact_Project_Object(String name, int highestbid, String numberofbidsandlastupdate, ArrayList<String> tags) {
+    public Compact_Project_Object(int id, String name, int highestbid, String numberofbidsandlastupdate, ArrayList<Tag_Object> tags) {
+        this.id = id;
         this.name = name;
         this.highestbid = highestbid;
         this.numberofbidsandlastupdate = numberofbidsandlastupdate;
-        this.addTags(tags);
+        this.tags = tags;
     }
 
     public String getName() {
@@ -32,11 +36,24 @@ public class Compact_Project_Object {
         return numberofbidsandlastupdate;
     }
 
+    public int getId() {
+        return id;
+    }
 
-    public void addTags(ArrayList<String> tags){
-        for (int i = 0; i< tags.size(); i++){
-            this.tags.add(new Tag_Object(tags.get(i)));
-        }
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setHighestbid(int highestbid) {
+        this.highestbid = highestbid;
+    }
+
+    public void setNumberofbidsandlastupdate(String numberofbidsandlastupdate) {
+        this.numberofbidsandlastupdate = numberofbidsandlastupdate;
+    }
+
+    public void setTags(ArrayList<Tag_Object> tags) {
+        this.tags = tags;
     }
 
     public ArrayList<Tag_Object> getTags() {

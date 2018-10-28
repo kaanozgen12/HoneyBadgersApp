@@ -18,4 +18,32 @@
     <string name="create_new_honey_badgers_account">CREATE NEW HONEY BADGERS ACCOUNT</string>
     <string name="sign_up">Sign Up</string>
     <string name="confirm_password">Confirm Password</string>
+
+
+    <string-array name="Tags">
+        <item>Java</item>
+        <item>C++</item>
+        <item>Python</item>
+        <item>C</item>
+        <item>C#</item>
+        <item>Painting</item>
+        <item>Android</item>
+        <item>Flute</item>
+        <item>English</item>
+        <item>Accounting</item>
+        <item>Math</item>
+        <item>French</item>
+    </string-array>
+
+    <string-array name="Categories">
+        <item>Websites, IT and Software</item>
+        <item>Mobile Phones and Computing</item>
+        <item>Translation and Languages</item>
+        <item>Engineering and Science</item>
+        <item>Writing and Content</item>
+        <item>Sales and Marketing</item>
+        <item>Design, Media and Architecture</item>
+        <item>Other</item>
+    </string-array>
+
 </resources>

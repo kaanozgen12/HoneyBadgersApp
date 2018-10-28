@@ -9,39 +9,41 @@
     android:orientation="vertical"
     android:fitsSystemWindows="true">
 
-<android.support.v7.widget.Toolbar
-    android:layout_alignParentTop="true"
-    android:id="@+id/action_toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    app:layout_collapseMode="pin"
-
-    app:popupTheme="@style/PopupOverlay" >
-    <RelativeLayout
+    <android.support.v7.widget.Toolbar
+        android:layout_alignParentTop="true"
+        android:id="@+id/action_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <SearchView
+        android:layout_height="?attr/actionBarSize"
+        app:layout_collapseMode="pin"
+
+        app:popupTheme="@style/PopupOverlay" >
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/toggle">
-        </SearchView>
-        <ImageButton
-            android:id="@+id/toggle"
-            android:layout_width="45dip"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentTop="true"
-            android:src="@drawable/ic_person_orange_24dp"/>
-    </RelativeLayout>
+            android:layout_height="wrap_content">
+            <SearchView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:layout_toStartOf="@+id/toggle">
+            </SearchView>
+            <ImageButton
+                android:id="@+id/toggle"
+                android:layout_width="45dip"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentTop="true"
+                android:src="@drawable/ic_person_orange_24dp"/>
+        </RelativeLayout>
 
 
-</android.support.v7.widget.Toolbar>
+    </android.support.v7.widget.Toolbar>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:text="DASHBOARD"
+        android:gravity="center"
         android:textSize="20sp"
         android:id="@+id/Dashboard_title"
         android:layout_below="@id/action_toolbar"/>
@@ -58,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
-            android:background="#ffffff"
+            android:background="#d7d7d7"
             app:headerLayout="@layout/nav_header"
             app:itemIconTint="#3e2723"
             app:itemTextColor="#3e2723"
@@ -74,4 +76,4 @@
 
 
 
-   </RelativeLayout>
+</RelativeLayout>

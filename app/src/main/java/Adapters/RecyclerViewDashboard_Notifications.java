@@ -7,6 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +24,7 @@ public class RecyclerViewDashboard_Notifications extends RecyclerView.Adapter<Re
 
     Context mContext;
     List<Compact_Project_Object> notification_cards;
+    private int lastAnimatedPosition = -1;
 
     public RecyclerViewDashboard_Notifications(Context mContext, List<Compact_Project_Object> notification_cards) {
         this.mContext = mContext;
@@ -48,7 +52,7 @@ public class RecyclerViewDashboard_Notifications extends RecyclerView.Adapter<Re
 
 
 
-    public void onBindViewHolder(MyViewHolder holder, int position){
+    public synchronized void onBindViewHolder(MyViewHolder holder, int position){
 //        holder.current_progressbar.setProgress(project_cards.get(position).getList_current());
 // get name description and tags
 //        switch (project_cards.get(position).getProduct_type()){
@@ -60,12 +64,25 @@ public class RecyclerViewDashboard_Notifications extends RecyclerView.Adapter<Re
         holder.project_name.setText(notification_cards.get(position).getName());
         holder.project_highestbid.setText("" + notification_cards.get(position).getHighestbid());
         holder.updateinfo.setText(notification_cards.get(position).getNumberofbidsandlastupdate());
-        RecyclerView_tags recyclerAdapter =new RecyclerView_tags(mContext,notification_cards.get(position).getTags());
-        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
-        holder.recyclerViewTags.setLayoutManager(horizontalLayoutManager);
-        holder.recyclerViewTags.setAdapter(recyclerAdapter);
+        synchronized (this) {
+            RecyclerView_tags recyclerAdapter = new RecyclerView_tags(mContext, notification_cards.get(position).getTags());
+            LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
+            holder.recyclerViewTags.setLayoutManager(horizontalLayoutManager);
+            holder.recyclerViewTags.setAdapter(recyclerAdapter);
+        }
+        if (position > lastAnimatedPosition) {
+            lastAnimatedPosition = position;
+            Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.item_animation_fall_down);
+            animation.setInterpolator(new AccelerateDecelerateInterpolator());
+            holder.container.setAnimation(animation);
+            animation.start();
+        }
 
         }
+    @Override
+    public void onViewDetachedFromWindow(@NonNull MyViewHolder holder) {
+        holder.clearAnimation();
+    }
 
     @Override
     public int getItemCount() {
@@ -78,16 +95,23 @@ public class RecyclerViewDashboard_Notifications extends RecyclerView.Adapter<Re
         private TextView project_highestbid;
         private TextView updateinfo;
         private RecyclerView recyclerViewTags;
+        protected View container;
 
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            container = itemView;
             project_name = itemView.findViewById(R.id.compact_project_object_name);
             project_highestbid = itemView.findViewById(R.id.compact_project_given_bid);
             updateinfo = itemView.findViewById(R.id.compact_project_bids_time);
             recyclerViewTags= itemView.findViewById(R.id.compact_project_object_tags_recyclerview);
 
         }
+        public void clearAnimation(){
+            container.clearAnimation();
+        }
+
+
     }
 
 

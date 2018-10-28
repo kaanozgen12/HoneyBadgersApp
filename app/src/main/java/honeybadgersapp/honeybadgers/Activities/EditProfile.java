@@ -9,33 +9,26 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import RetrofitModels.ProfileObject;
+import api.RetrofitClient;
 import honeybadgersapp.honeybadgers.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-/**
- * A login screen that offers login via email/password.
- */
+
 public class EditProfile extends AppCompatActivity {
 
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
+
     private EditProfile.ProfileSaveTask mAuthTask = null;
     // UI references.
     private EditText mName;
     private EditText mBio;
-    private DatePicker mBirthday;
     private EditText mEmail;
     private TextView mEditPhoto;
     private Button mSaveButton;
@@ -45,14 +38,13 @@ public class EditProfile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.edit_profile);
         //Prevent keyboard from automatically opening
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mName =  findViewById(R.id.edit_profile_name);
-        mBio=findViewById(R.id.edit_profile_bio);
-        mBirthday = findViewById(R.id.edit_profile_birthday);
+        mBio=findViewById(R.id.edit_profile_description);
         mEmail=findViewById(R.id.edit_profile_email);
         mEditPhoto=findViewById(R.id.edit_photo_photo_button);
 
@@ -69,7 +61,26 @@ public class EditProfile extends AppCompatActivity {
     }
 
     private void fillUpProfilePage() {
-        mEmail.setText("deneme@hotmail.com");
+
+        Call<ProfileObject> call= RetrofitClient.getInstance().getApi().userProfileGet("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4]);
+        call.enqueue(new Callback<ProfileObject>() {
+            @Override
+            public void onResponse(Call<ProfileObject> call, Response<ProfileObject> response) {
+                ProfileObject editResponse = response.body();
+                if (response.isSuccessful()){
+                mName.setText( editResponse.getName());
+                mBio.setText( editResponse.getBody());
+                mEmail.setText(LoginActivity.getCREDENTIALS()[1]);
+                DashBoard.user_name.setText(editResponse.getName());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProfileObject> call, Throwable t) {
+                Log.d("MyTag","Failed");
+                Toast.makeText(EditProfile.this,"FAILED TO LOAD PROFILE !!",Toast.LENGTH_LONG).show();
+            }
+        });
 
 
     }
@@ -91,7 +102,6 @@ public class EditProfile extends AppCompatActivity {
 
         // Store values at the time of the save attempt.
         String name = mName.getText().toString();
-        String birthday= mBirthday.toString();
         String bio= mBio.getText().toString();
 
         boolean cancel = false;
@@ -125,7 +135,7 @@ public class EditProfile extends AppCompatActivity {
         } else {
             // maybe Show a progress spinner , and kick off a background task to
             // perform the user login attempt.
-            mAuthTask = new ProfileSaveTask(name, birthday, bio);
+            mAuthTask = new ProfileSaveTask(name, bio);
             mAuthTask.execute((Void) null);
         }
     }
@@ -148,12 +158,10 @@ public class EditProfile extends AppCompatActivity {
     public class ProfileSaveTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String name;
-        private final String birthday;
         private final String bio;
 
-        ProfileSaveTask(String name, String birthday, String bio) {
+        ProfileSaveTask(String name, String bio) {
             this.name = name;
-            this.birthday = birthday;
             this.bio= bio;
         }
 
@@ -162,22 +170,11 @@ public class EditProfile extends AppCompatActivity {
             // TODO: attempt authentication against a network service.
             try {
                 // Simulate network access.
-                Thread.sleep(2000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 return false;
             }
 
-            /*
-            Unnecessary I guess
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }*/
-
-            // TODO: register the new account here.
             return true;
         }
 
@@ -185,7 +182,25 @@ public class EditProfile extends AppCompatActivity {
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             if (success) {
-                finish();
+                ProfileObject tempProfile = new ProfileObject(0,0,name,null,bio,"0",(float)(0.0));
+                Call<ProfileObject> call= RetrofitClient.getInstance().getApi().userProfileUpdate("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4],tempProfile);
+                call.enqueue(new Callback<ProfileObject>() {
+                    @Override
+                    public void onResponse(Call<ProfileObject> call, Response<ProfileObject> response) {
+                        if (response.isSuccessful()){
+                            Log.d("MyTag","Geldim");
+                            Toast.makeText(EditProfile.this,"SUCCESSFUL EDITTING",Toast.LENGTH_LONG).show();
+                            finish();
+                        }else{
+                            Toast.makeText(EditProfile.this,"EMPTY !!",Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProfileObject> call, Throwable t) {
+                        Log.d("MyTag","Failed");
+                    }
+                });
 
             } else {
                 //mPasswordView.setError(getString(R.string.error_incorrect_password));

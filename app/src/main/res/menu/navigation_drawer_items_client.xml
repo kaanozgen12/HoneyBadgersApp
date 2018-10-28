@@ -17,7 +17,7 @@
         android:icon="@drawable/ic_content_copy_black_24dp"
         android:title="Create Project" />
     <item
-        android:id="@+id/item_out"
+        android:id="@+id/item_navigation_drawer_log_out"
         android:icon="@drawable/ic_exit_to_app_black_24dp"
         android:title="Log Out" />
 </menu>

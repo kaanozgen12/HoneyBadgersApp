@@ -16,13 +16,16 @@
         android:layout_height="wrap_content"
         android:text="Trending Projects"
         android:layout_marginStart="5dip"
+        android:textSize="17dp"
         android:textStyle="bold"
         android:id="@+id/content_dash_title_1"/>
         <android.support.v7.widget.RecyclerView
             android:layout_weight="1"
             android:layout_width="match_parent"
+            android:clipToPadding="false"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layoutAnimation="@anim/layout_animation_fall_down"
             android:id="@+id/dashboard_recyclerview_1"
             >
         </android.support.v7.widget.RecyclerView>
@@ -31,13 +34,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
+        android:textSize="17dp"
         android:layout_marginStart="5dip"
         android:text="Recommended Projects"
         android:id="@+id/content_dash_title_2" />
         <android.support.v7.widget.RecyclerView
             android:layout_weight="1"
+            android:clipToPadding="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layoutAnimation="@anim/layout_animation_fall_down"
             android:orientation="vertical"
             android:id="@+id/dashboard_recyclerview_2"
             >

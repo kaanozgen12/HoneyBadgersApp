@@ -1,14 +1,40 @@
 package RetrofitModels;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class User {
 
-    private int id;
-    private String email,task;
 
-    public User(int id, String email, String task) {
+    @SerializedName("id")
+    @Expose
+    private int id;
+    @SerializedName("email")
+    @Expose
+    private String email;
+    @SerializedName("name")
+    @Expose
+    private String name;
+    private final static long serialVersionUID = -686417286997792070L;
+
+    /**
+     * No args constructor for use in serialization
+     *
+     */
+    public User() {
+    }
+
+    /**
+     *
+     * @param id
+     * @param email
+     * @param name
+     */
+    public User(int id, String email, String name) {
+        super();
         this.id = id;
         this.email = email;
-        this.task = task;
+        this.name = name;
     }
 
     public int getId() {
@@ -27,11 +53,13 @@ public class User {
         this.email = email;
     }
 
-    public String getTask() {
-        return task;
+    public String getName() {
+        return name;
     }
 
-    public void setTask(String task) {
-        this.task = task;
+    public void setName(String name) {
+        this.name = name;
     }
+
+
 }

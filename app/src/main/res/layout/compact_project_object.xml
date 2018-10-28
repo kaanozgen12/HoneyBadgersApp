@@ -19,28 +19,24 @@
         android:background="#efefef"
         >
 
-        <ScrollView
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:id="@+id/compact_project_scroll_view">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/compact_project_object_name"
                 android:text="Project Name"
+                android:maxLines="2"
+                android:clickable="false"
                 android:textSize="18sp"
                 android:textStyle="bold">
             </TextView>
-        </ScrollView>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/compact_project_object_tags_recyclerview"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
+            android:clickable="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/compact_project_scroll_view"
+            android:layout_below="@+id/compact_project_object_name"
             >
         </android.support.v7.widget.RecyclerView>
         <RelativeLayout
@@ -54,9 +50,11 @@
                 android:id="@+id/compact_project_given_bid"
                 android:text="1000 USD"
                 android:textSize="25sp"
+                android:clickable="false"
                 android:textColor="#64d116"
                 android:textStyle="bold"
-                android:drawableEnd="@drawable/moneysign">
+                android:drawableEnd="@drawable/moneysign"
+                android:drawingCacheQuality="high">
             </TextView>
             <TextView
                 android:layout_width="wrap_content"
@@ -67,7 +65,8 @@
                 android:layout_alignEnd="@id/compact_project_given_bid"
                 android:layout_alignParentEnd="true"
                 android:textColor="#545454"
-                android:textSize="15sp"
+                android:clickable="false"
+                android:textSize="13sp"
                 android:textStyle="bold">
             </TextView>
 

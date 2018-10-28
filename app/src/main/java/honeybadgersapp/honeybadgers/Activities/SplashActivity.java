@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+
 import honeybadgersapp.honeybadgers.R;
 
 public class SplashActivity extends AppCompatActivity {
@@ -15,7 +16,7 @@ public class SplashActivity extends AppCompatActivity {
     Animation frombottom;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-       // getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_activity);
         frombottom = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.frombottom_splash_logo);

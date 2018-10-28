@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import RetrofitModels.Tag_Object;
 import honeybadgersapp.honeybadgers.R;
 
-public class RecyclerView_tags extends RecyclerView.Adapter<RecyclerView_tags.MyViewHolder>{
+public class Tag_adapter_create_project extends RecyclerView.Adapter<Tag_adapter_create_project.MyViewHolder>{
 
     Context mContext;
     ArrayList<Tag_Object> tags_list;
 
-    public RecyclerView_tags(Context mContext, ArrayList<Tag_Object> tags_list) {
+    public Tag_adapter_create_project(Context mContext, ArrayList<Tag_Object> tags_list) {
         this.mContext = mContext;
         this.tags_list = tags_list;
     }
@@ -31,9 +31,18 @@ public class RecyclerView_tags extends RecyclerView.Adapter<RecyclerView_tags.My
         View v;
         v = LayoutInflater.from(mContext).inflate(R.layout.tag,parent, false);
         final MyViewHolder vHolder = new MyViewHolder(v);
-
+        vHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tags_list.remove(vHolder.getAdapterPosition());
+                synchronized (this){
+                    notifyDataSetChanged();
+                }
+            }
+        });
         return  vHolder;
     }
+
 
 
     public void onBindViewHolder(MyViewHolder holder, int position){
@@ -66,6 +75,7 @@ public class RecyclerView_tags extends RecyclerView.Adapter<RecyclerView_tags.My
     public int getItemCount() {
         return tags_list.size();
     }
+
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder{

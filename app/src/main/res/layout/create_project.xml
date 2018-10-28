@@ -1,6 +1,192 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/create_project_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Project"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_gravity="top"
+        android:gravity="center_horizontal"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/create_project_scroll_view"
+        android:layout_below="@+id/create_project_header">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal">
+            <TextView
+                android:id="@+id/create_project_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Which Category do you think your project belongs to:"
+                android:textSize="14sp"
+                android:layout_marginStart="10dp"
+                android:layout_gravity="top"/>
 
-</android.support.constraint.ConstraintLayout>
+            <Spinner
+                android:id="@+id/create_project_category_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:singleLine="true"
+                />
+            <TextView
+                android:id="@+id/create_project_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title:"
+                android:textSize="15sp"
+                android:layout_marginStart="10dp"
+                android:layout_gravity="top"/>
+
+            <EditText
+                android:id="@+id/create_project_title_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
+                android:background="@drawable/textinputborder"
+                android:inputType="text"
+                />
+            <TextView
+                android:id="@+id/create_project_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textSize="15sp"
+                android:text="Description:"
+                />
+            <EditText
+                android:id="@+id/create_project_description_edit"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:inputType="textMultiLine"
+                android:background="@drawable/textinputborder"
+                android:layout_margin="20dp"/>
+
+            <TextView
+                android:id="@+id/create_project_tags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginStart="10dp"
+                android:text="Enter some skills related to your project"
+                />
+            <AutoCompleteTextView
+                android:id="@+id/create_project_tags_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:background="@drawable/textinputborder"
+                android:completionHintView="@layout/hint_completion_layout"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/create_project_skills_title"
+                    android:focusable="true"
+                    android:text="Skills: "/>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/create_project_recyclerview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                </android.support.v7.widget.RecyclerView>
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/create_project_deadline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textSize="15sp"
+                android:text="Deadline" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="2">
+
+                <DatePicker
+                    android:id="@+id/date_picker"
+                    android:layout_width="match_parent"
+                    android:datePickerMode="spinner"
+                    android:calendarViewShown="false"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+
+                <TimePicker
+                    android:id="@+id/time_picker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:timePickerMode="spinner"
+                    />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/create_project_budget_min"
+                android:layout_width="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:text="Budget Min:"/>
+            <EditText
+                android:id="@+id/create_project_budget_min_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLines="1"
+                android:background="@drawable/textinputborder"
+                android:layout_margin="20dp"/>
+            <TextView
+                android:id="@+id/create_project_budget_max"
+                android:layout_width="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:text="Budget Max:"/>
+            <EditText
+                android:id="@+id/create_project_budget_max_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLines="1"
+                android:background="@drawable/textinputborder"
+                android:layout_margin="20dp"/>
+
+            <Button
+                android:id="@+id/create_project_button"
+                android:layout_gravity="center_horizontal"
+                android:background="#e9982e"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+</RelativeLayout>

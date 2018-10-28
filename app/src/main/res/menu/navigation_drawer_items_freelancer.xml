@@ -18,7 +18,7 @@
         android:icon="@drawable/ic_star_black_24dp"
         android:title="Activities" />
     <item
-        android:id="@+id/item_out"
+        android:id="@+id/log_out"
         android:icon="@drawable/ic_exit_to_app_black_24dp"
         android:title="Log Out" />
 </menu>
