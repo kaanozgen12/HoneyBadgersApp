@@ -107,7 +107,6 @@ public class SearchActivity extends AppCompatActivity {
             public void onPageSelected(int i) {
                 viewPager.setCurrentItem(i);
                 if(second&&i==1){
-                    fill_trending();
                     second=false;
                 }
 
@@ -141,9 +140,10 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        fill_trending();
     }
 
-    public synchronized void fill_trending(){
+    public  void fill_trending(){
         ((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.clear();
         Call<List<ProjectObject>> call = RetrofitClient.getInstance().getApi().getProjects();
         call.enqueue(new Callback<List<ProjectObject>>() {

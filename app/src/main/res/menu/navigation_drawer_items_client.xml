@@ -17,6 +17,10 @@
         android:icon="@drawable/ic_content_copy_black_24dp"
         android:title="Create Project" />
     <item
+        android:id="@+id/item_navigation_drawer_my_projects"
+        android:icon="@drawable/ic_folder_open_black_24dp"
+        android:title="My Projects" />
+    <item
         android:id="@+id/item_navigation_drawer_log_out"
         android:icon="@drawable/ic_exit_to_app_black_24dp"
         android:title="Log Out" />

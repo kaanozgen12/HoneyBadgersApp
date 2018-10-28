@@ -21,18 +21,217 @@
 
 
     <string-array name="Tags">
-        <item>Java</item>
-        <item>C++</item>
-        <item>Python</item>
-        <item>C</item>
-        <item>C#</item>
+        <item>Website Design</item>
+        <item>HTML</item>
+        <item>Graphic Design</item>
+        <item>PHP</item>
+        <item>eCommerce</item>
+        <item>CSS</item>
+        <item>Logo Design</item>
+        <item>3D Design</item>
+        <item>Photoshop</item>
+        <item>Data Entry</item>
+        <item>Article Writing</item>
+        <item>Blog</item>
+        <item>Ghostwriting</item>
+        <item>Content Writing</item>
+        <item>Article Rewriting</item>
+        <item>Excel</item>
+        <item>Data Proccessing</item>
+        <item>Web Search</item>
         <item>Painting</item>
-        <item>Android</item>
-        <item>Flute</item>
+        <item>Linux</item>
+        <item>LaTeX</item>
+        <item>Software Architecture</item>
+        <item>Software Testing</item>
+        <item>MySQL</item>
+        <item>Illustration</item>
+        <item>Graphic Design</item>
+        <item>Photography</item>
+        <item>Illustrator</item>
+        <item>Caricature and Cartoons</item>
+        <item>Music</item>
+        <item>Sound Design</item>
+        <item>Audio Services</item>
+        <item>Mac OS</item>
+        <item>Apache</item>
+        <item>Artificial Intelligence</item>
+        <item>Machine Learning</item>
+        <item>Java</item>
+        <item>C Programming</item>
+        <item>Algorithm</item>
+        <item>Embedded Software</item>
+        <item>Ethereum</item>
+        <item>Eclipse</item>
+        <item>Python</item>
+        <item>Shopping Carts</item>
+        <item>Magento</item>
+        <item>Django</item>
+        <item>Drawing</item>
+        <item>Sketching</item>
+        <item>Social Media Management</item>
+        <item>Perl</item>
+        <item>Pattern Matching</item>
+        <item>Pascal</item>
+        <item>PayPal API</item>
+        <item>Packing and Shipping</item>
+        <item>Package Design</item>
+        <item>Order Processing</item>
+        <item>German</item>
         <item>English</item>
+        <item>BPO</item>
+        <item>Housework</item>
+        <item>House Cleaning</item>
+        <item>Food Takeaway</item>
+        <item>Translation</item>
+        <item>Short Stories</item>
+        <item>Delivery</item>
+        <item>Home Design</item>
+        <item>HTML5</item>
+        <item>Haskell</item>
+        <item>Heroku</item>
+        <item>Healthcare Sales</item>
+        <item>Health</item>
+        <item>Human Sciences</item>
+        <item>Human Resources</item>
+        <item>Frontend Development</item>
+        <item>Android</item>
+        <item>iOS Development</item>
+        <item>Swift</item>
+        <item>Speech Writing</item>
+        <item>Selenium Webdriver</item>
+        <item>Powerpoint</item>
+        <item>Prolog</item>
+        <item>Publishing</item>
+        <item>Arts and Crafts</item>
+        <item>Bitcoin</item>
+        <item>Blockchain</item>
+        <item>Cocoa</item>
+        <item>C# Programming</item>
+        <item>.NET</item>
+        <item>Cloud Computing</item>
+        <item>Climate Sciences</item>
+        <item>Education and Tutoring</item>
+        <item>Civil Engineering</item>
+        <item>Scientific Research</item>
+        <item>Biology</item>
+        <item>Research Writing</item>
+        <item>AutoCAD</item>
+        <item>CATIA</item>
+        <item>Structural Engineering</item>
+        <item>Drafting</item>
+        <item>Building Architecture</item>
+        <item>Interior Design</item>
+        <item>3D Modelling</item>
+        <item>3D Rendering</item>
+        <item>3D Animation</item>
+        <item>Filmmaking</item>
+        <item>Photo Editing</item>
+        <item>ASP</item>
+        <item>AJAX</item>
+        <item>Agile Development</item>
+        <item>Automative</item>
+        <item>Manufacturing</item>
+        <item>Product Design</item>
+        <item>Buyer Sourcing</item>
+        <item>Product Sourcing</item>
+        <item>Supplier Sourcing</item>
+        <item>eBooks</item>
+        <item>Electronics</item>
+        <item>Microcontroller</item>
+        <item>WordPress</item>
+        <item>Javascript</item>
+        <item>Java Spring</item>
+        <item>Scrum</item>
+        <item>Interiors</item>
+        <item>Financial Planning</item>
+        <item>Computer Support</item>
+        <item>Workshops</item>
+        <item>Inspections</item>
+        <item>Objective C</item>
+        <item>Mobile App Development</item>
+        <item>Image Processing</item>
+        <item>OpenCV</item>
+        <item>Data Mining</item>
+        <item>Matlab and Mathematica</item>
+        <item>Web Scraping</item>
+        <item>Tattoo Design</item>
+        <item>Creative Design</item>
+        <item>Tensorflow</item>
+        <item>Titanium</item>
+        <item>Ionic Framework</item>
+        <item>Travel Writing</item>
+        <item>Advertising</item>
+        <item>Sales</item>
+        <item>Leads</item>
+        <item>Internet Marketing</item>
+        <item> Marketing</item>
+        <item>Add Planning and Buying</item>
+        <item>SEO</item>
+        <item>Link Building</item>
+        <item>Operations Research</item>
+        <item>Apple Xcode</item>
+        <item>Game Design</item>
+        <item>iPhone</item>
+        <item>iPad</item>
+        <item>Game Consoles</item>
+        <item>Solaris</item>
+        <item>Push Notification</item>
+        <item>Poster Design</item>
+        <item>Print</item>
+        <item>Presentations</item>
+        <item>Videography</item>
+        <item>Video Services</item>
+        <item>Cover and Packaging</item>
+        <item>Brochure Design</item>
+        <item>Startups</item>
+        <item>Statistics</item>
+        <item>Statistical Analysis</item>
+        <item>Mathematics</item>
+        <item>Sticker Design</item>
+        <item>T-Shirts</item>
+        <item>BigCommerce</item>
+        <item>Finance</item>
+        <item>Payroll</item>
         <item>Accounting</item>
-        <item>Math</item>
-        <item>French</item>
+        <item>Financial Markets</item>
+        <item>Business Analysis</item>
+        <item>Clean Technology</item>
+        <item>Training</item>
+        <item>Test Automation</item>
+        <item>Usability Testing</item>
+        <item>Microsoft</item>
+        <item>Make Up</item>
+        <item>Virtual Assistant</item>
+        <item>Customer Support</item>
+        <item>Customer Service</item>
+        <item>C++ Programming</item>
+        <item>Face Recognition</item>
+        <item>API</item>
+        <item>Apache Maven</item>
+        <item>Backend Development</item>
+        <item>Computer Security</item>
+        <item>Web Security</item>
+        <item>Programming</item>
+        <item>Cinematography</item>
+        <item>Employment Law</item>
+        <item>Legal</item>
+        <item>Legal Research</item>
+        <item>Contracts</item>
+        <item>Property Law</item>
+        <item>Economics</item>
+        <item>Sports</item>
+        <item>Shopping</item>
+        <item>Wireless</item>
+        <item>Neural Networks</item>
+        <item>Nanotechnology</item>
+        <item>Database Administration</item>
+        <item>SQL</item>
+        <item>Visual Arts</item>
+        <item>Voice Artist</item>
+        <item>Voice Talent</item>
+        <item>Audio Production</item>
+        <item>Analytics</item>
     </string-array>
 
     <string-array name="Categories">

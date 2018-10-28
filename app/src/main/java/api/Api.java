@@ -87,6 +87,11 @@ public interface Api {
             @Path("id") int id
 
     );
+    @GET("api/v1/user/register/{id}/")
+    Call<User> getUserEmail(
+            @Path("id") int id
+
+    );
     @GET("api/v1/project/tag/")
     Call<ArrayList<Tag_Object>> getTagbyTitle(
             @Query("search") String title
@@ -94,6 +99,11 @@ public interface Api {
 
     @GET("api/v1/project/create/")
     Call<List<ProjectObject>> getProjects();
+
+    @GET("api/v1/project/create/{id}/")
+    Call<ProjectObject> getProjectbyId(
+            @Path("id") int id
+    );
 
    /* @FormUrlEncoded
     @POST("api/v1/project/create/")

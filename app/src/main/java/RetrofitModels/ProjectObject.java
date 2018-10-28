@@ -138,6 +138,14 @@ public class ProjectObject implements Serializable
     }
 
 
+    public int[] getTags() {
+        return tags;
+    }
+
+    public void setTags(int[] tags) {
+        this.tags = tags;
+    }
+
     public int getBudgetMin() {
         return budgetMin;
     }
@@ -162,20 +170,25 @@ public class ProjectObject implements Serializable
         this.deadline = deadline;
     }
 
-    public  Compact_Project_Object compress(){
-            final Compact_Project_Object temp=  new Compact_Project_Object(id, title, 0, "0 bid",new ArrayList<Tag_Object>());
+    public Compact_Project_Object compress(){
+            Compact_Project_Object temp=  new Compact_Project_Object(id, title, 0, "0 bid", string_form_of_int_tags(tags));
+            return temp;
+    }
 
+    public static ArrayList<Tag_Object> string_form_of_int_tags (int[] a){
 
-        for (int i = 0; i < tags.length; i++) {
+        final ArrayList<Tag_Object> temp = new ArrayList<>();
 
-            Call<Tag_Object> call = RetrofitClient.getInstance().getApi().getTag(tags[i]);
+        for (int i = 0; i < a.length; i++) {
+
+            Call<Tag_Object> call = RetrofitClient.getInstance().getApi().getTag(a[i]);
             call.enqueue(new Callback<Tag_Object>() {
                 @Override
                 public void onResponse(Call<Tag_Object> call, Response<Tag_Object> response) {
                     Tag_Object editResponse = response.body();
                     if (response.isSuccessful()) {
                         Log.d("MyTag", "successful tag fetch id:" + editResponse.getId());
-                        temp.getTags().add(editResponse);
+                        temp.add(editResponse);
                     }
                 }
 
@@ -187,9 +200,7 @@ public class ProjectObject implements Serializable
             });
         }
         return temp;
-
     }
-
 
 
 }

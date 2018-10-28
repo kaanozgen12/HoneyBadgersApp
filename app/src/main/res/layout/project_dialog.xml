@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:background="#a9a7a7">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/project_dialog_project_name"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="Project Name"
+        android:layout_alignParentTop="true"/>
+    <android.support.v7.widget.CardView
+        android:layout_marginTop="10dp"
+        android:layout_margin="5dp"
+        card_view:cardCornerRadius="10dp"
+        android:layout_below="@+id/project_dialog_project_name"
+        android:id="@+id/project_dialog_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <RelativeLayout
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/project_dialog_bids_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/project_dialog_bids_text"
+                    android:text="Bids"
+                    android:textStyle="bold"
+                    android:textSize="20sp"/>
+                <TextView
+                    android:id="@+id/project_dialog_bids_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="center"
+                    android:textColor="#00218f"
+                    android:text="20"
+                    android:textSize="20sp"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_toEndOf="@+id/project_dialog_bids_layout"
+                android:id="@+id/project_dialog_budget_layout"
+                android:layout_marginStart="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/project_dialog_budget_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Project Budget"
+                    android:textStyle="bold"
+                    android:textSize="20sp"/>
+                <TextView
+                    android:id="@+id/project_dialog_budget_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="center"
+                    android:textColor="#00218f"
+                    android:text="20 USD - 50 USD"
+                    android:textSize="20sp"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@+id/project_dialog_budget_layout"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/project_dialog_remainingtime_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/project_dialog_remaining_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Remaining Time"
+                    android:textStyle="bold"
+                    android:textSize="20sp"/>
+                <TextView
+                    android:id="@+id/project_dialog_remaining_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_gravity="center"
+                    android:textColor="#00218f"
+                    android:text="5 days, 12 hours"
+                    android:textSize="20sp"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_below="@+id/project_dialog_header"
+        android:id="@+id/project_dialog_body"
+        android:layout_width="match_parent"
+        card_view:cardCornerRadius="10dp"
+        android:layout_margin="5dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_margin="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/project_dialog_description_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Project Description"
+                    android:textStyle="bold"/>
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:id="@+id/project_dialog_scrollView"
+                    android:layout_height="200dp"
+                    android:layout_below="@id/project_dialog_description_text"
+                    android:layout_toStartOf="@+id/project_dialog_bid_button"
+                    android:background="@drawable/textinputborder">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="3dp"
+                        android:id="@+id/project_dialog_project_descripton_edit"/>
+
+                </ScrollView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/project_dialog_skills_text"
+                    android:text="Skills Required:"
+                    android:layout_below="@+id/project_dialog_scrollView"/>
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/project_dialog_tags"
+                    android:layout_below="@+id/project_dialog_skills_text">
+                </android.support.v7.widget.RecyclerView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/project_dialog_employer_info_layout"
+                    android:layout_below="@id/project_dialog_tags">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="About the employer"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:id="@+id/project_dialog_about_employer_text"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/project_dialog_employer_name_edit"
+                        android:clickable="true"
+                        android:text="Employer Name"
+                        android:textColor="#FF00266C"
+                        android:layout_below="@id/project_dialog_about_employer_text"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/project_dialog_employer_rating"
+                            android:text="Employer Rating"
+                            android:layout_below="@id/project_dialog_employer_name_edit"/>
+                        <RatingBar
+                            android:layout_below="@+id/project_dialog_employer_name_edit"
+                            android:id="@+id/project_dialog_rating_bar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:scaleX=".5"
+                            android:scaleY=".5"
+                            android:transformPivotX="0dp"
+                            android:transformPivotY="0dp"
+                            android:isIndicator="true"
+                            android:max="5" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/project_dialog_bid_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="20dp"
+                    android:text="BID"
+                    android:background="@drawable/button_color"
+                    />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/project_dialog_employer_info_layout"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true">
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/project_dialog_project_id_text"
+                        android:text="Project ID: "
+                        android:textStyle="bold"/>
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/project_dialog_project_id_edit"
+                        android:text="111111: "/>
+                </LinearLayout>
+
+            </RelativeLayout>
+        </ScrollView>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>
+
