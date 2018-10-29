@@ -2,6 +2,7 @@ package honeybadgersapp.honeybadgers.Activities;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,9 +26,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 import Adapters.Tag_adapter_create_project;
-import RetrofitModels.ProjectCategory;
 import RetrofitModels.ProjectObject;
 import RetrofitModels.Tag_Object;
 import api.RetrofitClient;
@@ -82,9 +83,10 @@ public class CreateProject extends AppCompatActivity{
                 Call<ArrayList<Tag_Object>> call0= RetrofitClient.getInstance().getApi().getTagbyTitle((String)adapterView.getItemAtPosition(i));
                 call0.enqueue(new Callback<ArrayList<Tag_Object>>() {
                     @Override
-                    public void onResponse(Call<ArrayList<Tag_Object>> call0, Response<ArrayList<Tag_Object>> response0) {
+                    public void onResponse(@NonNull Call<ArrayList<Tag_Object>> call0, @NonNull Response<ArrayList<Tag_Object>> response0) {
                         if (response0.isSuccessful()){
-                            tag_list.add(new Tag_Object(new ArrayList( Arrays.asList( getResources().getStringArray(R.array.Tags) )).indexOf(response0.body().get(0).getTitle()),response0.body().get(0).getTitle()));
+                            tag_list.add(new Tag_Object(response0.body().get(0).getId(),response0.body().get(0).getTitle()));
+                            Objects.requireNonNull(mRecylerView.getAdapter()).notifyDataSetChanged();
                         }else{
                             Toast.makeText(CreateProject.this,"Create Tag Failed",Toast.LENGTH_LONG).show();
                         }
@@ -95,7 +97,6 @@ public class CreateProject extends AppCompatActivity{
                     }
                 });
                 autoCompleteTag.setText("");
-                mRecylerView.getAdapter().notifyDataSetChanged();
                 mSkillsTitle.clearFocus();
             }
         });
@@ -109,18 +110,18 @@ public class CreateProject extends AppCompatActivity{
                     Call<Tag_Object> call= RetrofitClient.getInstance().getApi().postTag("token "+LoginActivity.getCREDENTIALS()[0],autoCompleteTag.getText().toString());
                     call.enqueue(new Callback<Tag_Object>() {
                         @Override
-                        public void onResponse(Call<Tag_Object> call, Response<Tag_Object> response) {
+                        public void onResponse(@NonNull Call<Tag_Object> call, @NonNull Response<Tag_Object> response) {
                             if (response.isSuccessful()){
                                 Toast.makeText(CreateProject.this,"Create Tag Successful",Toast.LENGTH_LONG).show();
                                 tag_list.add(new Tag_Object(response.body().getId(),autoCompleteTag.getText().toString()));
                                 autoCompleteTag.setText("");
-                                mRecylerView.getAdapter().notifyDataSetChanged();
+                                Objects.requireNonNull(mRecylerView.getAdapter()).notifyDataSetChanged();
                             }else{
                                 Toast.makeText(CreateProject.this,"Create Tag Failed",Toast.LENGTH_LONG).show();
                             }
                         }
                         @Override
-                        public void onFailure(Call<Tag_Object> call, Throwable t) {
+                        public void onFailure(@NonNull Call<Tag_Object> call, @NonNull Throwable t) {
                             Toast.makeText(CreateProject.this,"Create Tag Failed Response from server",Toast.LENGTH_LONG).show();
                         }
                     });
@@ -137,12 +138,12 @@ public class CreateProject extends AppCompatActivity{
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                category = (String) mSpinner.getItemAtPosition(i+1);
+                category = ""+i+1;
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                category = (String) mSpinner.getItemAtPosition(1);
+                category = "1";
             }
         });
         mTitle = findViewById(R.id.create_project_title_edit);
@@ -260,13 +261,13 @@ public class CreateProject extends AppCompatActivity{
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             final int[] a= new int[1];
-            a[0]=1;
+            a[0]=Integer.parseInt(category);
 
 
             Call<ProjectObject> call= RetrofitClient.getInstance().getApi().projectCreatePost("token "+LoginActivity.getCREDENTIALS()[0],title,description,turnTags_List_to_Integer_List(tag_list),a,Integer.parseInt(budgetMin),Integer.parseInt(budgetMax),deadline);
             call.enqueue(new Callback<ProjectObject>() {
                 @Override
-                public void onResponse(Call<ProjectObject> call, Response<ProjectObject> response) {
+                public void onResponse(@NonNull Call<ProjectObject> call, @NonNull Response<ProjectObject> response) {
                     if (response.isSuccessful()){
                         Log.d("MyTag","Geldim");
                         Toast.makeText(CreateProject.this,"SUCCESSFUL EDITTING",Toast.LENGTH_LONG).show();
@@ -278,7 +279,7 @@ public class CreateProject extends AppCompatActivity{
                 }
 
                 @Override
-                public void onFailure(Call<ProjectObject> call, Throwable t) {
+                public void onFailure(@NonNull Call<ProjectObject> call, Throwable t) {
                     Log.d("MyTag","Failed");
                 }
             });
@@ -302,12 +303,4 @@ public class CreateProject extends AppCompatActivity{
         return temp;
     }
 
-    public static int[] turnCategories_List_to_Integer_List(ArrayList<ProjectCategory> s){
-
-        int[] temp= new int[s.size()];
-        for (int i =0 ; i< s.size(); i++){
-            temp[i]=s.get(i).getId();
-        }
-        return temp;
-    }
 }

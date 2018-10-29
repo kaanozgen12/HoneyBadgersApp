@@ -1,15 +1,16 @@
 package Adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import RetrofitModels.Tag_Object;
 import honeybadgersapp.honeybadgers.R;
@@ -47,27 +48,10 @@ public class Tag_adapter_create_project extends RecyclerView.Adapter<Tag_adapter
 
     public void onBindViewHolder(MyViewHolder holder, int position){
 
-        switch (tags_list.get(position).getTitle()) {
-            case "Java": {
-                holder.Tag_Text.setTextColor(Color.parseColor("#FFAF5E32"));
-                break;
-            }
-            case "Python": {
-                holder.Tag_Text.setTextColor(Color.parseColor("#FFAB6EBE"));
-                break;
-            }
-            case "C++": {
-                holder.Tag_Text.setTextColor(Color.parseColor("#FF1827C4"));
-                break;
-            }
-            case "Painting": {
-                holder.Tag_Text.setTextColor(Color.parseColor("#FF8ECDD4"));
-                break;
-            }
-            default:
-                holder.Tag_Text.setTextColor(Color.parseColor("#FF000000"));
-                break;
-        }
+        int temp = 1+new ArrayList( Arrays.asList( mContext.getResources().getStringArray(R.array.Tags) )).indexOf(tags_list.get(position).getTitle());
+        Log.d("MyTag","temp: "+temp);
+        holder.Tag_Text.setTextColor((temp*Integer.parseInt("1000", 16)+0xFFDE342E));
+
         holder.Tag_Text.setText(tags_list.get(position).getTitle());
     }
 

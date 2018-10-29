@@ -48,6 +48,7 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
     public  TextView user_name;
     public  Switch user_role;
     public   NavigationView navigationView;
+    public View headerView ;
     public List<Compact_Project_Object> list1 =new ArrayList<>();
     public List<Compact_Project_Object> list2 =new ArrayList<>();
     @Override
@@ -66,6 +67,7 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         }
 
         setNavigationViewListener();
+        headerView =navigationView.getHeaderView(0);
         mToggle = new ActionBarDrawerToggle(this,mDrawerlayout,R.string.Open,R.string.Close);
         mDrawerlayout.addDrawerListener(mToggle);
         mDrawerlayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -119,7 +121,6 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         RecyclerViewDashboard_Notifications recyclerAdapter2 =new RecyclerViewDashboard_Notifications(this,list2);
         DashBoardRecyclerView2.setLayoutManager(new LinearLayoutManager(this));
         DashBoardRecyclerView2.setAdapter(recyclerAdapter2);
-        View headerView =navigationView.getHeaderView(0);
 
         DashBoardRecyclerView1.getAdapter().notifyDataSetChanged();
         DashBoardRecyclerView2.getAdapter().notifyDataSetChanged();
@@ -127,9 +128,7 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
 
         logo = headerView.findViewById(R.id.person_logo);
         user_email= headerView.findViewById(R.id.useremail_text);
-        user_name = headerView.findViewById(R.id.username_text);
         user_role = headerView.findViewById(R.id.switch_profile);
-        onResume();
 
     }
 
@@ -196,17 +195,17 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
     protected void onResume() {
         super.onResume();
 
+        String name;
             Call<List<ProfileObject>> call= RetrofitClient.getInstance().getApi().userProfileGet("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4]);
             call.enqueue(new Callback<List<ProfileObject>>() {
                 @Override
                 public void onResponse(Call<List<ProfileObject>> call, Response<List<ProfileObject>> response) {
                     List<ProfileObject> editResponse = response.body();
                     if (response.isSuccessful()) {
+                        assert editResponse != null;
                         if (editResponse.get(0).getAvatar() != null) {
                             logo.setBackground((Drawable) editResponse.get(0).getAvatar());
                         }
-                        user_name.setText(editResponse.get(0).getName());
-
                     }
                 }
 
@@ -220,10 +219,6 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         }if(LoginActivity.getCREDENTIALS()[3]!=null){
             user_role.setText(LoginActivity.getCREDENTIALS()[3]);
         }
-
-
-
-
     }
 
     @Override
