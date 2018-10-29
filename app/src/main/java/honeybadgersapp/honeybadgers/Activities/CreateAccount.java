@@ -57,11 +57,12 @@ public class CreateAccount extends AppCompatActivity {
         mPasswordView = findViewById(R.id.password_account_create);
         mPasswordConfirmView  = findViewById(R.id.password_account_create_retype);
 
-        Button mEmailSignUpButton =  findViewById(R.id.email_sign_up_button);
+        final Button mEmailSignUpButton =  findViewById(R.id.email_sign_up_button);
         mEmailSignUpButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-               attemptSignUp();
+                attemptSignUp();
+                mEmailSignUpButton.setEnabled(false);
             }
         });
 
@@ -187,11 +188,10 @@ public class CreateAccount extends AppCompatActivity {
                 Call<User> call= RetrofitClient.getInstance().getApi().userRegister(mEmail,"Random",mPassword);
                 call.enqueue(new Callback<User>() {
                     @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
+                    public void onResponse(Call<User> call, final Response<User> response) {
                         if (response.isSuccessful()){
 
 
-                            synchronized (this) {
                                 Call<LoginResponse> call3 = RetrofitClient.getInstance().getApi().userLogin(mEmail, mPassword);
                                 call3.enqueue(new Callback<LoginResponse>() {
                                     @Override
@@ -200,39 +200,37 @@ public class CreateAccount extends AppCompatActivity {
                                         if (response3.isSuccessful()) {
                                             LoginActivity.getCREDENTIALS()[0] = response3.body().getToken();
                                             Log.d("MyTag", "LOGIN SUCCESSFUL. token "+LoginActivity.getCREDENTIALS()[0]);
+                                            ///////////////
+                                            Call<ProfileObject> call2 = RetrofitClient.getInstance().getApi().userProfileCreate("token "+LoginActivity.getCREDENTIALS()[0],"EMPTY", null, "EMPTY");
+                                            call2.enqueue(new Callback<ProfileObject>() {
+                                                @Override
+                                                public void onResponse(Call<ProfileObject> call2, Response<ProfileObject> response2) {
+
+                                                    if (response2.isSuccessful()) {
+                                                        LoginActivity.getCREDENTIALS()[1] = mEmail;
+                                                        LoginActivity.getCREDENTIALS()[4] = "" + response2.body().getUserId();
+                                                        LoginActivity.getCREDENTIALS()[5] = "" + response2.body().getId();
+                                                        Log.d("MyTag", "SUCCESSFUL PROFILE CREATE "+response2.body().getUserId());
+                                                    }
+                                                }
+                                                @Override
+                                                public void onFailure(Call<ProfileObject> call2, Throwable t) {
+                                                    Log.d("MyTag", "FAIL PROFILE CREATE");
+                                                    Toast.makeText(CreateAccount.this, "FAIL PROFILE CREATE", Toast.LENGTH_SHORT).show();
+                                                    finish();
+                                                }
+                                            });
+
                                         }
                                     }
-
                                     @Override
-                                    public void onFailure(Call<LoginResponse> call2, Throwable t) {
+                                    public void onFailure(Call<LoginResponse> call3, Throwable t) {
                                         Log.d("MyTag", "LOGIN FAILED");
                                         finish();
                                         Toast.makeText(CreateAccount.this, "LOGIN FAIL", Toast.LENGTH_SHORT).show();
                                     }
                                 });
-                            }
-                            synchronized (this) {
-                                Call<ProfileObject> call2 = RetrofitClient.getInstance().getApi().userProfileCreate("token "+LoginActivity.getCREDENTIALS()[0],"EMPTY", null, "EMPTY");
-                                call2.enqueue(new Callback<ProfileObject>() {
-                                    @Override
-                                    public void onResponse(Call<ProfileObject> call2, Response<ProfileObject> response2) {
 
-                                        if (response2.isSuccessful()) {
-                                            LoginActivity.getCREDENTIALS()[1] = mEmail;
-                                            LoginActivity.getCREDENTIALS()[4] = "" + response2.body().getId();
-                                            Log.d("MyTag", "SUCCESSFUL PROFILE CREATE");
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<ProfileObject> call2, Throwable t) {
-                                        Log.d("MyTag", "FAIL PROFILE CREATE");
-                                        Toast.makeText(CreateAccount.this, "FAIL PROFILE CREATE", Toast.LENGTH_SHORT).show();
-                                        finish();
-                                    }
-                                });
-
-                            }
                             Thread timer = new Thread(){
                                 @Override
                                 public void run() {
@@ -243,12 +241,12 @@ public class CreateAccount extends AppCompatActivity {
                                 }
                             };
                             timer.start();
+
                         }else{
                             Log.d("MyTag","FAIL USER REGISTER");
                             Toast.makeText(CreateAccount.this,"FAIL USER REGISTER",Toast.LENGTH_SHORT).show();
                         }
                     }
-
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
                         Log.d("MyTag","FAIL USER REGISTER RESPONSE");

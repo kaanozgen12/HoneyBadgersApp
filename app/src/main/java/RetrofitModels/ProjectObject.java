@@ -189,6 +189,9 @@ public class ProjectObject implements Serializable
                     if (response.isSuccessful()) {
                         Log.d("MyTag", "successful tag fetch id:" + editResponse.getId());
                         temp.add(editResponse);
+                        synchronized (this){
+                            notify();
+                        }
                     }
                 }
 

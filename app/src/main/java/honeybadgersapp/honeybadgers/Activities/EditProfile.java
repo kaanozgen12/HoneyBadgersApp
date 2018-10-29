@@ -2,6 +2,7 @@ package honeybadgersapp.honeybadgers.Activities;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.List;
 
 import RetrofitModels.ProfileObject;
 import api.RetrofitClient;
@@ -47,8 +50,6 @@ public class EditProfile extends AppCompatActivity {
         mBio=findViewById(R.id.edit_profile_description);
         mEmail=findViewById(R.id.edit_profile_email);
         mEditPhoto=findViewById(R.id.edit_photo_photo_button);
-
-        fillUpProfilePage();
         mSaveButton = findViewById(R.id.edit_profile_save_button);
         mSaveButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -60,30 +61,35 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
-    private void fillUpProfilePage() {
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
 
-        Call<ProfileObject> call= RetrofitClient.getInstance().getApi().userProfileGet("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4]);
-        call.enqueue(new Callback<ProfileObject>() {
+
+        Call<List<ProfileObject>> call= RetrofitClient.getInstance().getApi().userProfileGet("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4]);
+        call.enqueue(new Callback<List<ProfileObject>>() {
             @Override
-            public void onResponse(Call<ProfileObject> call, Response<ProfileObject> response) {
-                ProfileObject editResponse = response.body();
+            public void onResponse(Call<List<ProfileObject>> call, Response<List<ProfileObject>> response) {
+                List<ProfileObject> editResponse = response.body();
                 if (response.isSuccessful()){
-                mName.setText( editResponse.getName());
-                mBio.setText( editResponse.getBody());
-                mEmail.setText(LoginActivity.getCREDENTIALS()[1]);
-                DashBoard.user_name.setText(editResponse.getName());
+                    mName.setText( editResponse.get(0).getName());
+                    mBio.setText( editResponse.get(0).getBody());
+                    mEmail.setText(LoginActivity.getCREDENTIALS()[1]);
+                    LoginActivity.getCREDENTIALS()[5]=""+editResponse.get(0).getId();
+                    Log.d("MyTag","success profile load");
+                    Toast.makeText(EditProfile.this,"SUCCESS LOAD PROFILE !!",Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<ProfileObject> call, Throwable t) {
+            public void onFailure(Call<List<ProfileObject>> call, Throwable t) {
                 Log.d("MyTag","Failed");
                 Toast.makeText(EditProfile.this,"FAILED TO LOAD PROFILE !!",Toast.LENGTH_LONG).show();
             }
         });
 
-
     }
+
 
 
     /**
@@ -182,8 +188,8 @@ public class EditProfile extends AppCompatActivity {
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             if (success) {
-                ProfileObject tempProfile = new ProfileObject(0,0,name,null,bio,"0",(float)(0.0));
-                Call<ProfileObject> call= RetrofitClient.getInstance().getApi().userProfileUpdate("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4],tempProfile);
+
+                Call<ProfileObject> call= RetrofitClient.getInstance().getApi().userProfileUpdate("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[5],name,null,bio);
                 call.enqueue(new Callback<ProfileObject>() {
                     @Override
                     public void onResponse(Call<ProfileObject> call, Response<ProfileObject> response) {

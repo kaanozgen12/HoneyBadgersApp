@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +29,6 @@ import java.util.List;
 import Adapters.RecyclerViewDashboard_Notifications;
 import Models.Compact_Project_Object;
 import RetrofitModels.ProfileObject;
-import RetrofitModels.Tag_Object;
 import api.RetrofitClient;
 import api.SimpleCredentialCrypting;
 import honeybadgersapp.honeybadgers.R;
@@ -43,11 +43,11 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
     private ActionBarDrawerToggle mToggle;
     private RecyclerView DashBoardRecyclerView1;
     private RecyclerView DashBoardRecyclerView2;
-    public static ImageView logo;
-    public static TextView user_email;
-    public static TextView user_name;
-    public static Switch user_role;
-    public static NavigationView navigationView;
+    public  ImageView logo;
+    public  TextView user_email;
+    public  TextView user_name;
+    public  Switch user_role;
+    public   NavigationView navigationView;
     public List<Compact_Project_Object> list1 =new ArrayList<>();
     public List<Compact_Project_Object> list2 =new ArrayList<>();
     @Override
@@ -124,21 +124,12 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         DashBoardRecyclerView1.getAdapter().notifyDataSetChanged();
         DashBoardRecyclerView2.getAdapter().notifyDataSetChanged();
 
+
         logo = headerView.findViewById(R.id.person_logo);
         user_email= headerView.findViewById(R.id.useremail_text);
         user_name = headerView.findViewById(R.id.username_text);
         user_role = headerView.findViewById(R.id.switch_profile);
-
-        ArrayList<Tag_Object> skills = new ArrayList<>();
-        skills.add(new Tag_Object(0,"Java"));
-        skills.add(new Tag_Object(1,"C++"));
-
-        list1.add(new Compact_Project_Object(1,"Python project for skilled developers",0,"100",skills));
-        list1.add(new Compact_Project_Object(2,"Python project for skilled developers",0,"100",skills));
-        list1.add(new Compact_Project_Object(3,"Python project for skilled developers",0,"100",skills));
-        list2.add(new Compact_Project_Object(4,"Python project for skilled developers",0,"100",skills));
-        list2.add(new Compact_Project_Object(5,"Python project for skilled developers",0,"100",skills));
-
+        onResume();
 
     }
 
@@ -198,31 +189,32 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         getMenuInflater().inflate(R.menu.navigation_drawer_items, menu);
         return true;
     }*/
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        synchronized (this) {
-            Call<ProfileObject> call = RetrofitClient.getInstance().getApi().userProfileGet("token " + LoginActivity.getCREDENTIALS()[0], LoginActivity.getCREDENTIALS()[4]);
-            call.enqueue(new Callback<ProfileObject>() {
+
+            Call<List<ProfileObject>> call= RetrofitClient.getInstance().getApi().userProfileGet("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4]);
+            call.enqueue(new Callback<List<ProfileObject>>() {
                 @Override
-                public void onResponse(Call<ProfileObject> call, Response<ProfileObject> response) {
-                    ProfileObject editResponse = response.body();
+                public void onResponse(Call<List<ProfileObject>> call, Response<List<ProfileObject>> response) {
+                    List<ProfileObject> editResponse = response.body();
                     if (response.isSuccessful()) {
-                        if (editResponse.getAvatar() != null) {
-                            DashBoard.logo.setBackground((Drawable) editResponse.getAvatar());
+                        if (editResponse.get(0).getAvatar() != null) {
+                            logo.setBackground((Drawable) editResponse.get(0).getAvatar());
                         }
-                        DashBoard.user_name.setText(editResponse.getName());
+                        user_name.setText(editResponse.get(0).getName());
+
                     }
                 }
 
                 @Override
-                public void onFailure(Call<ProfileObject> call, Throwable t) {
-
+                public void onFailure(Call<List<ProfileObject>> call, Throwable t) {
+                    Log.d("MyTag","Failed");
                 }
             });
-        }
         if(LoginActivity.getCREDENTIALS()[1]!=null){
             user_email.setText(LoginActivity.getCREDENTIALS()[1]);
         }if(LoginActivity.getCREDENTIALS()[3]!=null){

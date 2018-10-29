@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +19,14 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import Models.Compact_Project_Object;
 import RetrofitModels.ProjectObject;
+import RetrofitModels.Tag_Object;
 import RetrofitModels.User;
 import api.RetrofitClient;
 import honeybadgersapp.honeybadgers.R;
@@ -79,12 +82,12 @@ public class RecyclerViewDashboard_Notifications extends RecyclerView.Adapter<Re
                 Call<ProjectObject> call = RetrofitClient.getInstance().getApi().getProjectbyId(vHolder.getId());
                 call.enqueue(new Callback<ProjectObject>() {
                     @Override
-                    public void onResponse(Call<ProjectObject> call, Response<ProjectObject> response) {
+                    public void onResponse(Call<ProjectObject> call, final Response<ProjectObject> response) {
                         ProjectObject editResponse = response.body();
 
                         if (response.isSuccessful()) {
                             Date currentTime = Calendar.getInstance().getTime();
-                            RecyclerView_tags recyclerAdapter;
+                            final RecyclerView_tags recyclerAdapter;
                             TextView projecttitle = myDialog.findViewById(R.id.project_dialog_project_name);
                             TextView projectid=myDialog.findViewById(R.id.project_dialog_project_id_edit);
                             TextView bid=myDialog.findViewById(R.id.project_dialog_bids_edit);
@@ -95,7 +98,7 @@ public class RecyclerViewDashboard_Notifications extends RecyclerView.Adapter<Re
                             RecyclerView skills=myDialog.findViewById(R.id.project_dialog_tags);
 
                             //Get user email from id
-                            Call<User> call2 = RetrofitClient.getInstance().getApi().getUserEmail(editResponse.getId());
+                            Call<User> call2 = RetrofitClient.getInstance().getApi().getUserEmail(editResponse.getUserId());
                             call2.enqueue(new Callback<User>() {
                                 @Override
                                 public void onResponse(Call<User> call2, Response<User> response2) {
@@ -115,14 +118,36 @@ public class RecyclerViewDashboard_Notifications extends RecyclerView.Adapter<Re
                             budget.setText(new StringBuilder().append(editResponse.getBudgetMin()).append("-").append(editResponse.getBudgetMax()).toString());
                             remainingtime.setText("Not Handled");
                             description.setText(editResponse.getDescription());
-                            recyclerAdapter = new RecyclerView_tags(mContext,ProjectObject.string_form_of_int_tags(editResponse.getTags()));
+                            LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
+                            final ArrayList <Tag_Object> t = new ArrayList<>();
+                            recyclerAdapter = new RecyclerView_tags(mContext,t);
 
-                            skills.setLayoutManager(new LinearLayoutManager(mContext));
+                            for (int i = 0; i < editResponse.getTags().length; i++) {
+
+                                Call<Tag_Object> call3 = RetrofitClient.getInstance().getApi().getTag(editResponse.getTags()[i]);
+                                call3.enqueue(new Callback<Tag_Object>() {
+                                    @Override
+                                    public void onResponse(Call<Tag_Object> call3, Response<Tag_Object> response3) {
+                                        Tag_Object editResponse3 = response3.body();
+                                        if (response3.isSuccessful()) {
+                                            Log.d("MyTag", "successful tag fetch id:" + editResponse3.getId());
+                                            t.add(response3.body());
+                                            recyclerAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                    @Override
+                                    public void onFailure(Call<Tag_Object> call3, Throwable t) { }
+                                });
+                            }
+                            Log.d("MyTag","number of tags : "+editResponse.getTags().length);
+                            skills.setLayoutManager(horizontalLayoutManager);
                             skills.setAdapter(recyclerAdapter);
                             skills.setItemAnimator(new DefaultItemAnimator());
                             myDialog.setCancelable(true);
                             myDialog.setCanceledOnTouchOutside(true);
                             myDialog.show();
+
+
 
                         }
                     }
@@ -158,6 +183,7 @@ public class RecyclerViewDashboard_Notifications extends RecyclerView.Adapter<Re
             LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
             holder.recyclerViewTags.setLayoutManager(horizontalLayoutManager);
             holder.recyclerViewTags.setAdapter(recyclerAdapter);
+            recyclerAdapter.notifyDataSetChanged();
         }
         if (position > lastAnimatedPosition) {
             lastAnimatedPosition = position;

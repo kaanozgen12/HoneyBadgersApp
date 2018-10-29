@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     Animation textanimation;
 
 
-    private static  String[] CREDENTIALS = new String[5];
+    private static  String[] CREDENTIALS = new String[6];
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */

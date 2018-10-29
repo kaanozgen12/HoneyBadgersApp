@@ -10,7 +10,6 @@ import RetrofitModels.ProjectObject;
 import RetrofitModels.Tag_Object;
 import RetrofitModels.User;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -40,11 +39,14 @@ public interface Api {
     @GET("/api/v1/user/register/")
     Call<List<User>> user_id(@Query("search") String email);
 
-    @GET("api/v1/user/profile/{id}/")
-    Call<ProfileObject> userProfileGet(@Header("Authorization") String token,@Path("id") String id);
+    @GET("api/v1/user/profile/")
+    Call<List<ProfileObject>> userProfileGet(@Header("Authorization") String token,@Query("search") String user_id);
 
+    @FormUrlEncoded
     @PUT("api/v1/user/profile/{id}/")
-    Call<ProfileObject> userProfileUpdate(@Header("Authorization") String token,@Path("id") String id, @Body ProfileObject profile);
+    Call<ProfileObject> userProfileUpdate(@Header("Authorization") String token,@Path("id") String id, @Field("name") String name,
+                                          @Field("avatar") Object avatar,
+                                          @Field("body") String body);
 
     @FormUrlEncoded
     @POST("api/v1/user/profile/")

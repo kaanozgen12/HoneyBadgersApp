@@ -84,7 +84,7 @@ public class CreateProject extends AppCompatActivity{
                     @Override
                     public void onResponse(Call<ArrayList<Tag_Object>> call0, Response<ArrayList<Tag_Object>> response0) {
                         if (response0.isSuccessful()){
-                            tag_list.add(new Tag_Object(response0.body().get(0).getId(),response0.body().get(0).getTitle()));
+                            tag_list.add(new Tag_Object(new ArrayList( Arrays.asList( getResources().getStringArray(R.array.Tags) )).indexOf(response0.body().get(0).getTitle()),response0.body().get(0).getTitle()));
                         }else{
                             Toast.makeText(CreateProject.this,"Create Tag Failed",Toast.LENGTH_LONG).show();
                         }
@@ -137,12 +137,12 @@ public class CreateProject extends AppCompatActivity{
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                category = (String) mSpinner.getItemAtPosition(i);
+                category = (String) mSpinner.getItemAtPosition(i+1);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                category = (String) mSpinner.getItemAtPosition(0);
+                category = (String) mSpinner.getItemAtPosition(1);
             }
         });
         mTitle = findViewById(R.id.create_project_title_edit);
