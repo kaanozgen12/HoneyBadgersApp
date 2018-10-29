@@ -154,9 +154,9 @@ public class SearchActivity extends AppCompatActivity {
                     for (int i = 0; i < editResponse.size(); i++) {
 
                         ((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.add(editResponse.get(i).compress());
-                        ((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyItemInserted(i);
+                        ((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyDataSetChanged();
                         //((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyItemChanged(i);
-                       // getSupportFragmentManager().beginTransaction().detach(adapter.getItem(1)).attach(adapter.getItem(1)).commit();
+                        getSupportFragmentManager().beginTransaction().detach(adapter.getItem(1)).attach(adapter.getItem(1)).commit();
 
                     }
                 }

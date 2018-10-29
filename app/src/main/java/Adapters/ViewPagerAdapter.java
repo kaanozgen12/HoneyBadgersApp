@@ -29,6 +29,11 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         return fragmentListTitles.size();
     }
 
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
+
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {

@@ -2,6 +2,7 @@ package Models;
 
 import java.util.ArrayList;
 
+import Adapters.RecyclerView_tags;
 import RetrofitModels.Tag_Object;
 
 public class Compact_Project_Object {
@@ -10,6 +11,7 @@ public class Compact_Project_Object {
     private int highestbid;
     private String numberofbidsandlastupdate;
     private ArrayList<Tag_Object> tags = new ArrayList<>();
+    private RecyclerView_tags mRecylerView;
 
     public Compact_Project_Object(int id, String name, int highestbid, String numberofbidsandlastupdate, ArrayList<Tag_Object> tags) {
         this.id = id;
@@ -42,6 +44,14 @@ public class Compact_Project_Object {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public RecyclerView_tags getmRecylerView() {
+        return mRecylerView;
+    }
+
+    public void setmRecylerView(RecyclerView_tags mRecylerView) {
+        this.mRecylerView = mRecylerView;
     }
 
     public void setHighestbid(int highestbid) {

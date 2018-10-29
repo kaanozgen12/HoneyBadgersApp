@@ -46,6 +46,7 @@ public class RecyclerViewDashboard_Notifications extends RecyclerView.Adapter<Re
     public RecyclerViewDashboard_Notifications(Context mContext, List<Compact_Project_Object> notification_cards) {
         this.mContext = mContext;
         this.notification_cards = notification_cards;
+        setHasStableIds(true);
     }
 
     @NonNull
@@ -163,6 +164,10 @@ public class RecyclerViewDashboard_Notifications extends RecyclerView.Adapter<Re
     }
 
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
 
     public synchronized void onBindViewHolder(MyViewHolder holder, int position){
@@ -197,6 +202,10 @@ public class RecyclerViewDashboard_Notifications extends RecyclerView.Adapter<Re
     @Override
     public void onViewDetachedFromWindow(@NonNull MyViewHolder holder) {
         holder.clearAnimation();
+    }
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
     }
 
     @Override

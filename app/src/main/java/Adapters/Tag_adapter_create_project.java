@@ -23,6 +23,7 @@ public class Tag_adapter_create_project extends RecyclerView.Adapter<Tag_adapter
     public Tag_adapter_create_project(Context mContext, ArrayList<Tag_Object> tags_list) {
         this.mContext = mContext;
         this.tags_list = tags_list;
+        setHasStableIds(true);
     }
 
     @NonNull
@@ -45,6 +46,10 @@ public class Tag_adapter_create_project extends RecyclerView.Adapter<Tag_adapter
     }
 
 
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+    }
 
     public void onBindViewHolder(MyViewHolder holder, int position){
 
@@ -61,6 +66,10 @@ public class Tag_adapter_create_project extends RecyclerView.Adapter<Tag_adapter
     }
 
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         private TextView Tag_Text;

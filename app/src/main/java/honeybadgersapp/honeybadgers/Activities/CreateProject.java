@@ -138,7 +138,7 @@ public class CreateProject extends AppCompatActivity{
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                category = ""+i+1;
+                category = ""+(i+1);
             }
 
             @Override

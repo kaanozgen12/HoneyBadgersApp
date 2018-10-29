@@ -23,6 +23,7 @@ public class RecyclerView_tags extends RecyclerView.Adapter<RecyclerView_tags.My
     public RecyclerView_tags(Context mContext, ArrayList<Tag_Object> tags_list) {
         this.mContext = mContext;
         this.tags_list = tags_list;
+        setHasStableIds(true);
     }
 
     @NonNull
@@ -50,7 +51,15 @@ public class RecyclerView_tags extends RecyclerView.Adapter<RecyclerView_tags.My
     public int getItemCount() {
         return tags_list.size();
     }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         private TextView Tag_Text;
