@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-import Adapters.Tag_adapter_create_project;
+import Adapters.Create_project_tags_adapter;
 import RetrofitModels.ProjectObject;
 import RetrofitModels.Tag_Object;
 import api.RetrofitClient;
@@ -67,7 +67,7 @@ public class CreateProject extends AppCompatActivity{
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         final RecyclerView mRecylerView= findViewById(R.id.create_project_recyclerview);
-        Tag_adapter_create_project recyclerAdapter =new Tag_adapter_create_project(this,tag_list);
+        Create_project_tags_adapter recyclerAdapter =new Create_project_tags_adapter(this,tag_list);
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRecylerView.setLayoutManager(horizontalLayoutManager);
         mRecylerView.setAdapter(recyclerAdapter);
@@ -260,11 +260,10 @@ public class CreateProject extends AppCompatActivity{
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            final int[] a= new int[1];
-            a[0]=Integer.parseInt(category);
 
 
-            Call<ProjectObject> call= RetrofitClient.getInstance().getApi().projectCreatePost("token "+LoginActivity.getCREDENTIALS()[0],title,description,turnTags_List_to_Integer_List(tag_list),a,Integer.parseInt(budgetMin),Integer.parseInt(budgetMax),deadline);
+
+            Call<ProjectObject> call= RetrofitClient.getInstance().getApi().projectCreatePost("token "+LoginActivity.getCREDENTIALS()[0],title,description,turnTags_List_to_Integer_List(tag_list),Integer.parseInt(category),Integer.parseInt(budgetMin),Integer.parseInt(budgetMax),deadline);
             call.enqueue(new Callback<ProjectObject>() {
                 @Override
                 public void onResponse(@NonNull Call<ProjectObject> call, @NonNull Response<ProjectObject> response) {
@@ -273,8 +272,9 @@ public class CreateProject extends AppCompatActivity{
                         Toast.makeText(CreateProject.this,"SUCCESSFUL EDITTING",Toast.LENGTH_LONG).show();
                         finish();
                     }else{
-                        Toast.makeText(CreateProject.this, Arrays.toString(turnTags_List_to_Integer_List(tag_list)) +"EMPTY !! "+ Arrays.toString(a),Toast.LENGTH_LONG).show();
+                        Toast.makeText(CreateProject.this, Arrays.toString(turnTags_List_to_Integer_List(tag_list)) +"EMPTY !! "+ category,Toast.LENGTH_LONG).show();
                         Log.d("MyTag","DEADLINE :"+deadline);
+                        Log.d("MyTag","body :"+response.message());
                     }
                 }
 

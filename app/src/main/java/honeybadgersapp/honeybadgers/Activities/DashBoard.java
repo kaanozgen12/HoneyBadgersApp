@@ -3,7 +3,6 @@ package honeybadgersapp.honeybadgers.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -26,7 +25,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import Adapters.RecyclerViewDashboard_Notifications;
+import Adapters.Dashboard_Notifications_adapter;
 import Models.Compact_Project_Object;
 import RetrofitModels.ProfileObject;
 import api.RetrofitClient;
@@ -45,7 +44,6 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
     private RecyclerView DashBoardRecyclerView2;
     public  ImageView logo;
     public  TextView user_email;
-    public  TextView user_name;
     public  Switch user_role;
     public   NavigationView navigationView;
     public View headerView ;
@@ -96,34 +94,14 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
             }
         });
 
-        synchronized (this) {
-           /* Call<List<ProjectObject>> call2 = RetrofitClient.getInstance().getApi().getProjects();
-            call2.enqueue(new Callback<List<ProjectObject>>() {
-                @Override
-                public void onResponse(Call<List<ProjectObject>> call2, Response<List<ProjectObject>> response) {
-                    List<ProjectObject> editResponse = response.body();
-                    ArrayList<Compact_Project_Object> temp = new ArrayList<>();
-                    for (int i = 0; i < editResponse.size(); i++) {
-                        list2.add(editResponse.get(i).compress());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<ProjectObject>> call, Throwable t) {
-                }
-            });*/
-        }
         DashBoardRecyclerView1= (findViewById(R.id.dashboard_recyclerview_1));
         DashBoardRecyclerView2= (findViewById(R.id.dashboard_recyclerview_2));
-        RecyclerViewDashboard_Notifications recyclerAdapter1 =new RecyclerViewDashboard_Notifications(this,list1);
+        Dashboard_Notifications_adapter recyclerAdapter1 =new Dashboard_Notifications_adapter(this,list1);
         DashBoardRecyclerView1.setLayoutManager(new LinearLayoutManager(this));
         DashBoardRecyclerView1.setAdapter(recyclerAdapter1);
-        RecyclerViewDashboard_Notifications recyclerAdapter2 =new RecyclerViewDashboard_Notifications(this,list2);
+        Dashboard_Notifications_adapter recyclerAdapter2 =new Dashboard_Notifications_adapter(this,list2);
         DashBoardRecyclerView2.setLayoutManager(new LinearLayoutManager(this));
         DashBoardRecyclerView2.setAdapter(recyclerAdapter2);
-
-        DashBoardRecyclerView1.getAdapter().notifyDataSetChanged();
-        DashBoardRecyclerView2.getAdapter().notifyDataSetChanged();
 
 
         logo = headerView.findViewById(R.id.person_logo);
@@ -161,6 +139,10 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
                 Intent i = new Intent(DashBoard.this, SearchActivity.class);
                 startActivity(i);
                 break;
+            }case R.id.item_navigation_drawer_my_projects: {
+                Intent i = new Intent(DashBoard.this, MyProjectsActivity.class);
+                startActivity(i);
+                break;
             }
             default:
                 break;
@@ -169,33 +151,11 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
             mDrawerlayout.closeDrawer(Gravity.RIGHT,false);
             mDrawerlayout.setElevation(-1);
             return true;
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item != null && item.getItemId() == android.R.id.home) {
-            if (mDrawerlayout.isDrawerOpen(Gravity.RIGHT)) {
-                mDrawerlayout.closeDrawer(Gravity.RIGHT);
-            }
-            else {
-                mDrawerlayout.openDrawer(Gravity.RIGHT);
-            }
-        }
-        return false;
-    }
-    // Menu icons are inflated just as they were with actionbar
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.navigation_drawer_items, menu);
-        return true;
-    }*/
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        String name;
             Call<List<ProfileObject>> call= RetrofitClient.getInstance().getApi().userProfileGet("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4]);
             call.enqueue(new Callback<List<ProfileObject>>() {
                 @Override
@@ -204,7 +164,7 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
                     if (response.isSuccessful()) {
                         assert editResponse != null;
                         if (editResponse.get(0).getAvatar() != null) {
-                            logo.setBackground((Drawable) editResponse.get(0).getAvatar());
+                            //logo.setBackground((Drawable) editResponse.getAvatar());
                         }
                     }
                 }

@@ -1,6 +1,7 @@
 package honeybadgersapp.honeybadgers.Activities;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -15,11 +16,14 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import Adapters.ViewPagerAdapter;
+import Models.Compact_Project_Object;
 import Models.Search_page_tab_fragment;
 import RetrofitModels.ProjectObject;
+import RetrofitModels.Tag_Object;
 import api.RetrofitClient;
 import honeybadgersapp.honeybadgers.R;
 import retrofit2.Call;
@@ -33,9 +37,9 @@ public class SearchActivity extends AppCompatActivity {
     private DrawerLayout mDrawerlayout;
     private ViewPager viewPager;
     ViewPagerAdapter adapter;
-    private Toolbar mToolbar;
     private ActionBarDrawerToggle mToggleSettings;
     private ImageView mToggleBack;
+    private Handler mHandler;
     private Search_page_tab_fragment category_search =new Search_page_tab_fragment();
     private  Search_page_tab_fragment trending_search= new Search_page_tab_fragment();
     private  Search_page_tab_fragment recommended_search= new Search_page_tab_fragment();
@@ -47,6 +51,8 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        mHandler = new Handler();
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_page);
@@ -61,12 +67,17 @@ public class SearchActivity extends AppCompatActivity {
         adapter.addFragment(recommended_search, "Recommended");
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(3);
+        tabLayout.setupWithViewPager(viewPager,false);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_content_copy_black_24dp);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_star_black_24dp);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_inbox_black_24dp);
+        fill_trending();
         mToggleSettings = new ActionBarDrawerToggle(this,mDrawerlayout,R.string.Open,R.string.Close);
         mDrawerlayout.addDrawerListener(mToggleSettings);
         mDrawerlayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mToggleSettings.syncState();
         mToggleBack = findViewById(R.id.search_page_back_toggle);
-        mToolbar = findViewById(R.id.search_page_action_toolbar);
+        Toolbar mToolbar = findViewById(R.id.search_page_action_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false); // hide built-in Title
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_arrow_back_24dp);
@@ -109,9 +120,6 @@ public class SearchActivity extends AppCompatActivity {
                 if(second&&i==1){
                     second=false;
                 }
-
-                Log.d("MyTag","PAge şuan kaçta:"+i);
-
             }
 
             @Override
@@ -120,10 +128,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-        tabLayout.setupWithViewPager(viewPager,true);
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_content_copy_black_24dp);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_star_black_24dp);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_inbox_black_24dp);
+
 
 
         //getSupportFragmentManager().beginTransaction().detach(adapter.getItem(1)).attach(adapter.getItem(1)).commit();
@@ -132,19 +137,25 @@ public class SearchActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+
     @Override
     public void onBackPressed() {
-       finish();
+        finish();
     }
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        fill_trending();
     }
 
     public  void fill_trending(){
-        ((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.clear();
+        //((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.clear();
         Call<List<ProjectObject>> call = RetrofitClient.getInstance().getApi().getProjects();
         call.enqueue(new Callback<List<ProjectObject>>() {
             @Override
@@ -152,25 +163,50 @@ public class SearchActivity extends AppCompatActivity {
                 List<ProjectObject> editResponse = response.body();
                 if (response.isSuccessful()) {
                     for (int i = 0; i < editResponse.size(); i++) {
+                        final ArrayList <Tag_Object> t = new ArrayList<>();
 
-                        ((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.add(editResponse.get(i).compress());
+                        Compact_Project_Object temp = new Compact_Project_Object(editResponse.get(i).getId(),editResponse.get(i).getTitle(),0,"0",t);
+
+                        for (int j =0 ; j<editResponse.get(i).getTags().length;j++){
+                            Call<Tag_Object> call2 = RetrofitClient.getInstance().getApi().getTag(editResponse.get(i).getTags()[j]);
+                            call2.enqueue(new Callback<Tag_Object>() {
+                                @Override
+                                public void onResponse(Call<Tag_Object> call2, Response<Tag_Object> response) {
+                                    Tag_Object editResponse = response.body();
+                                    if (response.isSuccessful()) {
+                                        t.add(editResponse);
+                                        ((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyDataSetChanged();
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<Tag_Object> call2, Throwable t) {
+                                }
+                            });
+
+                        }
+                        ((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.add(temp);
                         ((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyDataSetChanged();
-                        //((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyItemChanged(i);
-                        getSupportFragmentManager().beginTransaction().detach(adapter.getItem(1)).attach(adapter.getItem(1)).commit();
-
                     }
+      /*              for (int i = 0; i < editResponse.size(); i++) {
+                        Compact_Project_Object temp;
+                            temp= editResponse.get(i).compress();
+                            ((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.add(temp);
+
+                        ((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyItemInserted(i);
+                        //((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyItemChanged(i);
+                       // getSupportFragmentManager().beginTransaction().detach(adapter.getItem(1)).attach(adapter.getItem(1)).commit();
+                   */
                 }
 
                 //getSupportFragmentManager().beginTransaction().detach(adapter.getItem(1)).attach(adapter.getItem(1)).commit();
-                Log.d("MyTag", "Search success: " + editResponse.size());
+                // Log.d("MyTag", "Search success: " + editResponse.size());
             }
-
             @Override
             public void onFailure(Call<List<ProjectObject>> call, Throwable t) {
-
                 Log.d("MyTag", "Search failed");
             }
         });
+
     }
 
 }

@@ -1,34 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_marginTop="5dp"
-    android:layout_marginLeft="5dp"
-    android:layout_marginRight="5dp"
-    card_view:cardCornerRadius="5dp"
     android:clickable="true"
     android:id="@+id/compact_project_object_card_view"
-    android:focusable="true">
+    android:focusable="true"
+    android:foreground="@drawable/textinputborder">
+    <RelativeLayout
+        android:id="@+id/view_backbackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#007cd4">
 
+        <ImageView
+            android:id="@+id/edit_icon"
+            android:layout_width="@dimen/ic_delete"
+            android:layout_height="@dimen/ic_delete"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_create_black_24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/edit_icon"
+            android:text="EDIT"
+            android:textColor="#fff"
+            android:textSize="13sp" />
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/view_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_row_background">
+
+        <ImageView
+            android:id="@+id/delete_icon"
+            android:layout_width="@dimen/ic_delete"
+            android:layout_height="@dimen/ic_delete"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_delete_white_24dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/padd_10"
+            android:layout_toLeftOf="@id/delete_icon"
+            android:text="@string/delete"
+            android:textColor="#fff"
+            android:textSize="13sp" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#efefef"
-        >
+        android:id="@+id/view_foreground"
+        android:background="#fff">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/compact_project_object_name"
-                android:text="Project Name"
-                android:maxLines="2"
-                android:clickable="false"
-                android:textSize="18sp"
-                android:textStyle="bold">
-            </TextView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/compact_project_object_name"
+            android:text="Project Name"
+            android:layout_margin="5dp"
+            android:clickable="false"
+            android:textSize="18sp"
+            android:textStyle="bold">
+        </TextView>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/compact_project_object_tags_recyclerview"
             android:layout_marginTop="5dp"
@@ -50,6 +97,7 @@
                 android:id="@+id/compact_project_given_bid"
                 android:text="1000 USD"
                 android:textSize="25sp"
+                android:layout_marginStart="5dp"
                 android:clickable="false"
                 android:textColor="#64d116"
                 android:textStyle="bold"
@@ -64,6 +112,7 @@
                 android:text="8 bids- 30 minutes ago"
                 android:layout_alignEnd="@id/compact_project_given_bid"
                 android:layout_alignParentEnd="true"
+                android:layout_marginEnd="5dp"
                 android:textColor="#545454"
                 android:clickable="false"
                 android:textSize="13sp"
@@ -75,4 +124,6 @@
     </RelativeLayout>
 
 
-</android.support.v7.widget.CardView>
+
+
+</FrameLayout>

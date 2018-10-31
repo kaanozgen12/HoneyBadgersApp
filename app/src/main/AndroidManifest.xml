@@ -85,6 +85,7 @@
             </intent-filter>
 
         </activity>
+        <activity android:name=".Activities.MyProjectsActivity" />
     </application>
 
 </manifest>

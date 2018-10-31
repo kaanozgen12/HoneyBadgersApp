@@ -9,7 +9,6 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import Models.Compact_Project_Object;
 import api.RetrofitClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,9 +38,9 @@ public class ProjectObject implements Serializable
     @SerializedName("tags")
     @Expose
     private int[] tags = null;
-    @SerializedName("categories")
+    @SerializedName("category")
     @Expose
-    private int[] categories = null;
+    private int categories = 1;
     @SerializedName("budget_min")
     @Expose
     private int budgetMin;
@@ -74,7 +73,7 @@ public class ProjectObject implements Serializable
      * @param deadline
      * @param budgetMin
      */
-    public ProjectObject(int id, int userId, String title, String description, String createdAt, String updatedAt, int[] tags, int[] categories, int budgetMin, int budgetMax, String deadline) {
+    public ProjectObject(int id, int userId, String title, String description, String createdAt, String updatedAt, int[] tags, int categories, int budgetMin, int budgetMax, String deadline) {
         super();
         this.id = id;
         this.userId = userId;
@@ -170,10 +169,10 @@ public class ProjectObject implements Serializable
         this.deadline = deadline;
     }
 
-    public Compact_Project_Object compress(){
-            Compact_Project_Object temp=  new Compact_Project_Object(id, title, 0, "0 bid", string_form_of_int_tags(tags));
+  /*  public Compact_Project_Object compress(){
+           Compact_Project_Object temp=  new Compact_Project_Object(id, title, 0, "0 bid", string_form_of_int_tags(tags));
             return temp;
-    }
+    }*/
 
     public static ArrayList<Tag_Object> string_form_of_int_tags (int[] a){
 
@@ -189,9 +188,6 @@ public class ProjectObject implements Serializable
                     if (response.isSuccessful()) {
                         Log.d("MyTag", "successful tag fetch id:" + editResponse.getId());
                         temp.add(editResponse);
-                        synchronized (this){
-                            notify();
-                        }
                     }
                 }
 

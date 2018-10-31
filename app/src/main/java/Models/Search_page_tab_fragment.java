@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import java.util.ArrayList;
 import java.util.List;
 
-import Adapters.RecyclerViewDashboard_Notifications;
+import Adapters.Dashboard_Notifications_adapter;
 import honeybadgersapp.honeybadgers.R;
 
 public class Search_page_tab_fragment extends Fragment {
@@ -25,7 +25,7 @@ public class Search_page_tab_fragment extends Fragment {
     public RecyclerView myrecyclerview;
     public List<Compact_Project_Object> list_of_projects =new ArrayList<>();
     public  static ProgressBar bar;
-    public RecyclerViewDashboard_Notifications recyclerAdapter;
+    public Dashboard_Notifications_adapter recyclerAdapter;
 
     public Search_page_tab_fragment() {
 
@@ -76,7 +76,7 @@ public class Search_page_tab_fragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         myrecyclerview =  view.findViewById(R.id.tab_recyclerview);
-        recyclerAdapter =new RecyclerViewDashboard_Notifications(getContext(),list_of_projects);
+        recyclerAdapter =new Dashboard_Notifications_adapter(getContext(),list_of_projects);
         myrecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
         myrecyclerview.setAdapter(recyclerAdapter);
         bar =  view.findViewById(R.id.search_page_tab_fragment_progressbar);

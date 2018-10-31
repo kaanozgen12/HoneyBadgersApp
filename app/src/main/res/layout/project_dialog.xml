@@ -11,6 +11,7 @@
         android:id="@+id/project_dialog_project_name"
         android:textStyle="bold"
         android:textSize="20sp"
+        android:layout_margin="8dp"
         android:text="Project Name"
         android:layout_alignParentTop="true"/>
     <android.support.v7.widget.CardView

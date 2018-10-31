@@ -2,7 +2,6 @@ package Models;
 
 import java.util.ArrayList;
 
-import Adapters.RecyclerView_tags;
 import RetrofitModels.Tag_Object;
 
 public class Compact_Project_Object {
@@ -10,8 +9,8 @@ public class Compact_Project_Object {
     private String name;
     private int highestbid;
     private String numberofbidsandlastupdate;
-    private ArrayList<Tag_Object> tags = new ArrayList<>();
-    private RecyclerView_tags mRecylerView;
+    private ArrayList<Tag_Object> tags;
+
 
     public Compact_Project_Object(int id, String name, int highestbid, String numberofbidsandlastupdate, ArrayList<Tag_Object> tags) {
         this.id = id;
@@ -19,6 +18,15 @@ public class Compact_Project_Object {
         this.highestbid = highestbid;
         this.numberofbidsandlastupdate = numberofbidsandlastupdate;
         this.tags = tags;
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -33,40 +41,25 @@ public class Compact_Project_Object {
         return highestbid;
     }
 
+    public void setHighestbid(int highestbid) {
+        this.highestbid = highestbid;
+    }
 
     public String getNumberofbidsandlastupdate() {
         return numberofbidsandlastupdate;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public RecyclerView_tags getmRecylerView() {
-        return mRecylerView;
-    }
-
-    public void setmRecylerView(RecyclerView_tags mRecylerView) {
-        this.mRecylerView = mRecylerView;
-    }
-
-    public void setHighestbid(int highestbid) {
-        this.highestbid = highestbid;
     }
 
     public void setNumberofbidsandlastupdate(String numberofbidsandlastupdate) {
         this.numberofbidsandlastupdate = numberofbidsandlastupdate;
     }
 
+    public ArrayList<Tag_Object> getTags() {
+        return tags;
+    }
+
     public void setTags(ArrayList<Tag_Object> tags) {
         this.tags = tags;
     }
 
-    public ArrayList<Tag_Object> getTags() {
-        return tags;
-    }
+
 }

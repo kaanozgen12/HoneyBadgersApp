@@ -10,6 +10,7 @@ import RetrofitModels.ProjectObject;
 import RetrofitModels.Tag_Object;
 import RetrofitModels.User;
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -40,13 +41,20 @@ public interface Api {
     Call<List<User>> user_id(@Query("search") String email);
 
     @GET("api/v1/user/profile/")
-    Call<List<ProfileObject>> userProfileGet(@Header("Authorization") String token,@Query("search") String user_id);
+    Call<List<ProfileObject>> userProfileGet(@Header("Authorization") String token,@Query("search") String email);
+
+    @GET("api/v1/project/create/")
+    Call<List<ProjectObject>> getMyProjects(@Query("search") int user_id);
 
     @FormUrlEncoded
     @PUT("api/v1/user/profile/{id}/")
     Call<ProfileObject> userProfileUpdate(@Header("Authorization") String token,@Path("id") String id, @Field("name") String name,
                                           @Field("avatar") Object avatar,
                                           @Field("body") String body);
+
+
+    @DELETE("/api/v1/project/create/{id}/")
+    Call<Void> deleteProject(@Header("Authorization") String token, @Path("id") int project_id,@Query("validate") boolean validate);
 
     @FormUrlEncoded
     @POST("api/v1/user/profile/")
@@ -127,7 +135,7 @@ public interface Api {
             @Field("title") String title,
             @Field("description") String description,
             @Field("tags") int[] tags,
-            @Field("categories") int[] categories,
+            @Field("category") int categories,
             @Field("budget_min") int budget_min,
             @Field("budget_max") int budget_max,
             @Field("deadline") String deadline
