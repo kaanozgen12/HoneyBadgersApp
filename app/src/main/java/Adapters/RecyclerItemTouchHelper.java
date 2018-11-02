@@ -64,6 +64,15 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
         return super.convertToAbsoluteDirection(flags, layoutDirection);
     }
 
+/*    @Override
+    public int getMovementFlags(@NonNull RecyclerView recyclerView,
+                                @NonNull RecyclerView.ViewHolder viewHolder) {
+        int dragFlags = ItemTouchHelper.ACTION_STATE_IDLE;
+        int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+        return makeMovementFlags(dragFlags, swipeFlags);
+    }*/
+
+
     public interface RecyclerItemTouchHelperListener {
         void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position);
     }

@@ -45,7 +45,6 @@
             android:alwaysRetainTaskState="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -86,6 +85,28 @@
 
         </activity>
         <activity android:name=".Activities.MyProjectsActivity" />
+        <activity android:name=".Activities.ChatActivity">
+        </activity>
+        <activity
+            android:name="FirebaseClasses.OnlineUsers">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="FirebaseClasses.GetUserName">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Activities.Show_Profile">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

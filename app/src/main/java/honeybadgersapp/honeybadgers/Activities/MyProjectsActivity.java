@@ -112,61 +112,66 @@ public class MyProjectsActivity extends AppCompatActivity implements RecyclerIte
         if (viewHolder instanceof Dashboard_Notifications_adapter.MyViewHolder) {
             if (direction==ItemTouchHelper.LEFT) {
                 ((Dashboard_Notifications_adapter.MyViewHolder) viewHolder).viewBackground.bringToFront();
+                // get the removed item name to display it in snack bar
+                final String name = listOfProjects.get(viewHolder.getAdapterPosition()).getName();
+                final int project_id=listOfProjects.get(viewHolder.getAdapterPosition()).getId();
+                // backup of removed item for undo purpose
+                final Compact_Project_Object deletedItem = listOfProjects.get(viewHolder.getAdapterPosition());
+                final int deletedIndex = viewHolder.getAdapterPosition();
+
+                new AlertDialog.Builder(this)
+                        .setTitle("DELETE?")
+                        .setMessage("Are you sure you want to delete your project: "+name+"? Once you delete you will not be able to recover your project and all bidders will be notified" )
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ((Dashboard_Notifications_adapter.MyViewHolder) viewHolder).viewForeground.bringToFront();
+                                recyclerAdapter.notifyDataSetChanged();
+                            }
+                        })
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                Call<Void> call2 = RetrofitClient.getInstance().getApi().deleteProject("token "+LoginActivity.getCREDENTIALS()[0],project_id,true);
+                                call2.enqueue(new Callback<Void>() {
+                                    @Override
+                                    public  void onResponse(@NonNull Call<Void> call2, @NonNull Response<Void> response2) {
+                                        // remove the item from recycler view
+                                        recyclerAdapter.removeItem(viewHolder.getAdapterPosition());
+                                        Log.d("MyTag","ssssss: "+LoginActivity.getCREDENTIALS()[0]+"  "+project_id+ "   "+response2.message()  );
+                                        // showing snack bar with Undo option
+                                        Snackbar snackbar = Snackbar
+                                                .make(relativeLayout, name + " Removed From Your Projects!", Snackbar.LENGTH_LONG);
+                                        snackbar.setAction("UNDO", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+
+                                                // undo is selected, restore the deleted item
+                                                recyclerAdapter.restoreItem(deletedItem, deletedIndex);
+                                            }
+                                        });
+                                        snackbar.setActionTextColor(Color.YELLOW);
+                                        snackbar.show();
+                                    }
+                                    @Override
+                                    public  void onFailure(Call<Void> call2, Throwable t) {
+                                        Log.d("MyTag","proje silme başarısız");
+                                    }
+                                });
+                            }
+                        }).create().show();
             }
             if (direction==ItemTouchHelper.RIGHT){
                 ((Dashboard_Notifications_adapter.MyViewHolder) viewHolder).viewBaseground.bringToFront();
             }
 
-            // get the removed item name to display it in snack bar
-            final String name = listOfProjects.get(viewHolder.getAdapterPosition()).getName();
-            final int project_id=listOfProjects.get(viewHolder.getAdapterPosition()).getId();
-            // backup of removed item for undo purpose
-            final Compact_Project_Object deletedItem = listOfProjects.get(viewHolder.getAdapterPosition());
-            final int deletedIndex = viewHolder.getAdapterPosition();
 
-            new AlertDialog.Builder(this)
-                    .setTitle("DELETE?")
-                    .setMessage("Are you sure you want to delete your project: "+name+"? Once you delete you will not be able to recover your project and all bidders will be notified" )
-                    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            ((Dashboard_Notifications_adapter.MyViewHolder) viewHolder).viewForeground.bringToFront();
-                            recyclerAdapter.notifyDataSetChanged();
-                        }
-                    })
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            Call<Void> call2 = RetrofitClient.getInstance().getApi().deleteProject("token "+LoginActivity.getCREDENTIALS()[0],project_id,true);
-                            call2.enqueue(new Callback<Void>() {
-                                @Override
-                                public  void onResponse(@NonNull Call<Void> call2, @NonNull Response<Void> response2) {
-                                    // remove the item from recycler view
-                                    recyclerAdapter.removeItem(viewHolder.getAdapterPosition());
-                                    Log.d("MyTag","ssssss: "+LoginActivity.getCREDENTIALS()[0]+"  "+project_id+ "   "+response2.message()  );
-                                    // showing snack bar with Undo option
-                                    Snackbar snackbar = Snackbar
-                                            .make(relativeLayout, name + " Removed From Your Projects!", Snackbar.LENGTH_LONG);
-                                    snackbar.setAction("UNDO", new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-
-                                            // undo is selected, restore the deleted item
-                                            recyclerAdapter.restoreItem(deletedItem, deletedIndex);
-                                        }
-                                    });
-                                    snackbar.setActionTextColor(Color.YELLOW);
-                                    snackbar.show();
-                                }
-                                @Override
-                                public  void onFailure(Call<Void> call2, Throwable t) {
-                                    Log.d("MyTag","proje silme başarısız");
-                                }
-                            });
-                        }
-                    }).create().show();
 
 
         }
     }
+
+
+
+
 
 }

@@ -16,6 +16,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.firebase.client.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
+
 import RetrofitModels.LoginResponse;
 import RetrofitModels.ProfileObject;
 import RetrofitModels.User;
@@ -40,9 +43,11 @@ public class CreateAccount extends AppCompatActivity {
     private EditText mPasswordConfirmView;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Firebase.setAndroidContext(this);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         textanimation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.main_page_button_anim);
 
@@ -185,12 +190,15 @@ public class CreateAccount extends AppCompatActivity {
 
 
             if (success) {
+              FirebaseAuth.getInstance().createUserWithEmailAndPassword(mEmail,mPassword);
+                Firebase firebase_onlineusers = new Firebase("https://honeybadgers-12976.firebaseio.com/Registered_Users");
+                firebase_onlineusers.push().setValue(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
                 Call<User> call= RetrofitClient.getInstance().getApi().userRegister(mEmail,"Random",mPassword);
                 call.enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, final Response<User> response) {
                         if (response.isSuccessful()){
-
 
                                 Call<LoginResponse> call3 = RetrofitClient.getInstance().getApi().userLogin(mEmail, mPassword);
                                 call3.enqueue(new Callback<LoginResponse>() {

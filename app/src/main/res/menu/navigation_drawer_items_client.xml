@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/item_navigation_drawer_inbox"
-        android:icon="@drawable/ic_inbox_black_24dp"
-        android:title="Dashboard" />
+        android:id="@+id/messaging_inbox"
+        android:icon="@drawable/ic_mail_black_24dp"
+        android:title="Messaging" />
     <item
         android:id="@+id/item_navigation_drawer_edit_profile"
         android:icon="@drawable/ic_settings_black_24dp"

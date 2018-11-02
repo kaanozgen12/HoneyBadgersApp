@@ -2,6 +2,7 @@ package Adapters;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.firebase.client.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,6 +32,8 @@ import RetrofitModels.ProjectObject;
 import RetrofitModels.Tag_Object;
 import RetrofitModels.User;
 import api.RetrofitClient;
+import honeybadgersapp.honeybadgers.Activities.ChatActivity;
+import honeybadgersapp.honeybadgers.Activities.Show_Profile;
 import honeybadgersapp.honeybadgers.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -65,8 +70,8 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                 myDialog = new Dialog(mContext);
                 myDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 myDialog.setContentView(R.layout.project_dialog);
-                myDialog.setCancelable(false);
-                myDialog.setCanceledOnTouchOutside(false);
+                myDialog.setCancelable(true);
+                myDialog.setCanceledOnTouchOutside(true);
 
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                 lp.copyFrom(myDialog.getWindow().getAttributes());
@@ -95,6 +100,7 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                             TextView description=myDialog.findViewById(R.id.project_dialog_project_descripton_edit);
                             final TextView employer=myDialog.findViewById(R.id.project_dialog_employer_name_edit);
                             RecyclerView skills=myDialog.findViewById(R.id.project_dialog_tags);
+                            final int user_id= editResponse.getUserId();
 
                             //Get user email from id
                             Call<User> call2 = RetrofitClient.getInstance().getApi().getUserEmail(editResponse.getUserId());
@@ -109,6 +115,52 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                                 }
                                 @Override
                                 public void onFailure(Call<User> call2, Throwable t) {
+                                }
+                            });
+                            employer.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    if (!employer.getText().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                                        Dialog myDialog2 = new Dialog(mContext);
+                                        myDialog2.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                        myDialog2.setContentView(R.layout.username_dialog);
+                                        myDialog2.setCancelable(true);
+                                        myDialog2.setCanceledOnTouchOutside(true);
+
+                                        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                                        lp.copyFrom(myDialog2.getWindow().getAttributes());
+                                        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+                                        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                                        lp.gravity = Gravity.CENTER;
+                                        myDialog2.getWindow().setAttributes(lp);
+                                        TextView see_profile = myDialog2.findViewById(R.id.see_profile);
+                                        TextView send_message = myDialog2.findViewById(R.id.send_message);
+                                        see_profile.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                Show_Profile.user_email = "" + employer.getText();
+                                                Show_Profile.user_id = "" + user_id;
+                                                Intent i = new Intent(mContext, Show_Profile.class);
+                                                mContext.startActivity(i);
+                                            }
+                                        });
+                                        send_message.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                Firebase.setAndroidContext(mContext);
+                                                Firebase firebase_register;
+                                                firebase_register = new Firebase("https://honeybadgers-12976.firebaseio.com/Conversations/" + FirebaseAuth.getInstance().getCurrentUser().getEmail().toString().hashCode());
+                                                firebase_register
+                                                        .push()
+                                                        .setValue(employer.getText().toString());
+                                                ChatActivity.from_user = "" + FirebaseAuth.getInstance().getCurrentUser().getEmail().hashCode();
+                                                ChatActivity.to_user = "" + employer.getText().toString().hashCode();
+                                                Intent i = new Intent(mContext, ChatActivity.class);
+                                                mContext.startActivity(i);
+                                            }
+                                        });
+                                        myDialog2.show();
+                                    }
                                 }
                             });
                             projecttitle.setText(editResponse.getTitle());
@@ -143,8 +195,6 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                             skills.setAdapter(recyclerAdapter);
                             recyclerAdapter.notifyDataSetChanged();
                             skills.setItemAnimator(new DefaultItemAnimator());
-                            myDialog.setCancelable(true);
-                            myDialog.setCanceledOnTouchOutside(true);
                             myDialog.show();
                         }
                     }

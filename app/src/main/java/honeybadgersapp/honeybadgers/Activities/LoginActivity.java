@@ -27,6 +27,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.List;
 
 import RetrofitModels.LoginResponse;
@@ -340,6 +342,7 @@ public class LoginActivity extends AppCompatActivity {
 
             Log.d("MyTag", "burdayım "+success);
             if (success) {
+                FirebaseAuth.getInstance().signInWithEmailAndPassword(mEmail,mPassword);
                 Call<LoginResponse> call= RetrofitClient.getInstance().getApi().userLogin(mEmail,mPassword);
                 Log.d("MyTag", "call: "+call.toString());
                 call.enqueue(new Callback<LoginResponse>() {

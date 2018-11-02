@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,11 +22,18 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.firebase.client.Firebase;
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import Adapters.Dashboard_Notifications_adapter;
+import FirebaseClasses.OnlineUsers;
 import Models.Compact_Project_Object;
 import RetrofitModels.ProfileObject;
 import api.RetrofitClient;
@@ -54,6 +62,7 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_dash_board);
+        Firebase.setAndroidContext(this);
         mDrawerlayout = findViewById(R.id.drawerLayout );
         LoginActivity.setCREDENTIALSROLE("Client");
         final RelativeLayout board  = findViewById(R.id.dashboard_board);
@@ -132,6 +141,17 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
                 Intent i = new Intent(DashBoard.this, LoginActivity.class);
                 SharedPreferences prefs = new SimpleCredentialCrypting(this, this.getSharedPreferences("HONEY_BADGERS_PREFS_FILE", Context.MODE_PRIVATE) );
                 prefs.edit().clear().commit();
+                AuthUI.getInstance().signOut(this)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(DashBoard.this,
+                                        "You have been signed out.",
+                                        Toast.LENGTH_LONG)
+                                        .show();
+                            }
+                        });
+
                 startActivity(i);
                 finish();
                 break;
@@ -143,37 +163,41 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
                 Intent i = new Intent(DashBoard.this, MyProjectsActivity.class);
                 startActivity(i);
                 break;
+            }case R.id.messaging_inbox: {
+                Intent i = new Intent(DashBoard.this, OnlineUsers.class);
+                startActivity(i);
+                break;
             }
             default:
                 break;
         }
-            //close navigation drawer
-            mDrawerlayout.closeDrawer(Gravity.RIGHT,false);
-            mDrawerlayout.setElevation(-1);
-            return true;
+        //close navigation drawer
+        mDrawerlayout.closeDrawer(Gravity.RIGHT,false);
+        mDrawerlayout.setElevation(-1);
+        return true;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-            Call<List<ProfileObject>> call= RetrofitClient.getInstance().getApi().userProfileGet("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4]);
-            call.enqueue(new Callback<List<ProfileObject>>() {
-                @Override
-                public void onResponse(Call<List<ProfileObject>> call, Response<List<ProfileObject>> response) {
-                    List<ProfileObject> editResponse = response.body();
-                    if (response.isSuccessful()) {
-                        assert editResponse != null;
-                        if (editResponse.get(0).getAvatar() != null) {
-                            //logo.setBackground((Drawable) editResponse.getAvatar());
-                        }
+        Call<List<ProfileObject>> call= RetrofitClient.getInstance().getApi().userProfileGet("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4]);
+        call.enqueue(new Callback<List<ProfileObject>>() {
+            @Override
+            public void onResponse(Call<List<ProfileObject>> call, Response<List<ProfileObject>> response) {
+                List<ProfileObject> editResponse = response.body();
+                if (response.isSuccessful()) {
+                    assert editResponse != null;
+                    if (editResponse.get(0).getAvatar() != null) {
+                        //logo.setBackground((Drawable) editResponse.getAvatar());
                     }
                 }
+            }
 
-                @Override
-                public void onFailure(Call<List<ProfileObject>> call, Throwable t) {
-                    Log.d("MyTag","Failed");
-                }
-            });
+            @Override
+            public void onFailure(Call<List<ProfileObject>> call, Throwable t) {
+                Log.d("MyTag","Failed");
+            }
+        });
         if(LoginActivity.getCREDENTIALS()[1]!=null){
             user_email.setText(LoginActivity.getCREDENTIALS()[1]);
         }if(LoginActivity.getCREDENTIALS()[3]!=null){
