@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@drawable/textinputborder"
         android:clickable="true">
         <TextView
             android:layout_width="match_parent"
@@ -21,12 +22,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:background="@drawable/textinputborder"
         android:clickable="true">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/send_message"
-            android:text="Send Message"
+            android:text="Start Conversation"
             android:textSize="30sp"/>
     </LinearLayout>
 

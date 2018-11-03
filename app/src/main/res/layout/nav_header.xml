@@ -20,7 +20,13 @@
         android:text="User@email.com"
         android:textStyle="bold"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
-
+    <TextView
+        android:id="@+id/username_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Username"
+        android:textStyle="bold"/>
     <Switch
         android:id="@+id/switch_profile"
         android:layout_width="match_parent"

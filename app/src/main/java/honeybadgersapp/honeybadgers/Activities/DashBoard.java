@@ -1,6 +1,7 @@
 package honeybadgersapp.honeybadgers.Activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -52,6 +54,7 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
     private RecyclerView DashBoardRecyclerView2;
     public  ImageView logo;
     public  TextView user_email;
+    public  TextView user_name;
     public  Switch user_role;
     public   NavigationView navigationView;
     public View headerView ;
@@ -60,6 +63,8 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Firebase.setAndroidContext(this);
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_dash_board);
         Firebase.setAndroidContext(this);
@@ -77,7 +82,7 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         headerView =navigationView.getHeaderView(0);
         mToggle = new ActionBarDrawerToggle(this,mDrawerlayout,R.string.Open,R.string.Close);
         mDrawerlayout.addDrawerListener(mToggle);
-        mDrawerlayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//        mDrawerlayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mToggle.syncState();
         mToolbar = findViewById(R.id.action_toolbar);
         setSupportActionBar(mToolbar);
@@ -90,14 +95,13 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
             @Override
             public void onClick(View view) {
                 if (mDrawerlayout.isDrawerOpen(Gravity.END)) {
-                    mDrawerlayout.closeDrawer(Gravity.END,false);
-                    mDrawerlayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                    mDrawerlayout.setElevation(-1);
+                    mDrawerlayout.closeDrawer(Gravity.END,true);
+                    /*mDrawerlayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                    mDrawerlayout.setElevation(-1);*/
                 }
                 else {
-                    mDrawerlayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-                    mDrawerlayout.openDrawer(Gravity.END,false);
-                    mDrawerlayout.setElevation(1);
+                    mDrawerlayout.openDrawer(Gravity.END,true);
+//                    mDrawerlayout.setElevation(1);
 
                 }
             }
@@ -115,7 +119,28 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
 
         logo = headerView.findViewById(R.id.person_logo);
         user_email= headerView.findViewById(R.id.useremail_text);
+        user_name= headerView.findViewById(R.id.username_text);
         user_role = headerView.findViewById(R.id.switch_profile);
+        user_name.setText(LoginActivity.getCREDENTIALS()[2]);
+
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerlayout.isDrawerOpen(Gravity.END)) {
+            mDrawerlayout.closeDrawer(Gravity.END,false);
+        }else{
+            new AlertDialog.Builder(this)
+                    .setTitle("Exit?")
+                    .setMessage("Are you sure you want to exit?")
+                    .setNegativeButton(android.R.string.no, null)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            DashBoard.super.onBackPressed();
+                        }
+                    }).create().show();
+        }
 
     }
 
@@ -202,6 +227,8 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
             user_email.setText(LoginActivity.getCREDENTIALS()[1]);
         }if(LoginActivity.getCREDENTIALS()[3]!=null){
             user_role.setText(LoginActivity.getCREDENTIALS()[3]);
+        }if(LoginActivity.getCREDENTIALS()[2]!=null){
+            user_name.setText(LoginActivity.getCREDENTIALS()[2]);
         }
     }
 

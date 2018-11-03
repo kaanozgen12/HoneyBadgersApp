@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private static  String[] CREDENTIALS = new String[6];
+    //token,email,user_name ,role(freelancer or client),user_id , profile_id.
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -328,7 +329,7 @@ public class LoginActivity extends AppCompatActivity {
 
             try {
                 // Simulate network access.
-                Thread.sleep(1500);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 return false;
             }
@@ -362,7 +363,7 @@ public class LoginActivity extends AppCompatActivity {
                                     prefs.edit().putString("password",mPassword).commit();
                                     CREDENTIALS[0]=response1.getToken();
                                     CREDENTIALS[1]=mEmail;
-                                    //Get user's id from database
+                                    //Get user's id and username from database
 
                                         Call<List<User>> call2 = RetrofitClient.getInstance().getApi().user_id(mEmail);
                                         call2.enqueue(new Callback<List<User>>() {
@@ -371,6 +372,8 @@ public class LoginActivity extends AppCompatActivity {
                                                 User editResponse2 = response2.body().get(0);
                                                 if (response2.isSuccessful()) {
                                                     CREDENTIALS[4] = "" + editResponse2.getId();
+                                                    // Get all conversations to static array list beforehand
+                                                    CREDENTIALS[2] = editResponse2.getName();
                                                 }
                                             }
 

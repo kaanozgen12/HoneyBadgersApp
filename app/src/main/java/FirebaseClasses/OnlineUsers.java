@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -14,7 +13,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.ui.auth.AuthUI;
@@ -22,26 +20,35 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import RetrofitModels.User;
+import api.RetrofitClient;
 import honeybadgersapp.honeybadgers.Activities.ChatActivity;
+import honeybadgersapp.honeybadgers.Activities.LoginActivity;
 import honeybadgersapp.honeybadgers.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class OnlineUsers extends AppCompatActivity {
         ListView listView;
-        ArrayAdapter<String> mAdapter = null;
-        ArrayList<String> usersList = new ArrayList<String>();
-        Firebase firebase_onlineusers = new Firebase("https://honeybadgers-12976.firebaseio.com").child("Conversations").child(""+FirebaseAuth.getInstance().getCurrentUser().getEmail().toString().hashCode());
+        public  ArrayList<String> my_conversations = new ArrayList<>();
+    public  ArrayList<String> my_conversations_ids = new ArrayList<>();
+        public static ArrayAdapter<String> mAdapter = null;
+        Firebase firebase_onlineusers = new Firebase("https://honeybadgers-12976.firebaseio.com").child("Conversations").child(""+ LoginActivity.getCREDENTIALS()[4]);
         private int SIGN_IN_REQUEST_CODE = 99;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            get_My_Conversations();
             setContentView(R.layout.activity_online_users);
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
             listView = findViewById(R.id.active_users_list_view);
             Firebase.setAndroidContext(this);
 
-            mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, usersList);
+            mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,my_conversations);
             listView.setAdapter(mAdapter);
 
             FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -66,7 +73,7 @@ public class OnlineUsers extends AppCompatActivity {
                         .show();
 
                 // Load chat rooms
-                ChatActivity.from_user=""+FirebaseAuth.getInstance().getCurrentUser().getEmail().hashCode();
+                ChatActivity.from_user=""+LoginActivity.getCREDENTIALS()[4];
                 Toast.makeText(OnlineUsers.this, "You are Online", Toast.LENGTH_SHORT).show();
 
             }
@@ -75,38 +82,6 @@ public class OnlineUsers extends AppCompatActivity {
         @Override
         protected void onStart() {
             super.onStart();
-            usersList.clear();
-            firebase_onlineusers.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    s = dataSnapshot.getValue(String.class);
-                    Log.v("VALUE", s);
-                    if(!s.equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
-                        usersList.add(s);
-                    }
-                    mAdapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-
-                }
-            });
             onListItemClick();
         }
 
@@ -114,8 +89,22 @@ public class OnlineUsers extends AppCompatActivity {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    ChatActivity.to_user=""+usersList.get(i).hashCode();
-                    startActivity(new Intent(OnlineUsers.this, ChatActivity.class));
+
+                    Call<List<User>> call2 = RetrofitClient.getInstance().getApi().user_id(my_conversations.get(i));
+                    call2.enqueue(new Callback<List<User>>() {
+                        @Override
+                        public void onResponse(Call<List<User>> call2, Response<List<User>> response2) {
+                            User editResponse2 = response2.body().get(0);
+                            if (response2.isSuccessful()) {
+                                ChatActivity.to_user=""+editResponse2.getId();
+                                startActivity(new Intent(OnlineUsers.this, ChatActivity.class));
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<List<User>> call2, Throwable t) {
+                          }
+                    });
+
                 }
 
             });
@@ -128,8 +117,9 @@ public class OnlineUsers extends AppCompatActivity {
                             .setNegativeButton(android.R.string.no, null)
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface arg0, int arg1) {
-                                    firebase_onlineusers.equalTo(usersList.get(i)).getRef().removeValue();
-                                    usersList.remove(i);
+                                    firebase_onlineusers.child(my_conversations_ids.get(i)).equalTo(my_conversations.get(i)).getRef().removeValue();
+                                    my_conversations.remove(i);
+                                    my_conversations_ids.remove(i);
                                     mAdapter.notifyDataSetChanged();
                                 }
                             }).create().show();
@@ -146,12 +136,50 @@ public class OnlineUsers extends AppCompatActivity {
         if(requestCode == SIGN_IN_REQUEST_CODE) {
             if(resultCode == RESULT_OK) {
 
-                firebase_onlineusers.push().setValue(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                firebase_onlineusers.push().setValue(LoginActivity.getCREDENTIALS()[1]);
 
-                ChatActivity.from_user=""+FirebaseAuth.getInstance().getCurrentUser().getEmail().hashCode();
+                ChatActivity.from_user=""+LoginActivity.getCREDENTIALS()[4];
                 Toast.makeText(OnlineUsers.this, "You are Online", Toast.LENGTH_SHORT).show();
             }
         }
+
+    }
+    public void get_My_Conversations(){
+        Firebase firebase_register;
+        firebase_register = new Firebase("https://honeybadgers-12976.firebaseio.com/Conversations").child(LoginActivity.getCREDENTIALS()[4]);
+        firebase_register.addChildEventListener(new ChildEventListener() {
+            @Override
+            public synchronized void onChildAdded(com.firebase.client.DataSnapshot dataSnapshot, String s) {
+                s = dataSnapshot.getValue(String.class);
+                my_conversations.add(s);
+                my_conversations_ids.add(dataSnapshot.getKey());
+                if(OnlineUsers.mAdapter!=null){
+                    OnlineUsers.mAdapter.notifyDataSetChanged();
+                }
+
+            }
+            @Override
+            public void onChildChanged(com.firebase.client.DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(com.firebase.client.DataSnapshot dataSnapshot) {
+                if(OnlineUsers.mAdapter!=null){
+                    OnlineUsers.mAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onChildMoved(com.firebase.client.DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
 
     }
 }

@@ -32,10 +32,14 @@ public class ChatActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_activity);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        //Prevent keyboard from automatically opening
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         Firebase.setAndroidContext(this);
         // Write a message to the database
-
-
+        final Firebase firebase_register;
+        firebase_register = new Firebase("https://honeybadgers-12976.firebaseio.com/Conversations").child(to_user);
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -54,6 +58,7 @@ public class ChatActivity extends AppCompatActivity{
                     firebase_chatnode = new Firebase("https://honeybadgers-12976.firebaseio.com/Chats/"+to_user+"_"+from_user);
                 }
 
+                firebase_register.child(""+LoginActivity.getCREDENTIALS()[4]).setValue(LoginActivity.getCREDENTIALS()[1]);
 
                 // Read the input field and push a new instance
                 // of ChatMessage to the Firebase database
@@ -109,8 +114,13 @@ public class ChatActivity extends AppCompatActivity{
                         model.getMessageTime()));
             }
         };
-
         listOfMessages.setAdapter(adapter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 
 }

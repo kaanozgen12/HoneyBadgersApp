@@ -33,6 +33,7 @@ import RetrofitModels.Tag_Object;
 import RetrofitModels.User;
 import api.RetrofitClient;
 import honeybadgersapp.honeybadgers.Activities.ChatActivity;
+import honeybadgersapp.honeybadgers.Activities.LoginActivity;
 import honeybadgersapp.honeybadgers.Activities.Show_Profile;
 import honeybadgersapp.honeybadgers.R;
 import retrofit2.Call;
@@ -101,15 +102,17 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                             final TextView employer=myDialog.findViewById(R.id.project_dialog_employer_name_edit);
                             RecyclerView skills=myDialog.findViewById(R.id.project_dialog_tags);
                             final int user_id= editResponse.getUserId();
+                            final String[] user_email = new String[1];
 
-                            //Get user email from id
+                            //Get user name from id
                             Call<User> call2 = RetrofitClient.getInstance().getApi().getUserEmail(editResponse.getUserId());
                             call2.enqueue(new Callback<User>() {
                                 @Override
                                 public void onResponse(Call<User> call2, Response<User> response2) {
                                     User editResponse2 = response2.body();
                                     if (response2.isSuccessful()) {
-                                        employer.setText(editResponse2.getEmail());
+                                        employer.setText(editResponse2.getName());
+                                        user_email[0] =editResponse2.getEmail();
 
                                     }
                                 }
@@ -120,7 +123,7 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                             employer.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    if (!employer.getText().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                                    if (!user_email[0].equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
                                         Dialog myDialog2 = new Dialog(mContext);
                                         myDialog2.requestWindowFeature(Window.FEATURE_NO_TITLE);
                                         myDialog2.setContentView(R.layout.username_dialog);
@@ -138,7 +141,7 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                                         see_profile.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
-                                                Show_Profile.user_email = "" + employer.getText();
+                                                Show_Profile.user_email = "" + user_email[0];
                                                 Show_Profile.user_id = "" + user_id;
                                                 Intent i = new Intent(mContext, Show_Profile.class);
                                                 mContext.startActivity(i);
@@ -147,14 +150,15 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                                         send_message.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
-                                                Firebase.setAndroidContext(mContext);
+
+
                                                 Firebase firebase_register;
-                                                firebase_register = new Firebase("https://honeybadgers-12976.firebaseio.com/Conversations/" + FirebaseAuth.getInstance().getCurrentUser().getEmail().toString().hashCode());
-                                                firebase_register
-                                                        .push()
-                                                        .setValue(employer.getText().toString());
-                                                ChatActivity.from_user = "" + FirebaseAuth.getInstance().getCurrentUser().getEmail().hashCode();
-                                                ChatActivity.to_user = "" + employer.getText().toString().hashCode();
+                                                firebase_register = new Firebase("https://honeybadgers-12976.firebaseio.com/Conversations").child(LoginActivity.getCREDENTIALS()[4]);
+                                                firebase_register.child(""+user_id).setValue(user_email[0]);
+                                                Log.d("MyTag","conersation email: "+user_email[0]);
+
+                                                ChatActivity.from_user = "" + LoginActivity.getCREDENTIALS()[4];
+                                                ChatActivity.to_user = "" +user_id ;
                                                 Intent i = new Intent(mContext, ChatActivity.class);
                                                 mContext.startActivity(i);
                                             }
@@ -285,9 +289,8 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
             project_highestbid = itemView.findViewById(R.id.compact_project_given_bid);
             updateinfo = itemView.findViewById(R.id.compact_project_bids_time);
             recyclerViewTags=  itemView.findViewById(R.id.compact_project_object_tags_recyclerview);
-            viewBackground = container.findViewById(R.id.view_background);
             viewForeground = container.findViewById(R.id.view_foreground);
-            viewBaseground = container.findViewById(R.id.view_backbackground);
+
 
         }
 

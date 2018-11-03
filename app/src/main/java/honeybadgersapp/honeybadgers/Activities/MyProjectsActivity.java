@@ -1,18 +1,15 @@
 package honeybadgersapp.honeybadgers.Activities;
 
 import android.content.DialogInterface;
-import android.graphics.Color;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
@@ -30,7 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MyProjectsActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
+public class MyProjectsActivity extends AppCompatActivity {
     public List<Compact_Project_Object> listOfProjects =new ArrayList<>();
     private RelativeLayout relativeLayout;
     RecyclerView mRecylerView;
@@ -96,61 +93,26 @@ public class MyProjectsActivity extends AppCompatActivity implements RecyclerIte
         });
 
        // recyclerAdapter.notifyDataSetChanged();
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT, this);
-        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mRecylerView);
-
-    }
-
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        Log.d("MyTag", "size listofprojects :"+listOfProjects.size());
-    }
-
-    @Override
-    public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction, int position) {
-        if (viewHolder instanceof Dashboard_Notifications_adapter.MyViewHolder) {
-            if (direction==ItemTouchHelper.LEFT) {
-                ((Dashboard_Notifications_adapter.MyViewHolder) viewHolder).viewBackground.bringToFront();
-                // get the removed item name to display it in snack bar
-                final String name = listOfProjects.get(viewHolder.getAdapterPosition()).getName();
-                final int project_id=listOfProjects.get(viewHolder.getAdapterPosition()).getId();
-                // backup of removed item for undo purpose
-                final Compact_Project_Object deletedItem = listOfProjects.get(viewHolder.getAdapterPosition());
-                final int deletedIndex = viewHolder.getAdapterPosition();
-
-                new AlertDialog.Builder(this)
+        SwipeControllerActions itemTouchHelperCallback =new SwipeControllerActions() {
+            @Override
+            public void onRightClicked(final int position) {
+                new android.support.v7.app.AlertDialog.Builder(MyProjectsActivity.this)
                         .setTitle("DELETE?")
-                        .setMessage("Are you sure you want to delete your project: "+name+"? Once you delete you will not be able to recover your project and all bidders will be notified" )
+                        .setMessage("Are you sure you want to delete your project? Once you delete you will not be able to recover your project and all bidders will be notified" )
                         .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                ((Dashboard_Notifications_adapter.MyViewHolder) viewHolder).viewForeground.bringToFront();
                                 recyclerAdapter.notifyDataSetChanged();
                             }
                         })
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {
-                                Call<Void> call2 = RetrofitClient.getInstance().getApi().deleteProject("token "+LoginActivity.getCREDENTIALS()[0],project_id,true);
+                                Call<Void> call2 = RetrofitClient.getInstance().getApi().deleteProject("token "+LoginActivity.getCREDENTIALS()[0],listOfProjects.get(position).getId(),true);
                                 call2.enqueue(new Callback<Void>() {
                                     @Override
                                     public  void onResponse(@NonNull Call<Void> call2, @NonNull Response<Void> response2) {
                                         // remove the item from recycler view
-                                        recyclerAdapter.removeItem(viewHolder.getAdapterPosition());
-                                        Log.d("MyTag","ssssss: "+LoginActivity.getCREDENTIALS()[0]+"  "+project_id+ "   "+response2.message()  );
-                                        // showing snack bar with Undo option
-                                        Snackbar snackbar = Snackbar
-                                                .make(relativeLayout, name + " Removed From Your Projects!", Snackbar.LENGTH_LONG);
-                                        snackbar.setAction("UNDO", new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-
-                                                // undo is selected, restore the deleted item
-                                                recyclerAdapter.restoreItem(deletedItem, deletedIndex);
-                                            }
-                                        });
-                                        snackbar.setActionTextColor(Color.YELLOW);
-                                        snackbar.show();
+                                        recyclerAdapter.removeItem(position);
                                     }
                                     @Override
                                     public  void onFailure(Call<Void> call2, Throwable t) {
@@ -160,18 +122,32 @@ public class MyProjectsActivity extends AppCompatActivity implements RecyclerIte
                             }
                         }).create().show();
             }
-            if (direction==ItemTouchHelper.RIGHT){
-                ((Dashboard_Notifications_adapter.MyViewHolder) viewHolder).viewBaseground.bringToFront();
+        };
+        final RecyclerItemTouchHelper swipeController = new RecyclerItemTouchHelper(itemTouchHelperCallback);
+        mRecylerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                swipeController.onDraw(c);
             }
+        });
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
+        itemTouchhelper.attachToRecyclerView(mRecylerView);
 
+    }
+//
 
-
-
-        }
+    //
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        Log.d("MyTag", "size listofprojects :"+listOfProjects.size());
     }
 
+    public abstract static class SwipeControllerActions {
 
+        public void onLeftClicked(int position) {}
 
+        public void onRightClicked(int position) {}
 
-
+    }
 }

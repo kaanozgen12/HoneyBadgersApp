@@ -191,8 +191,6 @@ public class CreateAccount extends AppCompatActivity {
 
             if (success) {
               FirebaseAuth.getInstance().createUserWithEmailAndPassword(mEmail,mPassword);
-                Firebase firebase_onlineusers = new Firebase("https://honeybadgers-12976.firebaseio.com/Registered_Users");
-                firebase_onlineusers.push().setValue(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
                 Call<User> call= RetrofitClient.getInstance().getApi().userRegister(mEmail,"Random",mPassword);
                 call.enqueue(new Callback<User>() {
