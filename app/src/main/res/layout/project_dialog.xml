@@ -38,8 +38,9 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/project_dialog_bids_text"
                     android:text="Bids"
+                    android:layout_gravity="center"
                     android:textStyle="bold"
-                    android:textSize="20sp"/>
+                    android:textSize="15sp"/>
                 <TextView
                     android:id="@+id/project_dialog_bids_edit"
                     android:layout_width="wrap_content"
@@ -48,7 +49,7 @@
                     android:layout_gravity="center"
                     android:textColor="#00218f"
                     android:text="20"
-                    android:textSize="20sp"/>
+                    android:textSize="15sp"/>
 
             </LinearLayout>
             <LinearLayout
@@ -63,8 +64,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Project Budget"
+                    android:layout_gravity="center"
                     android:textStyle="bold"
-                    android:textSize="20sp"/>
+                    android:textSize="15sp"/>
                 <TextView
                     android:id="@+id/project_dialog_budget_edit"
                     android:layout_width="wrap_content"
@@ -73,7 +75,7 @@
                     android:layout_gravity="center"
                     android:textColor="#00218f"
                     android:text="20 USD - 50 USD"
-                    android:textSize="20sp"/>
+                    android:textSize="15sp"/>
 
             </LinearLayout>
             <LinearLayout
@@ -89,8 +91,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Remaining Time"
+                    android:layout_gravity="center"
                     android:textStyle="bold"
-                    android:textSize="20sp"/>
+                    android:textSize="15sp"/>
                 <TextView
                     android:id="@+id/project_dialog_remaining_edit"
                     android:layout_width="wrap_content"
@@ -99,7 +102,7 @@
                     android:layout_gravity="center"
                     android:textColor="#00218f"
                     android:text="5 days, 12 hours"
-                    android:textSize="20sp"/>
+                    android:textSize="15sp"/>
 
             </LinearLayout>
 
@@ -134,7 +137,7 @@
                     android:id="@+id/project_dialog_scrollView"
                     android:layout_height="200dp"
                     android:layout_below="@id/project_dialog_description_text"
-                    android:layout_toStartOf="@+id/project_dialog_bid_button"
+                    android:layout_toStartOf="@+id/project_dialog_comment_button"
                     android:background="@drawable/textinputborder">
                     <TextView
                         android:layout_width="match_parent"
@@ -184,15 +187,15 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_below="@id/project_dialog_employer_name_edit">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:id="@+id/project_dialog_employer_rating"
                             android:text="Employer Rating"
-                            android:layout_below="@id/project_dialog_employer_name_edit"/>
+                          />
                         <RatingBar
-                            android:layout_below="@+id/project_dialog_employer_name_edit"
                             android:id="@+id/project_dialog_rating_bar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -209,17 +212,46 @@
                 <Button
                     android:id="@+id/project_dialog_bid_button"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:layout_alignParentEnd="true"
-                    android:layout_margin="20dp"
+                    android:layout_margin="10dp"
                     android:text="BID"
-                    android:background="@drawable/button_color"
+                    android:background="@drawable/comment_button_color"
                     />
+                <Button
+                    android:id="@+id/project_dialog_comment_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="10dp"
+                    android:text="Comment"
+                    android:layout_below="@+id/project_dialog_bid_button"
+                    android:background="@drawable/comment_button_color"
+                    />
+                <Button
+                    android:id="@+id/project_dialog_see_bidders_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="10dp"
+                    android:text="See Bidders"
+                    android:visibility="gone"
+                    android:layout_below="@+id/project_dialog_comment_button"
+                    android:background="@drawable/comment_button_color"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/project_dialog_maps_icon"
+                    android:layout_below="@+id/project_dialog_see_bidders_button"
+                    android:layout_alignParentEnd="true"
+                    android:visibility="gone"
+                    android:background="@drawable/googlemaps"/>
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/project_dialog_employer_info_layout"
-                    android:layout_alignParentBottom="true"
+                    android:layout_alignBottom="@+id/project_dialog_employer_info_layout"
+
                     android:layout_alignParentEnd="true">
                     <TextView
 
@@ -235,7 +267,24 @@
                         android:id="@+id/project_dialog_project_id_edit"
                         android:text="111111: "/>
                 </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="7dp"
+                    android:layout_marginBottom="5dp"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:layout_below="@+id/project_dialog_employer_info_layout"
+                    android:text="Comments"
+                    android:id="@+id/project_dialog_comments"
+                    />
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/project_dialog_comments_recyclerview"
+                    android:layout_below="@+id/project_dialog_comments">
 
+                </android.support.v7.widget.RecyclerView>
             </RelativeLayout>
         </ScrollView>
 

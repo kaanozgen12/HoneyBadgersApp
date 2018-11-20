@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.firebase.client.Firebase;
 import com.firebase.ui.database.FirebaseListAdapter;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
 import Models.Message_Object;
@@ -21,7 +20,7 @@ import honeybadgersapp.honeybadgers.R;
 
 public class ChatActivity extends AppCompatActivity{
     private FirebaseListAdapter<Message_Object> adapter;
-
+    private  ListView listOfMessages;
 
     Firebase firebase_chatnode ;
     public static String from_user;
@@ -40,34 +39,32 @@ public class ChatActivity extends AppCompatActivity{
         // Write a message to the database
         final Firebase firebase_register;
         firebase_register = new Firebase("https://honeybadgers-12976.firebaseio.com/Conversations").child(to_user);
+        int a = Integer.parseInt(from_user);
+        int b= Integer.parseInt(to_user);
+
+        if(a<b){
+            firebase_chatnode = new Firebase("https://honeybadgers-12976.firebaseio.com/Chats/"+from_user+"_"+to_user);
+        }else if(a>b){
+            firebase_chatnode = new Firebase("https://honeybadgers-12976.firebaseio.com/Chats/"+to_user+"_"+from_user);
+        }
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EditText input = findViewById(R.id.input);
 
-                int a = Integer.parseInt(from_user);
-                int b= Integer.parseInt(to_user);
-
-                if(a<b){
-                    firebase_chatnode = new Firebase("https://honeybadgers-12976.firebaseio.com/Chats/"+from_user+"_"+to_user);
-                }else if(a>b){
-                    firebase_chatnode = new Firebase("https://honeybadgers-12976.firebaseio.com/Chats/"+to_user+"_"+from_user);
-                }
 
                 firebase_register.child(""+LoginActivity.getCREDENTIALS()[4]).setValue(LoginActivity.getCREDENTIALS()[1]);
+
 
                 // Read the input field and push a new instance
                 // of ChatMessage to the Firebase database
                 firebase_chatnode
                         .push()
                         .setValue(new Message_Object(input.getText().toString(),
-                                FirebaseAuth.getInstance()
-                                        .getCurrentUser()
-                                        .getEmail())
+                                LoginActivity.getCREDENTIALS()[2])
                         );
 
                 // Clear the input
@@ -84,7 +81,7 @@ public class ChatActivity extends AppCompatActivity{
     }
 
     private void displayChatMessages() {
-        ListView listOfMessages = (ListView)findViewById(R.id.list_of_messages);
+        listOfMessages = (ListView)findViewById(R.id.list_of_messages);
 
         int a = Integer.parseInt(from_user);
         int b= Integer.parseInt(to_user);
@@ -95,7 +92,6 @@ public class ChatActivity extends AppCompatActivity{
         }else if(a>b){
             temp=to_user+"_"+from_user;
         }
-
         adapter = new FirebaseListAdapter<Message_Object>(this, Message_Object.class,
                 R.layout.message_object, FirebaseDatabase.getInstance().getReference().child("Chats").child(temp)) {
             @Override

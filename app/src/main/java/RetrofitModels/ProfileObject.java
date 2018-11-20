@@ -17,7 +17,7 @@ public class ProfileObject {
     private String name;
     @SerializedName("avatar")
     @Expose
-    private Object avatar;
+    private String avatar;
     @SerializedName("body")
     @Expose
     private String body;
@@ -46,7 +46,7 @@ public class ProfileObject {
      * @param rating
      * @param avatar
      */
-    public ProfileObject( int id, int userId, String name, Object avatar, String body, String createdAt, float rating){
+    public ProfileObject( int id, int userId, String name, String avatar, String body, String createdAt, float rating){
         super();
         this.id = id;
         this.userId = userId;
@@ -81,11 +81,11 @@ public class ProfileObject {
         this.name = name;
     }
 
-    public Object getAvatar () {
+    public String getAvatar () {
         return avatar;
     }
 
-    public void setAvatar (Object avatar){
+    public void setAvatar (String avatar){
         this.avatar = avatar;
     }
 

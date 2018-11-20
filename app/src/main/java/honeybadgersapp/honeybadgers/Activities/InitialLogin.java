@@ -27,6 +27,8 @@ public class InitialLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        overridePendingTransition (0,0);
         setContentView(R.layout.first_register_popup);
         fadinganimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.appear);
         form= findViewById(R.id.first_register_popup_form);

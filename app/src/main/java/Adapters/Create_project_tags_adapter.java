@@ -1,6 +1,7 @@
 package Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import RetrofitModels.Tag_Object;
 import honeybadgersapp.honeybadgers.R;
@@ -74,9 +74,11 @@ public class Create_project_tags_adapter extends RecyclerView.Adapter<Create_pro
             Tag_Text = itemView.findViewById(R.id.tag);
         }
         void bindData(final Tag_Object viewModel){
-            int temp = 1+new ArrayList( Arrays.asList( mContext.getResources().getStringArray(R.array.Tags) )).indexOf(viewModel.getTitle());
-            Tag_Text.setTextColor((temp*Integer.parseInt("1000", 16)+0xFFFF0000));
-            Tag_Text.setText(viewModel.getTitle());
+            int temp = 1+viewModel.getId();
+            String[] array = {"#FF007F", "#FF0000", "#FF7F00", "#FFABAB17", "#7FFF00", "#00FF00", "#00FF7F", "#00FFFF", "#007FFF", "#0000FF", "#7F00FF", "#FF00FF"};
+            String color = array[temp%12];
+            Tag_Text.setText(viewModel.getTitle()+ " ⓧ");
+            Tag_Text.setTextColor(Color.parseColor(color));
         }
     }
 

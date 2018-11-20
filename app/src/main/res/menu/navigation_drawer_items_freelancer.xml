@@ -14,9 +14,9 @@
         android:icon="@drawable/ic_search_black_24dp"
         android:title="Search" />
     <item
-        android:id="@+id/item_navigation_drawer_activities"
-        android:icon="@drawable/ic_star_black_24dp"
-        android:title="Activities" />
+        android:id="@+id/item_navigation_drawer_my_projects"
+        android:icon="@drawable/ic_folder_open_black_24dp"
+        android:title="My Projects" />
     <item
         android:id="@+id/log_out"
         android:icon="@drawable/ic_exit_to_app_black_24dp"

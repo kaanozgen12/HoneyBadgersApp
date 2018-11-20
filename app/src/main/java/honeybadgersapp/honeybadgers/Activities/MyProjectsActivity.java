@@ -1,6 +1,7 @@
 package honeybadgersapp.honeybadgers.Activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -38,7 +39,7 @@ public class MyProjectsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.my_projects);
-
+        overridePendingTransition (0,0);
         relativeLayout = findViewById(R.id.my_projects_activity);
         mRecylerView= findViewById(R.id.my_projects_recyclerview);
         recyclerAdapter =new Dashboard_Notifications_adapter(this,listOfProjects);
@@ -121,6 +122,12 @@ public class MyProjectsActivity extends AppCompatActivity {
                                 });
                             }
                         }).create().show();
+            }
+
+            @Override
+            public void onLeftClicked(int position) {
+                Intent i = new Intent(MyProjectsActivity.this, EditProject.class);
+                startActivity(i);
             }
         };
         final RecyclerItemTouchHelper swipeController = new RecyclerItemTouchHelper(itemTouchHelperCallback);

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="12sp"
+        android:id="@+id/milestones_fragment_create_milestone_button"
+        android:background="@drawable/button_color"
+        android:layout_margin="15dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Requested Milestones"
+        android:layout_marginStart="10dp"
+        android:id="@+id/milestones_fragment_create_requested_milestones_text"
+        android:layout_below="@+id/milestones_fragment_create_milestone_button"
+        android:textStyle="bold"
+        android:textSize="20sp"/>
+    <RelativeLayout
+        android:background="@drawable/textinputborder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/milestones_fragment_requested_titles_layout"
+        android:layout_below="@+id/milestones_fragment_create_requested_milestones_text">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/milestones_fragment_requested_amount_text"
+            android:text="Amount"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="5dp"
+            android:textStyle="bold"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/milestones_fragment_requested_description_text"
+            android:text="Description"
+            android:gravity="center"
+            android:layout_toEndOf="@id/milestones_fragment_requested_amount_text"
+            android:layout_toStartOf="@+id/milestones_fragment_requested_actions_text"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/milestones_fragment_requested_actions_text"
+            android:text="Actions"
+            android:layout_marginEnd="5dp"
+            android:layout_alignParentEnd="true"
+            android:textStyle="bold" />
+    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/milestones_fragment_requested_milestones_recyclerview"
+        android:id="@+id/milestones_fragment_requested_no_requested_available"
+        android:text="There is no requested milestone"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_horizontal"
+        android:visibility="gone"
+        />
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/milestones_fragment_requested_titles_layout"
+        android:id="@+id/milestones_fragment_requested_milestones_recyclerview">
+    </android.support.v7.widget.RecyclerView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Milestones"
+        android:layout_marginStart="10dp"
+        android:layout_below="@id/milestones_fragment_requested_no_requested_available"
+        android:id="@+id/milestones_fragment_create_milestones_text"
+        android:textStyle="bold"
+        android:textSize="20sp"/>
+    <RelativeLayout
+        android:background="@drawable/textinputborder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/milestones_fragment_titles_layout"
+        android:layout_below="@+id/milestones_fragment_create_milestones_text">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/milestones_fragment_amount_text"
+            android:layout_marginStart="5dp"
+            android:text="Amount"
+            android:layout_alignParentStart="true"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/milestones_fragment_description_text"
+            android:text="Description"
+            android:gravity="center"
+            android:layout_toEndOf="@id/milestones_fragment_amount_text"
+            android:layout_toStartOf="@+id/milestones_fragment_status_text"
+            android:textStyle="bold"
+          />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/milestones_fragment_status_text"
+            android:text="Status"
+            android:textStyle="bold"
+            android:layout_toStartOf="@+id/milestones_fragment_actions_text"
+            android:layout_marginEnd="10dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/milestones_fragment_actions_text"
+            android:text="Actions"
+            android:layout_alignParentEnd="true"
+            android:textStyle="bold"
+            android:layout_marginEnd="5dp" />
+    </RelativeLayout>
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/milestones_fragment_titles_layout"
+        android:id="@+id/milestones_fragment_milestones_recyclerview">
+
+
+    </android.support.v7.widget.RecyclerView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/milestones_fragment_titles_layout"
+        android:id="@+id/milestones_fragment_requested_no_verified_available"
+        android:text="There is no verified milestone"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_horizontal"
+        android:visibility="gone"
+        />
+
+
+</RelativeLayout>

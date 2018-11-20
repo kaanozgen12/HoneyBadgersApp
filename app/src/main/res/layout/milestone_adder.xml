@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:id="@+id/milestone_adder_description"
+            android:hint="Describe the task you will complete"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Amount:"
+                android:textStyle="bold"
+                android:textSize="15sp"/>
+            <EditText
+                android:layout_width="60dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/textinputborder"
+                android:id="@+id/milestone_adder_amount"
+                android:inputType="number"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:text="Pick Milestone Deadline:"
+            android:textStyle="bold"
+            android:layout_margin="5dp"
+            />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <DatePicker
+                    android:id="@+id/milestone_adder_date_picker"
+                    android:datePickerMode="spinner"
+                    android:calendarViewShown="false"
+                    android:layout_gravity="end"
+                    android:layout_height="105dp"
+                    android:layout_width="wrap_content"
+                    android:scaleX="0.60"
+                    android:scaleY="0.60"
+                    android:layout_marginLeft="-50dp"
+                    android:layout_marginTop="-30dp"
+                    android:layout_marginRight="-50dp"
+                    android:layout_marginBottom="-30dp"
+
+                    />
+                <TimePicker
+                    android:id="@+id/milestone_adder_time_picker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="105dp"
+                    android:scaleX="0.60"
+                    android:scaleY="0.60"
+                    android:layout_toEndOf="@+id/milestone_adder_date_picker"
+                    android:layout_marginLeft="-55dp"
+                    android:layout_marginTop="-30dp"
+                    android:layout_marginRight="-50dp"
+                    android:layout_marginBottom="-30dp"
+                    android:timePickerMode="spinner"
+                    />
+            </RelativeLayout>
+        </FrameLayout>
+        <Button
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/milestone_adder_save_button"
+            android:text="Save"
+            android:background="@drawable/button_color"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"/>
+    </LinearLayout>
+</ScrollView>

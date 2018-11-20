@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         textanimation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.main_page_button_anim);
-
+        overridePendingTransition (0,0);
         setContentView(R.layout.activity_login);
         prefs = new SimpleCredentialCrypting(this, this.getSharedPreferences("HONEY_BADGERS_PREFS_FILE", Context.MODE_PRIVATE) );
         // Set up the login form.
@@ -363,6 +363,7 @@ public class LoginActivity extends AppCompatActivity {
                                     prefs.edit().putString("password",mPassword).commit();
                                     CREDENTIALS[0]=response1.getToken();
                                     CREDENTIALS[1]=mEmail;
+                                    CREDENTIALS[3]="Client";
                                     //Get user's id and username from database
 
                                         Call<List<User>> call2 = RetrofitClient.getInstance().getApi().user_id(mEmail);
@@ -374,6 +375,9 @@ public class LoginActivity extends AppCompatActivity {
                                                     CREDENTIALS[4] = "" + editResponse2.getId();
                                                     // Get all conversations to static array list beforehand
                                                     CREDENTIALS[2] = editResponse2.getName();
+                                                    Intent intent = new Intent(getApplicationContext(),DashBoard.class);
+                                                    startActivity(intent);
+                                                    finish();
                                                 }
                                             }
 
@@ -385,10 +389,7 @@ public class LoginActivity extends AppCompatActivity {
                                         });
                                     }
 
-                                    Intent intent = new Intent(getApplicationContext(),DashBoard.class);
-                                    startActivity(intent);
-                                    finish();
-                                    super.run();
+
                                 }
                             };
                             timer.start();

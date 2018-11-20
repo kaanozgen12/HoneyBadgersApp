@@ -5,7 +5,7 @@
         <color name="colorPrimary">#111</color>
         <color name="colorPrimaryDark">#000000</color>
         <color name="colorAccent">#ea3732</color>
-        <color name="bg_row_background">#ff0035</color>
+        <color name="bg_row_background">#FF838300</color>
         <color name="item_name">#535353</color>
         <color name="description">#a9a9a9</color>
 

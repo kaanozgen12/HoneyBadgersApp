@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_marginTop="10dp"
+    android:layout_margin="5dp"
+    card_view:cardCornerRadius="10dp"
+    android:backgroundTint="#00ffffff"
+    android:layout_below="@+id/project_dialog_project_name"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ScrollView
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/bid_proposal_header"
+                android:text="Bid Proposal:"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:id="@+id/bid_proposal_edit_text"
+                android:layout_below="@+id/bid_proposal_header"
+                android:hint="Why do you think you are the best candidate for this project?"/>
+            <RelativeLayout
+                android:background="@drawable/textinputborder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/bid_proposal_titles_layout"
+                android:layout_below="@+id/bid_proposal_edit_text">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bid_proposal_header_amount_text"
+                    android:text="Amount"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="5dp"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bid_proposal_header_description_text"
+                    android:text="Description"
+                    android:gravity="center"
+                    android:layout_toEndOf="@id/bid_proposal_header_amount_text"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+            <android.support.v7.widget.RecyclerView
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/bid_proposal_titles_layout"
+                android:id="@+id/bid_proposal_recyclerview">
+            </android.support.v7.widget.RecyclerView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/bid_proposal_bottom_titles_layout"
+                android:layout_below="@+id/bid_proposal_recyclerview">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bid_proposal_header_bottom_amount_text"
+                    android:text="0"
+                    android:layout_marginStart="5dp"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/bid_proposal_header_bottom_description_text"
+                    android:text=":Total"
+                    android:gravity="center"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/bid_proposal_bid_button"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/bid_proposal_bottom_titles_layout"
+                android:text="BID"
+                android:clickable="true"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/button_color"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/floatingActionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBottom="@+id/bid_proposal_bid_button"
+                android:clickable="true"
+                app:srcCompat="@android:drawable/ic_menu_add" />
+        </RelativeLayout>
+
+    </ScrollView>
+
+</android.support.v7.widget.CardView>

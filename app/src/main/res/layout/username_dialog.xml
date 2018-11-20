@@ -15,6 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="See Profile"
+            android:gravity="center"
             android:id="@+id/see_profile"
             android:textSize="30sp"/>
     </LinearLayout>

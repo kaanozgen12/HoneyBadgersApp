@@ -52,4 +52,15 @@ public class Tag_Object implements Serializable
         this.title = title;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj.getClass()==Tag_Object.class){
+            return this.id==((Tag_Object)obj).getId();
+        }else{
+            return super.equals(obj);
+        }
+
+    }
+
+
 }

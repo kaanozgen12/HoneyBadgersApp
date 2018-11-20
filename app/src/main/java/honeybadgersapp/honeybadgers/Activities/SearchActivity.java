@@ -1,7 +1,6 @@
 package honeybadgersapp.honeybadgers.Activities;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -20,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Adapters.ViewPagerAdapter;
+import Fragments.Search_page_tab_fragment;
 import Models.Compact_Project_Object;
-import Models.Search_page_tab_fragment;
 import RetrofitModels.ProjectObject;
 import RetrofitModels.Tag_Object;
 import api.RetrofitClient;
@@ -39,7 +38,6 @@ public class SearchActivity extends AppCompatActivity {
     ViewPagerAdapter adapter;
     private ActionBarDrawerToggle mToggleSettings;
     private ImageView mToggleBack;
-    private Handler mHandler;
     private Search_page_tab_fragment category_search =new Search_page_tab_fragment();
     private  Search_page_tab_fragment trending_search= new Search_page_tab_fragment();
     private  Search_page_tab_fragment recommended_search= new Search_page_tab_fragment();
@@ -51,9 +49,8 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        mHandler = new Handler();
 
-
+        overridePendingTransition (0,0);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_page);
         first= second= third = true;
@@ -187,6 +184,7 @@ public class SearchActivity extends AppCompatActivity {
                         ((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.add(temp);
                         ((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyDataSetChanged();
                     }
+
       /*              for (int i = 0; i < editResponse.size(); i++) {
                         Compact_Project_Object temp;
                             temp= editResponse.get(i).compress();

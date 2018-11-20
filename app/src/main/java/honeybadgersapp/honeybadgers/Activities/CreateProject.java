@@ -1,10 +1,15 @@
 package honeybadgersapp.honeybadgers.Activities;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -17,18 +22,31 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import Adapters.Create_project_tags_adapter;
+import Fragments.MapAdapter;
 import RetrofitModels.ProjectObject;
 import RetrofitModels.Tag_Object;
 import api.RetrofitClient;
@@ -37,12 +55,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CreateProject extends AppCompatActivity{
+public class CreateProject extends MapsActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private CreateProject.saveProjectTask mAuthTask = null;
-    String tags[] = null;
+    String tags[];
     ArrayAdapter<String> TagAdapter = null;
     private AutoCompleteTextView autoCompleteTag;
+    private ScrollView scrollview;
     private EditText mTitle;
     private EditText mBody;
     private TimePicker mDeadlineTime;
@@ -52,30 +71,57 @@ public class CreateProject extends AppCompatActivity{
     private Button mButton;
     private TextView mSkillsTitle;
     private Spinner mSpinner;
-    private String category="";
+    private CheckBox map_activator;
+    private GoogleMap mMap;
+    private View mapView;
+    private String category = "";
+    private Marker m;
+    private View.OnTouchListener mListener;
+    final int[] marker_count = {0};
     ArrayList<Tag_Object> tag_list = new ArrayList<>();
 
 
-
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        overridePendingTransition(0, 0);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.create_project);
         //Prevent keyboard from automatically opening
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        final RecyclerView mRecylerView= findViewById(R.id.create_project_recyclerview);
-        Create_project_tags_adapter recyclerAdapter =new Create_project_tags_adapter(this,tag_list);
+        final RecyclerView mRecylerView = findViewById(R.id.create_project_recyclerview);
+        final Create_project_tags_adapter recyclerAdapter = new Create_project_tags_adapter(this, tag_list);
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRecylerView.setLayoutManager(horizontalLayoutManager);
         mRecylerView.setAdapter(recyclerAdapter);
-        tags = getResources().getStringArray(R.array.Tags);
-        TagAdapter = new ArrayAdapter<>(this, R.layout.hint_completion_layout, R.id.tvHintCompletion, tags);
+
+        Call<List<Tag_Object>> call= RetrofitClient.getInstance().getApi().getTags();
+        call.enqueue(new Callback<List<Tag_Object>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Tag_Object>> call, @NonNull Response<List<Tag_Object>> response0) {
+                if (response0.isSuccessful()){
+                    tags = new String[response0.body().size()];
+                for (int x = 0 ; x< response0.body().size(); x++){
+                    tags[x]=response0.body().get(x).getTitle();
+                }
+                    TagAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.hint_completion_layout, R.id.tvHintCompletion, tags);
+                    autoCompleteTag.setAdapter(TagAdapter);
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Tag_Object>> call, Throwable t) {
+
+            }
+        });
+
+
         // TagAdapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_item, tags);
         autoCompleteTag = findViewById(R.id.create_project_tags_edit);
-        autoCompleteTag.setAdapter(TagAdapter);
+        map_activator = findViewById(R.id.create_project_map_switch);
+        scrollview= findViewById(R.id.create_project_scroll_view);
+        mapView = findViewById(R.id.create_project_map_edit);
         autoCompleteTag.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -85,8 +131,13 @@ public class CreateProject extends AppCompatActivity{
                     @Override
                     public void onResponse(@NonNull Call<ArrayList<Tag_Object>> call0, @NonNull Response<ArrayList<Tag_Object>> response0) {
                         if (response0.isSuccessful()){
-                            tag_list.add(new Tag_Object(response0.body().get(0).getId(),response0.body().get(0).getTitle()));
-                            Objects.requireNonNull(mRecylerView.getAdapter()).notifyDataSetChanged();
+                            Tag_Object temp = new Tag_Object(response0.body().get(0).getId(),response0.body().get(0).getTitle());
+                            if(!tag_list.contains(temp)){
+                                tag_list.add(temp);
+                                Objects.requireNonNull(mRecylerView.getAdapter()).notifyDataSetChanged();
+                                mRecylerView.smoothScrollToPosition(recyclerAdapter.getItemCount()-1);
+                            }
+
                         }else{
                             Toast.makeText(CreateProject.this,"Create Tag Failed",Toast.LENGTH_LONG).show();
                         }
@@ -101,6 +152,38 @@ public class CreateProject extends AppCompatActivity{
             }
         });
 
+        MapAdapter mapFragment = (MapAdapter) getSupportFragmentManager().findFragmentById(R.id.create_project_map_edit);
+        mapFragment.getMapAsync(this);
+        map_activator.setChecked(false);
+        mapView.setVisibility(View.GONE);
+
+
+        mapFragment.setListener(new MapAdapter.OnTouchListener() {
+            @Override
+            public void onTouch() {
+                scrollview.requestDisallowInterceptTouchEvent(true);
+            }
+        });
+
+
+
+        map_activator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (map_activator.isChecked()){
+                    mapView.setVisibility(View.VISIBLE);
+                    int[] cords = new int[2];
+                    scrollview.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            scrollview.fullScroll(ScrollView.FOCUS_DOWN);
+                        }
+                    },400);
+                }else {
+                    mapView.setVisibility(View.GONE);
+                }
+            }
+        });
 
         autoCompleteTag.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -162,6 +245,45 @@ public class CreateProject extends AppCompatActivity{
         });
 
     }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.getUiSettings().setCompassEnabled(false);
+        mMap.getUiSettings().setAllGesturesEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                if(marker_count[0] <2){
+                    //if there is a marker already this if condition removes it
+
+                    if (m != null) {
+                        m.remove();
+                        marker_count[0] = marker_count[0] -1;
+                    }
+                    marker_count[0] = marker_count[0] +1;
+                    m = mMap.addMarker(new MarkerOptions()
+                            .position(
+                                    new LatLng(latLng.latitude,
+                                            latLng.longitude))
+                            .draggable(true).visible(true));
+                }
+            }
+
+        });
+        LatLng calif = new LatLng(36, -119);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(calif));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
+    }
+
+
+
 
     private void attemptCreate() {
         if (mAuthTask != null) {
@@ -226,17 +348,37 @@ public class CreateProject extends AppCompatActivity{
             String deadline= ""+year+"-"+month+"-"+day+"T"+hour+":"+minute+":00"+"Z";
 
 
-            mAuthTask = new saveProjectTask(category, title, description,deadline,budgetMin,budgetMax,tag_list);
+            mAuthTask = new saveProjectTask(category, title, description,deadline,budgetMin,budgetMax,tag_list,(float) m.getPosition().latitude,(float)m.getPosition().longitude);
             mAuthTask.execute((Void) null);
+        }
+    }
+
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        if(marker_count[0] <2){
+            //if there is a marker already this if condition removes it
+
+            if (m != null) {
+                m.remove();
+                marker_count[0] = marker_count[0] -1;
+            }
+            marker_count[0] = marker_count[0] +1;
+            m = mMap.addMarker(new MarkerOptions()
+                    .position(
+                            new LatLng(latLng.latitude,
+                                    latLng.longitude))
+                    .draggable(true).visible(true));
         }
     }
 
     public class saveProjectTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String category,title,description,budgetMin,budgetMax,deadline;
+        private float latitude,longitude;
         private final ArrayList<Tag_Object> tags;
 
-        public saveProjectTask(String category, String title, String description, String  deadline, String budgetMin,String budgetMax, ArrayList<Tag_Object> tags) {
+        public saveProjectTask(String category, String title, String description, String  deadline, String budgetMin,String budgetMax, ArrayList<Tag_Object> tags , float latitude , float longitude) {
             this.category= category;
             this.title = title;
             this.description = description;
@@ -244,6 +386,8 @@ public class CreateProject extends AppCompatActivity{
             this.budgetMin = budgetMin;
             this.budgetMax = budgetMax;
             this.tags = tags;
+            this.latitude=latitude;
+            this.longitude=longitude;
         }
 
         @Override
@@ -263,7 +407,7 @@ public class CreateProject extends AppCompatActivity{
 
 
 
-            Call<ProjectObject> call= RetrofitClient.getInstance().getApi().projectCreatePost("token "+LoginActivity.getCREDENTIALS()[0],title,description,turnTags_List_to_Integer_List(tag_list),Integer.parseInt(category),Integer.parseInt(budgetMin),Integer.parseInt(budgetMax),deadline);
+            Call<ProjectObject> call= RetrofitClient.getInstance().getApi().projectCreatePost("token "+LoginActivity.getCREDENTIALS()[0],title,description,turnTags_List_to_Integer_List(tag_list),Integer.parseInt(category),Integer.parseInt(budgetMin),Integer.parseInt(budgetMax),deadline, latitude, longitude);
             call.enqueue(new Callback<ProjectObject>() {
                 @Override
                 public void onResponse(@NonNull Call<ProjectObject> call, @NonNull Response<ProjectObject> response) {
@@ -303,4 +447,41 @@ public class CreateProject extends AppCompatActivity{
         return temp;
     }
 
+    public void onMapSearch(View view) {
+        EditText locationSearch = findViewById(R.id.create_project_map_editText);
+        String location = locationSearch.getText().toString();
+        List<Address> addressList = null;
+
+        if (location != null || !location.equals("")) {
+            Geocoder geocoder = new Geocoder(this);
+            try {
+                addressList = geocoder.getFromLocationName(location, 1);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if(addressList.size()>0){
+                Address address = addressList.get(0);
+                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+
+                if(marker_count[0] <2){
+                    //if there is a marker already this if condition removes it
+
+                    if (m != null) {
+                        m.remove();
+                        marker_count[0] = marker_count[0] -1;
+                    }
+                    marker_count[0] = marker_count[0] +1;
+                    m = mMap.addMarker(new MarkerOptions().position(latLng)
+                            .draggable(true).visible(true));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                }
+            }
+
+        }
+
+    }
+
 }
+

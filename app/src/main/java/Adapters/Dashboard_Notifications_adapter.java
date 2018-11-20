@@ -14,24 +14,39 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.RelativeLayout;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.client.Firebase;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import Models.Compact_Project_Object;
+import RetrofitModels.Bid_Object;
+import RetrofitModels.ProfileObject;
 import RetrofitModels.ProjectObject;
 import RetrofitModels.Tag_Object;
 import RetrofitModels.User;
 import api.RetrofitClient;
+import honeybadgersapp.honeybadgers.Activities.AddBidActivity;
+import honeybadgersapp.honeybadgers.Activities.BiddersActivity;
 import honeybadgersapp.honeybadgers.Activities.ChatActivity;
 import honeybadgersapp.honeybadgers.Activities.LoginActivity;
 import honeybadgersapp.honeybadgers.Activities.Show_Profile;
@@ -52,6 +67,7 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
     public Dashboard_Notifications_adapter(Context mContext, List<Compact_Project_Object> notification_cards) {
         this.mContext = mContext;
         this.notification_cards = notification_cards;
+
         //setHasStableIds(true);
     }
 
@@ -71,8 +87,6 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                 myDialog = new Dialog(mContext);
                 myDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 myDialog.setContentView(R.layout.project_dialog);
-                myDialog.setCancelable(true);
-                myDialog.setCanceledOnTouchOutside(true);
 
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                 lp.copyFrom(myDialog.getWindow().getAttributes());
@@ -88,18 +102,82 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                 call.enqueue(new Callback<ProjectObject>() {
                     @Override
                     public void onResponse(Call<ProjectObject> call, final Response<ProjectObject> response) {
-                        ProjectObject editResponse = response.body();
+                        final ProjectObject editResponse = response.body();
 
                         if (response.isSuccessful()) {
                             Date currentTime = Calendar.getInstance().getTime();
                             final RecyclerView_tags_adapter recyclerAdapter;
                             TextView projecttitle = myDialog.findViewById(R.id.project_dialog_project_name);
-                            TextView projectid=myDialog.findViewById(R.id.project_dialog_project_id_edit);
+                            final TextView projectid=myDialog.findViewById(R.id.project_dialog_project_id_edit);
                             TextView bid=myDialog.findViewById(R.id.project_dialog_bids_edit);
                             TextView budget=myDialog.findViewById(R.id.project_dialog_budget_edit);
                             TextView remainingtime=myDialog.findViewById(R.id.project_dialog_remaining_edit);
                             TextView description=myDialog.findViewById(R.id.project_dialog_project_descripton_edit);
+                            Button bidbutton = myDialog.findViewById(R.id.project_dialog_bid_button);
+                            ImageView map_button = myDialog.findViewById(R.id.project_dialog_maps_icon);
+                            if((editResponse.getLongitude()!=null&&editResponse.getLatitude()!=null)){
+                                map_button.setVisibility(View.VISIBLE);
+                                map_button.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        final Dialog dialog = new Dialog(mContext);
+
+                                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                                        dialog.setContentView(R.layout.dialogmap);////your custom content
+                                        MapView mMapView = dialog.findViewById(R.id.mapView);
+                                        MapsInitializer.initialize(mContext);
+
+                                        mMapView.onCreate(dialog.onSaveInstanceState());
+                                        mMapView.onResume();
+
+                                        mMapView.getMapAsync(new OnMapReadyCallback() {
+                                            @Override
+                                            public void onMapReady(final GoogleMap googleMap) {
+                                                LatLng posisiabsen = new LatLng(editResponse.getLatitude(), editResponse.getLongitude());
+                                                googleMap.addMarker(new MarkerOptions()
+                                                        .position(
+                                                                posisiabsen)
+                                                        .draggable(true).visible(true));
+                                                googleMap.moveCamera(CameraUpdateFactory.newLatLng(posisiabsen));
+                                                googleMap.getUiSettings().setZoomControlsEnabled(true);
+                                                googleMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+                                            }
+                                        });
+                                        dialog.show();
+
+                                    }
+                                });
+                            }
+                            Button commentbutton = myDialog.findViewById(R.id.project_dialog_comment_button);
+                            Button see_bidders_button= myDialog.findViewById(R.id.project_dialog_see_bidders_button);
+                            bidbutton.setVisibility( ((LoginActivity.getCREDENTIALS()[3].equals("Freelancer")&&editResponse.getUserId()!=Integer.parseInt(LoginActivity.getCREDENTIALS()[4]))?View.VISIBLE:View.GONE) );
+                            see_bidders_button.setVisibility( ((LoginActivity.getCREDENTIALS()[3].equals("Client")&&editResponse.getUserId()==Integer.parseInt(LoginActivity.getCREDENTIALS()[4]))?View.VISIBLE:View.GONE) );
+                            see_bidders_button.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    final Intent intent = new Intent(mContext, BiddersActivity.class);
+                                    intent.putExtra("project_id", vHolder.getId());
+                                    mContext.startActivity(intent);
+                                }
+                            });
+                            bidbutton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    final Intent intent = new Intent(mContext, AddBidActivity.class);
+                                    intent.putExtra("project_id", vHolder.getId());
+                                    mContext.startActivity(intent);
+                                }
+                            });
+                            commentbutton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            });
+
                             final TextView employer=myDialog.findViewById(R.id.project_dialog_employer_name_edit);
+                            final RatingBar ratingBar  = myDialog.findViewById(R.id.project_dialog_rating_bar);
                             RecyclerView skills=myDialog.findViewById(R.id.project_dialog_tags);
                             final int user_id= editResponse.getUserId();
                             final String[] user_email = new String[1];
@@ -108,7 +186,7 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                             Call<User> call2 = RetrofitClient.getInstance().getApi().getUserEmail(editResponse.getUserId());
                             call2.enqueue(new Callback<User>() {
                                 @Override
-                                public void onResponse(Call<User> call2, Response<User> response2) {
+                                public void onResponse(@NonNull Call<User> call2, @NonNull Response<User> response2) {
                                     User editResponse2 = response2.body();
                                     if (response2.isSuccessful()) {
                                         employer.setText(editResponse2.getName());
@@ -117,9 +195,24 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                                     }
                                 }
                                 @Override
-                                public void onFailure(Call<User> call2, Throwable t) {
+                                public void onFailure(@NonNull Call<User> call2, Throwable t) {
                                 }
                             });
+                            Call<List<ProfileObject>> call4 = RetrofitClient.getInstance().getApi().userProfileGet("token "+LoginActivity.getCREDENTIALS()[0],""+editResponse.getUserId());
+                            call4.enqueue(new Callback<List<ProfileObject>>() {
+                                @Override
+                                public void onResponse(@NonNull Call<List<ProfileObject>> call4, @NonNull Response<List<ProfileObject>> response2) {
+                                    List<ProfileObject> editResponse2 = response2.body();
+                                    if (response2.isSuccessful()) {
+                                        assert editResponse2 != null;
+                                        ratingBar.setRating(editResponse2.get(0).getRating());
+                                    }
+                                }
+                                @Override
+                                public void onFailure(@NonNull Call<List<ProfileObject>> call4, Throwable t) {
+                                }
+                            });
+
                             employer.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -171,7 +264,28 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                             projectid.setText(""+editResponse.getId());
                             bid.setText("0");
                             budget.setText(new StringBuilder().append(editResponse.getBudgetMin()).append("-").append(editResponse.getBudgetMax()).toString());
-                            remainingtime.setText("Not Handled");
+
+                            Calendar cal = Calendar.getInstance();
+                            Date currentdate=cal.getTime();
+                            Date deadline = new Date();
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+                            try {
+                                deadline = format.parse(editResponse.getDeadline());
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            long difference = deadline.getTime()-currentdate.getTime();
+
+
+                            long days =  ((difference / (1000*60*60*24)));
+                            long hours   =  (((difference-1000*60*60*24*days)/ (1000*60*60)));
+                            Log.d("MyTag",currentdate+"_"+difference+"_"+hours+"_"+days+"_"+editResponse.getDeadline()+"____"+deadline);
+                            if(days>=0 && hours >=0){
+                                remainingtime.setText(days+" Days and "+hours+" Hours");
+                            }else{
+                                remainingtime.setText("OVER");
+                            }
+
                             description.setText(editResponse.getDescription());
                             LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
                             final ArrayList <Tag_Object> t = new ArrayList<>();
@@ -183,7 +297,7 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                                 final int finalI = i;
                                 call3.enqueue(new Callback<Tag_Object>() {
                                     @Override
-                                    public void onResponse(Call<Tag_Object> call3, Response<Tag_Object> response3) {
+                                    public void onResponse(@NonNull Call<Tag_Object> call3, @NonNull Response<Tag_Object> response3) {
                                         Tag_Object editResponse3 = response3.body();
                                         if (response3.isSuccessful()) {
                                             Log.d("MyTag", "successful tag fetch id:" + editResponse3.getId());
@@ -192,7 +306,7 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                                         }
                                     }
                                     @Override
-                                    public void onFailure(Call<Tag_Object> call3, Throwable t) { }
+                                    public void onFailure(@NonNull Call<Tag_Object> call3, Throwable t) { }
                                 });
                             }
                             skills.setLayoutManager(horizontalLayoutManager);
@@ -203,13 +317,15 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                         }
                     }
                     @Override
-                    public void onFailure(Call<ProjectObject> call, Throwable t) {
+                    public void onFailure(@NonNull Call<ProjectObject> call, Throwable t) {
                     }
                 });
             }
         });
+
         return  vHolder;
     }
+
 
 
     @Override
@@ -272,6 +388,7 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
 
 
 
+
     public class MyViewHolder extends RecyclerView.ViewHolder{
         private int project_id;
         private TextView project_name;
@@ -279,7 +396,7 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
         private TextView updateinfo;
         private RecyclerView recyclerViewTags;
         protected View container;
-        public RelativeLayout viewBackground, viewForeground, viewBaseground;
+
 
 
         public MyViewHolder(@NonNull View itemView) {
@@ -289,8 +406,6 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
             project_highestbid = itemView.findViewById(R.id.compact_project_given_bid);
             updateinfo = itemView.findViewById(R.id.compact_project_bids_time);
             recyclerViewTags=  itemView.findViewById(R.id.compact_project_object_tags_recyclerview);
-            viewForeground = container.findViewById(R.id.view_foreground);
-
 
         }
 
@@ -306,8 +421,51 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
             project_id=viewModel.getId();
             project_name.setText(viewModel.getName());
             project_highestbid.setText(new StringBuilder().append("").append(viewModel.getHighestbid()).toString());
-            updateinfo.setText(viewModel.getNumberofbidsandlastupdate());
+            final Calendar cal = Calendar.getInstance();
+            final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
+            final long[] difference = new long[1];
+                Call<List<Bid_Object>> call0 = RetrofitClient.getInstance().getApi().getAllBidsOfProject("token " + LoginActivity.getCREDENTIALS()[0],project_id);
+                call0.enqueue(new Callback<List<Bid_Object>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<List<Bid_Object>> call0, @NonNull Response<List<Bid_Object>> response3) {
+                        final List<Bid_Object> editresponse = response3.body();
+                        for (int j = 0; j < editresponse.size(); j++) {
+                            Date currentdate = cal.getTime();
+                            Date creation = null;
+                            try {
+                                creation = format.parse(editresponse.get(j).getUpdatedAt());
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }if(difference[0]==0){
+                                difference[0] =  currentdate.getTime()-creation.getTime();
+                            }
+                            else if (currentdate.getTime() -creation.getTime() < difference[0]) {
+                                difference[0] =  currentdate.getTime()-creation.getTime();
+                            }
+                        }
 
+
+                        long days = ((difference[0] / (1000 * 60 * 60 * 24)));
+                        long hours = (((difference[0] - 1000 * 60 * 60 * 24 * days) / (1000 * 60 * 60)));
+                        long minutes = ((difference[0] - 1000 * 60 * 60 * 24 * days - 1000 * 60 * 60 * hours) / (1000 * 60));
+                        String time = "";
+                        if (editresponse.size() > 0) {
+                            if (days > 0) {
+                                time += days + " days ";
+                            }
+                            if (hours > 0) {
+                                time += hours + " hours ";
+                            }
+                            if (minutes > 0) {
+                                time += minutes + " minutes ago ";
+                            }
+                        }
+                        updateinfo.setText(String.format("%d bids - %s", editresponse.size(), time));
+                        updateinfo.setVisibility(View.VISIBLE);
+                    }
+                    @Override
+                    public void onFailure(@NonNull Call<List<Bid_Object>> call0, @NonNull Throwable t) {}
+                });
 
             RecyclerView_tags_adapter recyclerAdapter = new RecyclerView_tags_adapter(mContext, viewModel.getTags());
             LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
@@ -315,15 +473,13 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
             recyclerViewTags.setAdapter(recyclerAdapter);
 
         }
-
-
-
         public void clearAnimation(){
             container.clearAnimation();
         }
 
 
     }
+
 
 
 }

@@ -1,24 +1,29 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="user_email"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:id="@+id/commet_user_email"
-        android:textColor="#FF00266C"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
-        android:textSize="15sp"
-        android:id="@+id/comment_body"
-        android:text="comment"/>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-</LinearLayout>
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentStart="true"
+    android:id="@+id/comment_user_name"
+    android:textStyle="normal|bold" />
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignBottom="@+id/comment_user_name"
+    android:layout_alignParentEnd="true"
+    android:textSize="10sp"
+    android:id="@+id/comment_time" />
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/comment_user_name"
+    android:layout_alignParentStart="true"
+    android:layout_marginTop="5dp"
+    android:id="@+id/comment_text_edit"
+    android:textSize="18sp" />
+</RelativeLayout>

@@ -39,6 +39,7 @@ public class CreateAccount extends AppCompatActivity {
     private CreateAccount.UserLogUpTask mAuthTask = null;
     // UI references.
     private AutoCompleteTextView mEmailView;
+    private AutoCompleteTextView mUsername;
     private EditText mPasswordView;
     private EditText mPasswordConfirmView;
 
@@ -50,11 +51,11 @@ public class CreateAccount extends AppCompatActivity {
         Firebase.setAndroidContext(this);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         textanimation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.main_page_button_anim);
-
+        overridePendingTransition (0,0);
         setContentView(R.layout.create_account);
         // Set up the login form.
         mEmailView = findViewById(R.id.email_account_create);
-
+        mUsername =findViewById(R.id.username_account_create);
         //Prevent keyboard from automatically opening
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -73,6 +74,8 @@ public class CreateAccount extends AppCompatActivity {
 
         mEmailView.setAnimation(textanimation);
         mEmailView.startAnimation(textanimation);
+        mUsername.setAnimation(textanimation);
+        mUsername.startAnimation(textanimation);
         mPasswordView.setAnimation(textanimation);
         mPasswordView.startAnimation(textanimation);
         mPasswordConfirmView.setAnimation(textanimation);
@@ -101,10 +104,12 @@ public class CreateAccount extends AppCompatActivity {
 
         // Reset errors.
         mEmailView.setError(null);
+        mUsername.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
+        String username = mUsername.getText().toString();
         String password = mPasswordView.getText().toString();
         String passwordConfirm = mPasswordConfirmView.getText().toString();
 
@@ -133,6 +138,11 @@ public class CreateAccount extends AppCompatActivity {
             focusView = mEmailView;
             cancel = true;
         }
+        if (TextUtils.isEmpty(username)) {
+            mUsername.setError(getString(R.string.error_field_required));
+            focusView = mUsername;
+            cancel = true;
+        }
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -141,7 +151,7 @@ public class CreateAccount extends AppCompatActivity {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mAuthTask = new UserLogUpTask(email, password);
+            mAuthTask = new UserLogUpTask(email,username, password);
             mAuthTask.execute((Void) null);
         }
     }
@@ -164,11 +174,13 @@ public class CreateAccount extends AppCompatActivity {
     public class UserLogUpTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
+        private final String mUsername;
         private final String mPassword;
 
-        UserLogUpTask(String email, String password) {
+        UserLogUpTask(String email,String username, String password) {
             mEmail = email;
             mPassword = password;
+            mUsername = username;
         }
 
         @Override
@@ -192,7 +204,7 @@ public class CreateAccount extends AppCompatActivity {
             if (success) {
               FirebaseAuth.getInstance().createUserWithEmailAndPassword(mEmail,mPassword);
 
-                Call<User> call= RetrofitClient.getInstance().getApi().userRegister(mEmail,"Random",mPassword);
+                Call<User> call= RetrofitClient.getInstance().getApi().userRegister(mEmail,mUsername,mPassword);
                 call.enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, final Response<User> response) {

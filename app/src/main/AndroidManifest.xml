@@ -3,6 +3,8 @@
     package="honeybadgersapp.honeybadgers">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -17,15 +19,19 @@
         android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <uses-library android:name="com.google.android.maps" />
+
         <activity
             android:name=".Activities.SplashActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.LoginActivity"
+        <activity
+            android:name=".Activities.LoginActivity"
             android:alwaysRetainTaskState="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -33,7 +39,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.CreateAccount"
+        <activity
+            android:name=".Activities.CreateAccount"
             android:alwaysRetainTaskState="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -41,25 +48,27 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.EditProfile"
+        <activity
+            android:name=".Activities.EditProfile"
             android:alwaysRetainTaskState="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".Activities.DashBoard"
             android:alwaysRetainTaskState="true"
-            android:label="@string/title_activity_dash_board"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:label="@string/title_activity_dash_board">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.CreateProject"
+        <activity
+            android:name=".Activities.CreateProject"
             android:alwaysRetainTaskState="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -67,7 +76,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.InitialLogin"
+        <activity
+            android:name=".Activities.InitialLogin"
             android:alwaysRetainTaskState="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -75,38 +85,68 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.SearchActivity"
+        <activity
+            android:name=".Activities.SearchActivity"
             android:alwaysRetainTaskState="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
+        <activity
+            android:name=".Activities.BiddersActivity"
+            android:alwaysRetainTaskState="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Activities.AddBidActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".Activities.MyProjectsActivity" />
-        <activity android:name=".Activities.ChatActivity">
-        </activity>
-        <activity
-            android:name="FirebaseClasses.OnlineUsers">
+        <activity android:name=".Activities.ChatActivity" />
+        <activity android:name="FirebaseClasses.OnlineUsers">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="FirebaseClasses.GetUserName">
+        <activity android:name=".Activities.Show_Profile">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Activities.Show_Profile">
+        <activity android:name=".Activities.EditProject">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
 
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".Activities.MapsActivity"
+            android:label="@string/title_activity_maps" />
     </application>
 
 </manifest>

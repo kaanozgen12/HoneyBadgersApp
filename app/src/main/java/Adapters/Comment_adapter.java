@@ -77,13 +77,15 @@ public class Comment_adapter extends RecyclerView.Adapter<Comment_adapter.MyView
         private int comment_id;
         private TextView comment_user_email;
         private TextView comment_body;
+        private TextView comment_time;
 
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            comment_user_email = itemView.findViewById(R.id.commet_user_email);
-            comment_body = itemView.findViewById(R.id.comment_body);
+            comment_user_email = itemView.findViewById(R.id.comment_user_name);
+            comment_body = itemView.findViewById(R.id.comment_text_edit);
+            comment_time = itemView.findViewById(R.id.comment_time);
 
         }
 

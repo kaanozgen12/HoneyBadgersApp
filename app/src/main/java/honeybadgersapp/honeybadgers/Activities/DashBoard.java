@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -19,6 +22,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -31,6 +35,9 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +55,6 @@ import retrofit2.Response;
 public class DashBoard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Toolbar mToolbar;
     private DrawerLayout mDrawerlayout;
-    private NavigationView menu;
     private ActionBarDrawerToggle mToggle;
     private RecyclerView DashBoardRecyclerView1;
     private RecyclerView DashBoardRecyclerView2;
@@ -64,20 +70,12 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Firebase.setAndroidContext(this);
-
+        overridePendingTransition (0,0);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_dash_board);
         Firebase.setAndroidContext(this);
         mDrawerlayout = findViewById(R.id.drawerLayout );
-        LoginActivity.setCREDENTIALSROLE("Client");
         final RelativeLayout board  = findViewById(R.id.dashboard_board);
-        menu = findViewById(R.id.navigation_view);
-        if(LoginActivity.getCREDENTIALS()[3].equals("Freelancer")){
-            menu.inflateMenu(R.menu.navigation_drawer_items_freelancer);
-        }else if(LoginActivity.getCREDENTIALS()[3].equals("Client")){
-            menu.inflateMenu(R.menu.navigation_drawer_items_client);
-        }
-
         setNavigationViewListener();
         headerView =navigationView.getHeaderView(0);
         mToggle = new ActionBarDrawerToggle(this,mDrawerlayout,R.string.Open,R.string.Close);
@@ -121,6 +119,16 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         user_email= headerView.findViewById(R.id.useremail_text);
         user_name= headerView.findViewById(R.id.username_text);
         user_role = headerView.findViewById(R.id.switch_profile);
+        user_role.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                user_role.setText(((LoginActivity.getCREDENTIALS()[3].equals("Freelancer"))?"Client":"Freelancer"));
+                LoginActivity.getCREDENTIALS()[3]=((LoginActivity.getCREDENTIALS()[3].equals("Freelancer"))?"Client":"Freelancer");
+                mDrawerlayout.closeDrawer(Gravity.END,true);
+                setNavigationViewListener();
+
+            }
+        });
         user_name.setText(LoginActivity.getCREDENTIALS()[2]);
 
 
@@ -146,7 +154,13 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
 
     private void setNavigationViewListener() {
         navigationView =findViewById(R.id.navigation_view);
+        navigationView.getMenu().clear();
         navigationView.setNavigationItemSelectedListener(this);
+        if(LoginActivity.getCREDENTIALS()[3].equals("Freelancer")){
+            navigationView.inflateMenu(R.menu.navigation_drawer_items_freelancer);
+        }else if(LoginActivity.getCREDENTIALS()[3].equals("Client")){
+            navigationView.inflateMenu(R.menu.navigation_drawer_items_client);
+        }
     }
 
     public boolean onNavigationItemSelected( MenuItem item) {
@@ -205,15 +219,18 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
     @Override
     protected void onResume() {
         super.onResume();
+
+
+
+
         Call<List<ProfileObject>> call= RetrofitClient.getInstance().getApi().userProfileGet("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4]);
         call.enqueue(new Callback<List<ProfileObject>>() {
             @Override
             public void onResponse(Call<List<ProfileObject>> call, Response<List<ProfileObject>> response) {
                 List<ProfileObject> editResponse = response.body();
                 if (response.isSuccessful()) {
-                    assert editResponse != null;
-                    if (editResponse.get(0).getAvatar() != null) {
-                        //logo.setBackground((Drawable) editResponse.getAvatar());
+                     if (editResponse != null && editResponse.size() >0 && editResponse.get(0).getAvatar() != null) {
+                        new SendHttpRequestTask().execute(editResponse.get(0).getAvatar());
                     }
                 }
             }
@@ -229,6 +246,30 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
             user_role.setText(LoginActivity.getCREDENTIALS()[3]);
         }if(LoginActivity.getCREDENTIALS()[2]!=null){
             user_name.setText(LoginActivity.getCREDENTIALS()[2]);
+        }
+    }
+
+    public class SendHttpRequestTask extends AsyncTask<String, Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            try {
+                URL url = new URL(params[0]);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                Bitmap myBitmap = BitmapFactory.decodeStream(input);
+                return myBitmap;
+            }catch (Exception e){
+                //
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            if(result!=null)
+            logo.setImageBitmap(result);
         }
     }
 

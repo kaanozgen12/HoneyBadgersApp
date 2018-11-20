@@ -75,16 +75,40 @@
             android:layout_below="@id/show_profile_rating_layout"
             android:id="@+id/show_profile_description"
             />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:orientation="vertical"
+            android:id="@+id/show_profile_description_box"
+            android:background="@drawable/textinputborder"
+            android:layout_below="@id/show_profile_description">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="7dp"
+                android:textSize="15sp"
+                android:text="description"
+                android:id="@+id/show_profile_description_edit"
+                />
+        </LinearLayout>
         <TextView
             android:layout_width="match_parent"
-            android:layout_margin="10dp"
-            android:textSize="15sp"
-            android:background="@drawable/textinputborder"
-            android:text="description"
             android:layout_height="wrap_content"
-            android:layout_below="@id/show_profile_description"
-            android:id="@+id/show_profile_description_edit"
+            android:layout_marginStart="7dp"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_below="@+id/show_profile_description_box"
+            android:text="Comments"
+            android:id="@+id/show_profile_comments"
             />
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/show_profile_comments">
+
+        </android.support.v7.widget.RecyclerView>
+
     </RelativeLayout>
 
 </ScrollView>

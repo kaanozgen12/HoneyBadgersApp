@@ -50,6 +50,20 @@ public class ProjectObject implements Serializable
     @SerializedName("deadline")
     @Expose
     private String deadline;
+    @SerializedName("file")
+    @Expose
+    private String file;
+    @SerializedName("latitude")
+    @Expose
+    private Float latitude;
+    @SerializedName("longitude")
+    @Expose
+    private Float longitude;
+    @SerializedName("accepted_bid")
+    @Expose
+    private int accepted_bid;
+
+
     private final static long serialVersionUID = -515661806656703852L;
 
     /**
@@ -72,8 +86,12 @@ public class ProjectObject implements Serializable
      * @param categories
      * @param deadline
      * @param budgetMin
+     * @param file
+     * @param latitude
+     * @param longitude
+     * @param accepted_bid
      */
-    public ProjectObject(int id, int userId, String title, String description, String createdAt, String updatedAt, int[] tags, int categories, int budgetMin, int budgetMax, String deadline) {
+    public ProjectObject(int id, int userId, String title, String description, String createdAt, String updatedAt, int[] tags, int categories, int budgetMin, int budgetMax, String deadline, String file, float latitude, float longitude, int accepted_bid) {
         super();
         this.id = id;
         this.userId = userId;
@@ -86,6 +104,27 @@ public class ProjectObject implements Serializable
         this.budgetMin = budgetMin;
         this.budgetMax = budgetMax;
         this.deadline = deadline;
+        this.file= file;
+        this.latitude= latitude;
+        this.longitude = longitude;
+        this.accepted_bid= accepted_bid;
+    }
+
+
+    public Float getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Float latitude) {
+        this.latitude = latitude;
+    }
+
+    public Float getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Float longitude) {
+        this.longitude = longitude;
     }
 
     public int getId() {
@@ -136,6 +175,24 @@ public class ProjectObject implements Serializable
         this.updatedAt = updatedAt;
     }
 
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
+
+
+
+    public int getAccepted_bid() {
+        return accepted_bid;
+    }
+
+    public void setAccepted_bid(int accepted_bid) {
+        this.accepted_bid = accepted_bid;
+    }
 
     public int[] getTags() {
         return tags;

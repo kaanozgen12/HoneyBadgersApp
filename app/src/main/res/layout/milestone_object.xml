@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:clickable="false"
+    android:background="@drawable/textinputborder">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/milestone_object_amount_edit"
+        android:text="Amount"
+        android:visibility="invisible"
+        android:layout_alignParentStart="true"
+        android:textSize="13sp"
+        android:clickable="false"
+
+        />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/milestone_object_amount_edit"
+        android:layout_toStartOf="@+id/milestone_object_status_edit">
+        <TextView
+            android:layout_margin="3dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/milestone_object_description_edit"
+            android:clickable="false"
+            android:text="Description"
+            android:visibility="invisible"
+            android:gravity="center"
+            android:textSize="13sp"/>
+    </ScrollView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/milestone_object_status_edit"
+        android:text="Status"
+        android:clickable="false"
+        android:visibility="invisible"
+        android:layout_toStartOf="@+id/milestone_object_activities_edit"
+        android:layout_marginEnd="10dp"
+        android:textSize="13sp"/>
+    <Spinner
+        android:id="@+id/milestone_object_activities_edit"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:visibility="invisible"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:singleLine="true"
+        />
+</RelativeLayout>

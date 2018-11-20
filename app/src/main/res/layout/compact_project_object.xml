@@ -10,13 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/view_foreground"
-        android:background="#fff">
+        android:background="#ffffff">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/compact_project_object_name"
             android:text="Project Name"
+            android:textColor="#545454"
             android:layout_margin="5dp"
             android:clickable="false"
             android:textSize="18sp"
@@ -45,17 +46,16 @@
                 android:textSize="25sp"
                 android:layout_marginStart="5dp"
                 android:clickable="false"
-                android:textColor="#64d116"
+                android:textColor="#3b8e00"
                 android:textStyle="bold"
-                android:drawableEnd="@drawable/moneysign"
                 android:drawingCacheQuality="high">
             </TextView>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="invisible"
                 android:id="@+id/compact_project_bids_time"
                 android:layout_alignBottom="@id/compact_project_given_bid"
-                android:text="8 bids- 30 minutes ago"
                 android:layout_alignEnd="@id/compact_project_given_bid"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="5dp"

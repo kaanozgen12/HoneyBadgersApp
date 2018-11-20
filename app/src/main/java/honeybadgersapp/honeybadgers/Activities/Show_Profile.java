@@ -38,6 +38,7 @@ public class Show_Profile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        overridePendingTransition (0,0);
         setContentView(R.layout.see_profile);
         mName =  findViewById(R.id.show_profile_name);
         mBio=findViewById(R.id.show_profile_description_edit);
