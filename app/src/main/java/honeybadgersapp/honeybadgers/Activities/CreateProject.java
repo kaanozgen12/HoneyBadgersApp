@@ -27,7 +27,6 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -61,6 +60,7 @@ public class CreateProject extends MapsActivity implements OnMapReadyCallback, G
     String tags[];
     ArrayAdapter<String> TagAdapter = null;
     private AutoCompleteTextView autoCompleteTag;
+    private TextView mcategory;
     private ScrollView scrollview;
     private EditText mTitle;
     private EditText mBody;
@@ -70,11 +70,12 @@ public class CreateProject extends MapsActivity implements OnMapReadyCallback, G
     private EditText mBudgetMax;
     private Button mButton;
     private TextView mSkillsTitle;
-    private Spinner mSpinner;
+    //private Spinner mSpinner;
     private CheckBox map_activator;
     private GoogleMap mMap;
     private View mapView;
     private String category = "";
+    private String categoryname = "";
     private Marker m;
     private View.OnTouchListener mListener;
     final int[] marker_count = {0};
@@ -121,7 +122,7 @@ public class CreateProject extends MapsActivity implements OnMapReadyCallback, G
         // TagAdapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_item, tags);
         autoCompleteTag = findViewById(R.id.create_project_tags_edit);
         map_activator = findViewById(R.id.create_project_map_switch);
-        scrollview= findViewById(R.id.create_project_scroll_view);
+        //scrollview= findViewById(R.id.create_project_scroll_view);
         mapView = findViewById(R.id.create_project_map_edit);
         autoCompleteTag.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -215,11 +216,12 @@ public class CreateProject extends MapsActivity implements OnMapReadyCallback, G
                 return false;
             }
         });
-        mSpinner = findViewById(R.id.create_project_category_edit);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Categories, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinner.setAdapter(adapter);
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+        //mSpinner = findViewById(R.id.create_project_category_edit);
+        //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Categories, android.R.layout.simple_spinner_item);
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //mSpinner.setAdapter(adapter);
+        /*mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 category = ""+(i+1);
@@ -229,7 +231,12 @@ public class CreateProject extends MapsActivity implements OnMapReadyCallback, G
             public void onNothingSelected(AdapterView<?> adapterView) {
                 category = "1";
             }
-        });
+        });*/
+        mcategory = findViewById(R.id.create_project_category_user);
+        category = String.format("%d", getIntent().getExtras().getInt("category"));
+
+        categoryname = getIntent().getExtras().getString("categoryname");
+        mcategory.setText(categoryname);
         mTitle = findViewById(R.id.create_project_title_edit);
         mBody = findViewById(R.id.create_project_description_edit);
         mDeadlineDate = findViewById(R.id.date_picker);

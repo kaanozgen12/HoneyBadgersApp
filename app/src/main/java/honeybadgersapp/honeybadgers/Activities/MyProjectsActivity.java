@@ -1,5 +1,4 @@
 package honeybadgersapp.honeybadgers.Activities;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.DialogInterface;
@@ -15,6 +14,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,7 +43,7 @@ public class MyProjectsActivity extends AppCompatActivity {
     RecyclerView mRecylerView;
     Dashboard_Notifications_adapter recyclerAdapter;
     public Timer timer= new Timer();
-
+    private Button mNewProjectButton;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +54,16 @@ public class MyProjectsActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecylerView.setLayoutManager(linearLayoutManager);
         mRecylerView.setAdapter(recyclerAdapter);
+        mNewProjectButton = (Button) findViewById(R.id.new_project_button);
+        mNewProjectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MyProjectsActivity.this, CategoryActivity.class);
+                //i.putExtra("project_id", "-1");
+                startActivity(i);
+                finish();
+            }
+        });
 
         Call<List<Accepted_Project>> call2 = RetrofitClient.getInstance().getApi().getMyAcceptedProjects(Integer.parseInt(LoginActivity.getCREDENTIALS()[4]));
         call2.enqueue(new Callback<List<Accepted_Project>>() {

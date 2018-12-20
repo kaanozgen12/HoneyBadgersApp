@@ -32,4 +32,11 @@
         android:indeterminateBehavior="cycle"
         android:layout_centerInParent="true"
         android:visibility="gone" />
+    <Button
+        android:id="@+id/new_project_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/my_projects_recyclerview"
+        android:layout_centerHorizontal="true"
+        android:text="Create a new Project" />
 </RelativeLayout>
