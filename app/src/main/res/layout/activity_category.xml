@@ -146,7 +146,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="8dp"
                         android:layout_weight="1.5"
-                        android:src="@drawable/icons8_language_100" />
+                        android:src="@drawable/icons8_language" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -181,7 +181,7 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="8dp"
                         android:layout_weight="1.5"
-                        android:src="@drawable/icons8_experiment_100" />
+                        android:src="@drawable/icons8_experiment" />
 
                     <TextView
                         android:layout_width="match_parent"
