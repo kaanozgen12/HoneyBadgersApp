@@ -30,7 +30,7 @@
                     android:id="@+id/create_project_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Which Category do you think your project belongs to:"
+                    android:text="Select a category that your project belongs to:"
                     android:textSize="14sp"
                     android:layout_marginStart="10dp"
                     android:layout_gravity="top"/>
@@ -83,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
                     android:layout_marginStart="10dp"
-                    android:text="Enter some skills related to your project"
+                    android:text="Enter the skills required for your project"
                     />
                 <LinearLayout
                     android:layout_width="wrap_content"
