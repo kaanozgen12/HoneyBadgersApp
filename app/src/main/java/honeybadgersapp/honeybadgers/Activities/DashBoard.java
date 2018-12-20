@@ -200,8 +200,7 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
                 break;
             }
             case R.id.item_navigation_drawer_create_project: {
-                Intent i = new Intent(DashBoard.this, CreateProject.class);
-                i.putExtra("project_id","-1");
+                Intent i = new Intent(DashBoard.this, CategoryActivity.class);
                 startActivity(i);
                 break;
             }

@@ -30,18 +30,21 @@
                     android:id="@+id/create_project_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Select a category that your project belongs to:"
+                    android:text="Category"
                     android:textSize="14sp"
                     android:layout_marginStart="10dp"
                     android:layout_gravity="top"/>
-
-                <Spinner
-                    android:id="@+id/create_project_category_edit"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/create_project_category_user"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:singleLine="true"
-                    />
+                    android:text="None"
+                    android:textColor="@color/item_name"
+                    android:textSize="15sp"
+                    android:layout_marginStart="0dp"
+                    android:layout_gravity="center"/>
+
+
                 <TextView
                     android:id="@+id/create_project_title"
                     android:layout_width="wrap_content"
@@ -83,7 +86,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
                     android:layout_marginStart="10dp"
-                    android:text="Enter the skills required for your project"
+                    android:text="Enter some skills related to your project"
                     />
                 <LinearLayout
                     android:layout_width="wrap_content"
