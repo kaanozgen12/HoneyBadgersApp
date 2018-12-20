@@ -80,15 +80,16 @@
                     android:max="5" />
 
             </LinearLayout>
+
             <TextView
+                android:id="@+id/show_profile_description"
                 android:layout_width="match_parent"
-                android:textSize="15sp"
-                android:text="Description"
-                android:textStyle="bold"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/show_profile_rating_layout"
-                android:id="@+id/show_profile_description"
-                />
+                android:layout_marginLeft="7dp"
+                android:text="Description:"
+                android:textSize="15sp"
+                android:textStyle="bold" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -106,16 +107,16 @@
                     android:id="@+id/show_profile_description_edit"
                     />
             </LinearLayout>
+
             <TextView
+                android:id="@+id/show_profile_comments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="7dp"
-                android:textSize="15sp"
-                android:textStyle="bold"
                 android:layout_below="@+id/show_profile_description_box"
-                android:text="Comments"
-                android:id="@+id/show_profile_comments"
-                />
+                android:layout_marginStart="7dp"
+                android:text="Comments:"
+                android:textSize="15sp"
+                android:textStyle="bold" />
         </RelativeLayout>
 
     </ScrollView>
