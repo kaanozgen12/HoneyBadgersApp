@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="200dip"
+    android:layout_height="240dp"
     android:orientation="vertical"
     android:background="@drawable/material_design_header"
     android:paddingStart="20dip">
@@ -27,6 +27,14 @@
         android:layout_marginTop="10dp"
         android:text="Username"
         android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/money_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="0"
+        android:textStyle="bold"
+        android:drawableRight="@drawable/hmoneysign"/>
     <Switch
         android:id="@+id/switch_profile"
         android:layout_width="match_parent"

@@ -7,19 +7,32 @@ import RetrofitModels.Tag_Object;
 public class Compact_Project_Object {
     private  int id;
     private String name;
-    private int highestbid;
-    private String numberofbidsandlastupdate;
+    private String highestbid;
+    private String numberofbidsandlastupdate ;
+    private boolean isVerified;
+    private boolean isMoneySignFirst;
+    private boolean isApproved;
     private ArrayList<Tag_Object> tags;
 
 
-    public Compact_Project_Object(int id, String name, int highestbid, String numberofbidsandlastupdate, ArrayList<Tag_Object> tags) {
+    public Compact_Project_Object(int id, String name, String highestbid, String numberofbidsandlastupdate, ArrayList<Tag_Object> tags,boolean isMoneySignFirst, boolean isApproved) {
         this.id = id;
         this.name = name;
         this.highestbid = highestbid;
-        this.numberofbidsandlastupdate = numberofbidsandlastupdate;
+        this.numberofbidsandlastupdate = "0 bids - ";
         this.tags = tags;
+        this.isMoneySignFirst=isMoneySignFirst;
+        this.isApproved=isApproved;
     }
 
+
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+    public void setVerified(boolean verified) {
+        isVerified = verified;
+    }
 
     public int getId() {
         return id;
@@ -37,11 +50,11 @@ public class Compact_Project_Object {
         this.name = name;
     }
 
-    public int getHighestbid() {
+    public String getHighestbid() {
         return highestbid;
     }
 
-    public void setHighestbid(int highestbid) {
+    public void setHighestbid(String highestbid) {
         this.highestbid = highestbid;
     }
 
@@ -61,5 +74,19 @@ public class Compact_Project_Object {
         this.tags = tags;
     }
 
+    public boolean isMoneySignFirst() {
+        return isMoneySignFirst;
+    }
 
+    public void setMoneySignFirst(boolean moneySignFirst) {
+        isMoneySignFirst = moneySignFirst;
+    }
+
+    public boolean isApproved() {
+        return isApproved;
+    }
+
+    public void setApproved(boolean approved) {
+        isApproved = approved;
+    }
 }

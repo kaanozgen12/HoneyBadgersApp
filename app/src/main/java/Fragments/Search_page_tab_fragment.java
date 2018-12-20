@@ -127,6 +127,17 @@ public class Search_page_tab_fragment extends Fragment {
         mVisibleToUserFlag = null;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        myrecyclerview.setAdapter(null);
+        try {
+            recyclerAdapter.getTimer().cancel();
+            recyclerAdapter.getTimer().purge();
+        }catch (NullPointerException e){}
+
+    }
+
     public  void addObject(Compact_Project_Object a){
         list_of_projects.add(a);
     }

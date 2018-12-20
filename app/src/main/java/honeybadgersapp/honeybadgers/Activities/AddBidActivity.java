@@ -21,6 +21,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,13 +68,14 @@ public class AddBidActivity extends AppCompatActivity {
                 for (int x= 0 ; x<milestones.size(); x++){
                     temp+= milestones.get(x).getAmount();
                 }
-                Call<Bid_Object> call6 = RetrofitClient.getInstance().getApi().bidOnProject("token "+LoginActivity.getCREDENTIALS()[0],getIntent().getIntExtra("project_id",-1),description.getText().toString(),temp);
+                Call<Bid_Object> call6 = RetrofitClient.getInstance().getApi().bidOnProject("token "+LoginActivity.getCREDENTIALS()[0],Integer.parseInt(getIntent().getStringExtra("project_id")),description.getText().toString(),temp);
                 call6.enqueue(new Callback<Bid_Object>() {
                     @Override
                     public void onResponse(@NonNull Call<Bid_Object> call6, @NonNull Response<Bid_Object> response2) {
                         Bid_Object editResponse2 = response2.body();
                         if (response2.isSuccessful()) {
                             Log.d("MyTag","SUCCESSFUL BID CREATION");
+                            Toast.makeText(getBaseContext(),"You have successfully bid",Toast.LENGTH_SHORT).show();
 
                             for (int k= 0; k< milestones.size(); k++){
                                 Call<Milestone_Object> call0 = RetrofitClient.getInstance().getApi().milestoneOnBid("token "+LoginActivity.getCREDENTIALS()[0],editResponse2.getId(),milestones.get(k).getDescription(),milestones.get(k).getAmount(),milestones.get(k).getDeadline());
@@ -95,7 +97,7 @@ public class AddBidActivity extends AppCompatActivity {
                         Log.d("MyTag","UNSUCCESSFUL BID CREATION");
                     }
                 });
-                //Toast.makeText( "You have successfully bid on the project", Toast.LENGTH_SHORT).show();
+                finish();
             }
         });
 
@@ -145,7 +147,7 @@ public class AddBidActivity extends AppCompatActivity {
                             int minute = deadlineTime.getCurrentMinute();
                             String deadline= ""+year+"-"+month+"-"+day+"T"+hour+":"+minute+":00"+"Z";
 
-                            milestones.add(new Milestone_Object(Integer.parseInt(amount.getText().toString()),description.getText().toString(),deadline));
+                            milestones.add(new Milestone_Object(Integer.parseInt(amount.getText().toString()),description.getText().toString(),deadline,"imaginary"));
                             recyclerAdapter.notifyDataSetChanged();
                             myDialog2.dismiss();
                         }

@@ -12,8 +12,9 @@
         <android.support.design.widget.TabLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabGravity="center"
             android:id="@+id/choose_bidder_tablayout_id"
+            app:tabGravity="center"
+            app:tabMode="scrollable"
             app:tabIndicatorColor="#000"
             app:tabTextColor="#000"
             android:background="#FFB600"/>

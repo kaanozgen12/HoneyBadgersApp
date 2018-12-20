@@ -3,7 +3,10 @@ package api;
 import java.util.ArrayList;
 import java.util.List;
 
+import RetrofitModels.Accepted_Milestone;
+import RetrofitModels.Accepted_Project;
 import RetrofitModels.Bid_Object;
+import RetrofitModels.Comment_Object;
 import RetrofitModels.EditProfileResponse;
 import RetrofitModels.LoginResponse;
 import RetrofitModels.Milestone_Object;
@@ -11,18 +14,20 @@ import RetrofitModels.ProfileObject;
 import RetrofitModels.ProjectObject;
 import RetrofitModels.Tag_Object;
 import RetrofitModels.User;
+import RetrofitModels.Wallet;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -47,17 +52,72 @@ public interface Api {
     @GET("/api/v1/user/register/")
     Call<List<User>> user_id(@Query("search") String email);
 
-    @GET("api/v1/user/profile/")
-    Call<List<ProfileObject>> userProfileGet(@Header("Authorization") String token,@Query("search") String id);
+    @GET("/api/v1/user/register/{id}/")
+    Call<User> user_name_from_id(@Path("id") int user_id);
+
+    @GET("/api/v1/comment/freelancer/")
+    Call<List<Comment_Object>> freelancer_comment(@Query("id") int profile_id);
+    @GET("/api/v1/comment/client/")
+    Call<List<Comment_Object>> client_comment(@Query("id") int profile_id);
+
+
+
+    @POST("/api/v1/acceptedproject/accept")
+    Call<ResponseBody> accept_bidder(@Body RequestBody bid_id);
+
+    @GET("api/v1/user/freelancerprofile/")
+    Call<List<ProfileObject>> freelancerProfileGet(@Header("Authorization") String token,@Query("search") String id);
+    @GET("api/v1/user/clientprofile/")
+    Call<List<ProfileObject>> clientProfileGet(@Header("Authorization") String token,@Query("search") String id);
 
     @GET("api/v1/project/create/")
     Call<List<ProjectObject>> getMyProjects(@Query("search") int user_id);
 
+    @GET("/api/v1/acceptedproject/create/")
+    Call<List<Accepted_Project>> getMyAcceptedProjects(@Query("search") int user_id);
+
+    @GET("api/v1/acceptedproject/create/{id}/")
+    Call<Accepted_Project> getAcceptedProjectById(@Path("id") int accepted_project_id);
+
+    @GET("/api/v1/acceptedproject/milestone/")
+    Call<List<Accepted_Milestone>> getAcceptedMilestonesById(@Query("search") int accepted_project_id);
+
+
+    @PATCH("/api/v1/acceptedproject/milestone/{id}")
+    Call<ResponseBody> verified_milestone_complete(@Header("Authorization") String token,@Path("id") String id,
+                                                     @Body RequestBody is_done);
+
+    @Multipart
+    @PATCH("api/v1/user/freelancerprofile/{id}/")
+    Call<ProfileObject> freelancerProfileUpdate(@Header("Authorization") String token,@Path("id") String id,
+                                                @Part MultipartBody.Part avatar,
+                                                @Part("body") RequestBody body);
+
+    @Multipart
+    @PATCH("api/v1/user/clientprofile/{id}/")
+    Call<ProfileObject> clientProfileUpdate(@Header("Authorization") String token,@Path("id") String id,
+                                            @Part MultipartBody.Part avatar,
+                                            @Part("body") RequestBody body);
     @FormUrlEncoded
-    @PUT("api/v1/user/profile/{id}/")
-    Call<ProfileObject> userProfileUpdate(@Header("Authorization") String token,@Path("id") String id, @Field("name") String name,
-                                          @Field("avatar") String avatar,
-                                          @Field("body") String body);
+    @POST("/api/v1/comment/freelancer/")
+    Call<Void> post_freelancer_comment(@Header("Authorization") String token, @Field("profile_id") int profile_id,
+                                  @Field("description") String description);
+    @FormUrlEncoded
+    @POST("/api/v1/comment/client/")
+    Call<Void> post_client_comment(@Header("Authorization") String token, @Field("profile_id") int profile_id,
+                                  @Field("description") String description);
+
+
+    @FormUrlEncoded
+    @PATCH("api/v1/user/freelancerprofile/{id}/")
+    Call<ProfileObject> freelancerProfileUpdateImageless(@Header("Authorization") String token,@Path("id") String id,
+                                                @Field("body") String body);
+
+    @FormUrlEncoded
+    @PATCH("api/v1/user/clientprofile/{id}/")
+    Call<ProfileObject> clientProfileUpdateImageless(@Header("Authorization") String token,@Path("id") String id,
+                                            @Field("body") String body);
+
 
     @FormUrlEncoded
     @POST("api/v1/project/bid/")
@@ -101,7 +161,8 @@ public interface Api {
     Call<User> userRegister(
             @Field("email") String email,
             @Field("name") String name,
-            @Field("password") String password
+            @Field("password") String password,
+            @Field("username") String username
 
     );
 
@@ -132,6 +193,11 @@ public interface Api {
             @Path("id") int id
 
     );
+    @GET("api/v1/payment/wallet/{id}/")
+    Call<Wallet> getUserWallet(
+            @Path("id") int id
+    );
+
     @GET("api/v1/project/tag/")
     Call<ArrayList<Tag_Object>> getTagbyTitle(
             @Query("search") String title

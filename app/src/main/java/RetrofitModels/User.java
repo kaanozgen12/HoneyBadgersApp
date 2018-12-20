@@ -15,7 +15,10 @@ public class User {
     @SerializedName("name")
     @Expose
     private String name;
-    private final static long serialVersionUID = -686417286997792070L;
+    @SerializedName("username")
+    @Expose
+    private String username;
+    private final static long serialVersionUID = -5100373384939090994L;
 
     /**
      * No args constructor for use in serialization
@@ -27,14 +30,16 @@ public class User {
     /**
      *
      * @param id
+     * @param username
      * @param email
      * @param name
      */
-    public User(int id, String email, String name) {
+    public User(int id, String email, String name, String username) {
         super();
         this.id = id;
         this.email = email;
         this.name = name;
+        this.username = username;
     }
 
     public int getId() {
@@ -61,5 +66,11 @@ public class User {
         this.name = name;
     }
 
+    public String getUsername() {
+        return username;
+    }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }

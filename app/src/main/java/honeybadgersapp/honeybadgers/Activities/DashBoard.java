@@ -45,6 +45,8 @@ import Adapters.Dashboard_Notifications_adapter;
 import FirebaseClasses.OnlineUsers;
 import Models.Compact_Project_Object;
 import RetrofitModels.ProfileObject;
+import RetrofitModels.Tag_Object;
+import RetrofitModels.Wallet;
 import api.RetrofitClient;
 import api.SimpleCredentialCrypting;
 import honeybadgersapp.honeybadgers.R;
@@ -62,13 +64,16 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
     public  TextView user_email;
     public  TextView user_name;
     public  Switch user_role;
+    public TextView money;
     public   NavigationView navigationView;
     public View headerView ;
     public List<Compact_Project_Object> list1 =new ArrayList<>();
     public List<Compact_Project_Object> list2 =new ArrayList<>();
+    private  SharedPreferences prefs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        prefs = new SimpleCredentialCrypting(this, this.getSharedPreferences("HONEY_BADGERS_PREFS_FILE", Context.MODE_PRIVATE) );
         Firebase.setAndroidContext(this);
         overridePendingTransition (0,0);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -114,19 +119,42 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         DashBoardRecyclerView2.setLayoutManager(new LinearLayoutManager(this));
         DashBoardRecyclerView2.setAdapter(recyclerAdapter2);
 
+        ArrayList<Tag_Object> temp1= new ArrayList<Tag_Object>();
+        ArrayList<Tag_Object> temp2= new ArrayList<Tag_Object>();
+        ArrayList<Tag_Object> temp3= new ArrayList<Tag_Object>();
+        temp1.add(new Tag_Object(1,"HTML"));
+        temp1.add(new Tag_Object(2,"PHP"));
+        temp1.add(new Tag_Object(3,"CSS"));
+        temp2.add(new Tag_Object(4,"3D Design"));
+        temp2.add(new Tag_Object(5,"Photoshop"));
+        temp3.add(new Tag_Object(6,"Article Writing"));
+
+        list2.add(new Compact_Project_Object(999,"We need help in HTML design","50-100","2 bids-3 hours ago",temp1,false,false));
+        list2.add(new Compact_Project_Object(999,"We are looking for a 3D designer","500-600","3 bids-3 hours ago",temp2,false,false));
+        list1.add(new Compact_Project_Object(999,"We have 10 excel files","20-40","4 bids-3 hours ago",temp3,false,false));
 
         logo = headerView.findViewById(R.id.person_logo);
         user_email= headerView.findViewById(R.id.useremail_text);
         user_name= headerView.findViewById(R.id.username_text);
         user_role = headerView.findViewById(R.id.switch_profile);
+        money = headerView.findViewById(R.id.money_text);
+        if(prefs.getString("userrole",null)!=null && prefs.getString("userrole",null).equalsIgnoreCase("Client")){
+            LoginActivity.getCREDENTIALS()[3]="Client";
+            user_role.setChecked(true);
+        }else {
+            LoginActivity.getCREDENTIALS()[3]="Freelancer";
+        }
         user_role.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 user_role.setText(((LoginActivity.getCREDENTIALS()[3].equals("Freelancer"))?"Client":"Freelancer"));
+                prefs.edit().remove("userrole").commit();
+                prefs.edit().putString("userrole",((LoginActivity.getCREDENTIALS()[3].equalsIgnoreCase("Freelancer"))?"Client":"Freelancer")).commit();
+
                 LoginActivity.getCREDENTIALS()[3]=((LoginActivity.getCREDENTIALS()[3].equals("Freelancer"))?"Client":"Freelancer");
                 mDrawerlayout.closeDrawer(Gravity.END,true);
                 setNavigationViewListener();
-
+                Log.d("MyTag",prefs.getString("userrole",null));
             }
         });
         user_name.setText(LoginActivity.getCREDENTIALS()[2]);
@@ -173,6 +201,7 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
             }
             case R.id.item_navigation_drawer_create_project: {
                 Intent i = new Intent(DashBoard.this, CreateProject.class);
+                i.putExtra("project_id","-1");
                 startActivity(i);
                 break;
             }
@@ -220,10 +249,13 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
     protected void onResume() {
         super.onResume();
 
+        Call<List<ProfileObject>> call;
+        if(LoginActivity.getCREDENTIALS()[3].equalsIgnoreCase("freelancer")){
+            call = RetrofitClient.getInstance().getApi().freelancerProfileGet("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4]);
 
-
-
-        Call<List<ProfileObject>> call= RetrofitClient.getInstance().getApi().userProfileGet("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4]);
+        }else{
+            call= RetrofitClient.getInstance().getApi().clientProfileGet("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4]);
+        }
         call.enqueue(new Callback<List<ProfileObject>>() {
             @Override
             public void onResponse(Call<List<ProfileObject>> call, Response<List<ProfileObject>> response) {
@@ -247,6 +279,21 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         }if(LoginActivity.getCREDENTIALS()[2]!=null){
             user_name.setText(LoginActivity.getCREDENTIALS()[2]);
         }
+
+        Call<Wallet> call2 = RetrofitClient.getInstance().getApi().getUserWallet(Integer.parseInt(LoginActivity.getCREDENTIALS()[4]));
+        call2.enqueue(new Callback<Wallet>() {
+            @Override
+            public void onResponse(@NonNull Call<Wallet> call2, @NonNull Response<Wallet> response2) {
+                Wallet editResponse2 = response2.body();
+                if (response2.isSuccessful()&&editResponse2!=null) {
+                    Log.d("MyTag","id for wallet: "+LoginActivity.getCREDENTIALS()[4]);
+                   money.setText(""+editResponse2.getBudget());
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<Wallet> call2, Throwable t) {
+            }
+        });
     }
 
     public class SendHttpRequestTask extends AsyncTask<String, Void, Bitmap> {

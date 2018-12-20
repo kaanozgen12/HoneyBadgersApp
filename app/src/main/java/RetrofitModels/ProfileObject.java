@@ -9,10 +9,7 @@ public class ProfileObject {
     @SerializedName("id")
     @Expose
     private int id;
-    @SerializedName("user_id")
-    @Expose
-    private int userId;
-    @SerializedName("name")
+    @SerializedName("user")
     @Expose
     private String name;
     @SerializedName("avatar")
@@ -21,12 +18,6 @@ public class ProfileObject {
     @SerializedName("body")
     @Expose
     private String body;
-    @SerializedName("created_at")
-    @Expose
-    private String createdAt;
-    @SerializedName("rating")
-    @Expose
-    private float rating;
     private final static long serialVersionUID = 2297952749881170354L;
 
     /**
@@ -40,21 +31,15 @@ public class ProfileObject {
      *
      * @param id
      * @param body
-     * @param createdAt
      * @param name
-     * @param userId
-     * @param rating
      * @param avatar
      */
-    public ProfileObject( int id, int userId, String name, String avatar, String body, String createdAt, float rating){
+    public ProfileObject( int id, String name, String avatar, String body){
         super();
         this.id = id;
-        this.userId = userId;
         this.name = name;
         this.avatar = avatar;
         this.body = body;
-        this.createdAt = createdAt;
-        this.rating = rating;
     }
 
     public int getId () {
@@ -65,13 +50,6 @@ public class ProfileObject {
         this.id = id;
     }
 
-    public int getUserId () {
-        return userId;
-    }
-
-    public void setUserId ( int userId){
-        this.userId = userId;
-    }
 
     public String getName () {
         return name;
@@ -97,21 +75,6 @@ public class ProfileObject {
         this.body = body;
     }
 
-    public String getCreatedAt () {
-        return createdAt;
-    }
-
-    public void setCreatedAt (String createdAt){
-        this.createdAt = createdAt;
-    }
-
-    public float getRating () {
-        return rating;
-    }
-
-    public void setRating ( float rating){
-        this.rating = rating;
-    }
 
 }
 

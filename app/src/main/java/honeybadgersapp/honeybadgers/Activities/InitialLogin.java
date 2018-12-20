@@ -47,9 +47,13 @@ public class InitialLogin extends AppCompatActivity {
                                 sleep(2000);
                                 Intent intent = new Intent(getApplicationContext(),EditProfile.class);
                                 if(freelancer.isChecked()){
-                                    intent.putExtra("Role","Freelancer");}
+                                    intent.putExtra("Role","Freelancer");
+                                    LoginActivity.getCREDENTIALS()[3]="Freelancer";
+                                }
                                 else if(client.isChecked()){
-                                    intent.putExtra("Role","Client");}
+                                    intent.putExtra("Role","Client");
+                                    LoginActivity.getCREDENTIALS()[3]="Client";
+                                }
                                 startActivity(intent);
                                 finish();
                                 super.run();

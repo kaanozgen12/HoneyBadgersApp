@@ -12,6 +12,12 @@
         android:id="@+id/view_foreground"
         android:background="#ffffff">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/verified_image"
+            android:background="@drawable/approved"
+            android:visibility="gone"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,44 +25,55 @@
             android:text="Project Name"
             android:textColor="#545454"
             android:layout_margin="5dp"
+            android:layout_below="@+id/verified_image"
             android:clickable="false"
             android:textSize="18sp"
             android:textStyle="bold">
         </TextView>
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/compact_project_object_tags_recyclerview"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:clickable="false"
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/compact_project_object_name"
-            >
-        </android.support.v7.widget.RecyclerView>
+            android:id="@+id/compact_project_object_tags_recyclerview_nested">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/compact_project_object_tags_recyclerview"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                >
+            </android.support.v7.widget.RecyclerView>
+        </android.support.v4.widget.NestedScrollView>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/compact_project_object_tags_recyclerview"
+            android:layout_below="@id/compact_project_object_tags_recyclerview_nested"
             >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/compact_project_given_bid"
-                android:text="1000 USD"
                 android:textSize="25sp"
                 android:layout_marginStart="5dp"
                 android:clickable="false"
                 android:textColor="#3b8e00"
                 android:textStyle="bold"
+                android:layout_alignParentStart="true"
+                android:gravity="start"
+                android:layout_toStartOf="@+id/compact_project_bids_time"
                 android:drawingCacheQuality="high">
             </TextView>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="invisible"
+                android:text="0 "
                 android:id="@+id/compact_project_bids_time"
                 android:layout_alignBottom="@id/compact_project_given_bid"
-                android:layout_alignEnd="@id/compact_project_given_bid"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="5dp"
                 android:textColor="#545454"
@@ -67,9 +84,18 @@
 
         </RelativeLayout>
 
+
     </RelativeLayout>
 
-
+    <ImageView
+        android:id="@+id/compact_project_money_sign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/moneysign"
+        android:alpha="1"
+        android:visibility="invisible"
+        android:layout_centerInParent="true"
+        android:foregroundGravity="top"/>
 
 
 </RelativeLayout>

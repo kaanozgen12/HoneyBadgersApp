@@ -132,12 +132,12 @@
                     android:layout_height="wrap_content"
                     android:text="Project Description"
                     android:textStyle="bold"/>
-                <ScrollView
+                <android.support.v4.widget.NestedScrollView
                     android:layout_width="match_parent"
                     android:id="@+id/project_dialog_scrollView"
                     android:layout_height="200dp"
                     android:layout_below="@id/project_dialog_description_text"
-                    android:layout_toStartOf="@+id/project_dialog_comment_button"
+                    android:layout_toStartOf="@+id/project_dialog_bid_button"
                     android:background="@drawable/textinputborder">
                     <TextView
                         android:layout_width="match_parent"
@@ -145,7 +145,7 @@
                         android:layout_margin="3dp"
                         android:id="@+id/project_dialog_project_descripton_edit"/>
 
-                </ScrollView>
+                </android.support.v4.widget.NestedScrollView>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -218,16 +218,7 @@
                     android:text="BID"
                     android:background="@drawable/comment_button_color"
                     />
-                <Button
-                    android:id="@+id/project_dialog_comment_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_margin="10dp"
-                    android:text="Comment"
-                    android:layout_below="@+id/project_dialog_bid_button"
-                    android:background="@drawable/comment_button_color"
-                    />
+
                 <Button
                     android:id="@+id/project_dialog_see_bidders_button"
                     android:layout_width="wrap_content"
@@ -235,8 +226,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_margin="10dp"
                     android:text="See Bidders"
-                    android:visibility="gone"
-                    android:layout_below="@+id/project_dialog_comment_button"
+                    android:visibility="invisible"
+                    android:layout_below="@+id/project_dialog_bid_button"
                     android:background="@drawable/comment_button_color"
                     />
                 <ImageView
@@ -265,26 +256,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/project_dialog_project_id_edit"
-                        android:text="111111: "/>
+                        android:text="111111: "
+                        android:layout_marginBottom="15dp"/>
                 </LinearLayout>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="7dp"
-                    android:layout_marginBottom="5dp"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:layout_below="@+id/project_dialog_employer_info_layout"
-                    android:text="Comments"
-                    android:id="@+id/project_dialog_comments"
-                    />
-                <android.support.v7.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/project_dialog_comments_recyclerview"
-                    android:layout_below="@+id/project_dialog_comments">
 
-                </android.support.v7.widget.RecyclerView>
             </RelativeLayout>
         </ScrollView>
 

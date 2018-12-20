@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import Models.Compact_Project_Object;
+import RetrofitModels.Comment_Object;
 import honeybadgersapp.honeybadgers.R;
 
 public class Comment_adapter extends RecyclerView.Adapter<Comment_adapter.MyViewHolder>{
@@ -20,13 +20,11 @@ public class Comment_adapter extends RecyclerView.Adapter<Comment_adapter.MyView
 
     private Dialog myDialog;
     private Context mContext;
-    private List<Compact_Project_Object> notification_cards;
-    //private int lastAnimatedPosition = -1;
+    private List<Comment_Object> list_of_comments;
 
-    public Comment_adapter(Context mContext, List<Compact_Project_Object> notification_cards) {
+    public Comment_adapter(Context mContext, List<Comment_Object> list_of_comments) {
         this.mContext = mContext;
-        this.notification_cards = notification_cards;
-        //setHasStableIds(true);
+        this.list_of_comments = list_of_comments ;
     }
 
     @NonNull
@@ -34,7 +32,6 @@ public class Comment_adapter extends RecyclerView.Adapter<Comment_adapter.MyView
     public MyViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType){
 
         final View v = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
-        //v = LayoutInflater.from(mContext).inflate(R.layout.compact_project_object,parent, false);
         final MyViewHolder vHolder = new MyViewHolder(v);
 
         vHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -53,7 +50,7 @@ public class Comment_adapter extends RecyclerView.Adapter<Comment_adapter.MyView
     }
     @Override
     public int getItemCount() {
-        return notification_cards.size();
+        return list_of_comments.size();
     }
     @Override
     public int getItemViewType(final int position) {
@@ -63,10 +60,7 @@ public class Comment_adapter extends RecyclerView.Adapter<Comment_adapter.MyView
 
     public synchronized void onBindViewHolder(@NonNull MyViewHolder holder, final int position){
 
-        holder.bindData(notification_cards.get(position));
-
-
-
+        holder.bindData(list_of_comments.get(position));
     }
 
 
@@ -97,7 +91,14 @@ public class Comment_adapter extends RecyclerView.Adapter<Comment_adapter.MyView
             this.comment_id = id;
         }
 
-        public  void bindData(final Compact_Project_Object viewModel){}
+        public  void bindData(final Comment_Object viewModel){
+            comment_id=viewModel.getId();
+            //comment_user_email.setText(viewModel.);
+            comment_user_email.setText(viewModel.userId.username);
+            comment_time.setText(viewModel.updatedAt);
+            comment_body.setText(viewModel.description);
+
+        }
 
 
     }

@@ -1,6 +1,7 @@
 package honeybadgersapp.honeybadgers.Activities;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -37,7 +38,6 @@ import honeybadgersapp.honeybadgers.R;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,17 +46,21 @@ import retrofit2.Response;
 public class EditProfile extends AppCompatActivity {
 
 
+    public static String URL= "http://18.130.93.29:8000/media/files/";
     private int PICK_IMAGE_REQUEST = 1;
     private EditProfile.ProfileSaveTask mAuthTask = null;
     // UI references.
     private String avatar_string;
-    private EditText mName;
     private EditText mBio;
     private EditText mEmail;
     private ImageView logo;
     private TextView mEditPhoto;
     private Button mSaveButton;
     private Uri file = null;
+    Bitmap bitmap;
+    String picturePath;
+    Bitmap photo;
+    String ba1;
 
 
 
@@ -68,7 +72,6 @@ public class EditProfile extends AppCompatActivity {
         //Prevent keyboard from automatically opening
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         overridePendingTransition (0,0);
-        mName =  findViewById(R.id.edit_profile_name);
         mBio=findViewById(R.id.edit_profile_description);
         mEmail=findViewById(R.id.edit_profile_email);
         mEditPhoto=findViewById(R.id.edit_photo_photo_button);
@@ -99,14 +102,18 @@ public class EditProfile extends AppCompatActivity {
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
+        Call<List<ProfileObject>> call;
+        if(LoginActivity.getCREDENTIALS()[3].equalsIgnoreCase("freelancer")){
+            call = RetrofitClient.getInstance().getApi().freelancerProfileGet("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4]);
 
-        Call<List<ProfileObject>> call= RetrofitClient.getInstance().getApi().userProfileGet("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4]);
+        }else{
+            call= RetrofitClient.getInstance().getApi().clientProfileGet("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[4]);
+        }
         call.enqueue(new Callback<List<ProfileObject>>() {
             @Override
             public void onResponse(Call<List<ProfileObject>> call, Response<List<ProfileObject>> response) {
                 List<ProfileObject> editResponse = response.body();
-                if (response.isSuccessful()){
-                    mName.setText( editResponse.get(0).getName());
+                if (response.isSuccessful()&& editResponse.size()>0){
                     mBio.setText( editResponse.get(0).getBody());
                     mEmail.setText(LoginActivity.getCREDENTIALS()[1]);
                     new SendHttpRequestTask().execute(editResponse.get(0).getAvatar());
@@ -143,11 +150,9 @@ public class EditProfile extends AppCompatActivity {
         }
 
         // Reset errors.
-        mName.setError(null);
         mBio.setError(null);
 
         // Store values at the time of the save attempt.
-        String name = mName.getText().toString();
         String bio= mBio.getText().toString();
 
         boolean cancel = false;
@@ -163,11 +168,7 @@ public class EditProfile extends AppCompatActivity {
         }*/
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(name)) {
-            mName.setError(getString(R.string.error_field_required));
-            focusView = mName;
-            cancel = true;
-        }else if (TextUtils.isEmpty(bio)) {
+        if (TextUtils.isEmpty(bio)) {
             mBio.setError(getString(R.string.error_field_required));
             Log.d("MyTag","BİO: "+bio);
             focusView = mBio;
@@ -181,7 +182,7 @@ public class EditProfile extends AppCompatActivity {
         } else {
             // maybe Show a progress spinner , and kick off a background task to
             // perform the user login attempt.
-            mAuthTask = new ProfileSaveTask(name, bio, ((BitmapDrawable) logo.getDrawable()).getBitmap() );
+            mAuthTask = new ProfileSaveTask( bio, ((BitmapDrawable) logo.getDrawable()).getBitmap() );
             mAuthTask.execute((Void) null);
         }
     }
@@ -203,12 +204,10 @@ public class EditProfile extends AppCompatActivity {
      */
     public class ProfileSaveTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String name;
         private final String bio;
         private final Bitmap logo;
 
-        ProfileSaveTask(String name, String bio, Bitmap logo) {
-            this.name = name;
+        ProfileSaveTask( String bio, Bitmap logo) {
             this.bio= bio;
             this.logo= logo;
         }
@@ -232,74 +231,105 @@ public class EditProfile extends AppCompatActivity {
             if (success) {
                 if(file!=null){
                     //create a file to write bitmap data
-                    File f = new File(getBaseContext().getCacheDir(), LoginActivity.getCREDENTIALS()[4]+"_logo");
+                    File f = null;
                     try {
-                        f.createNewFile();
+                        f = File.createTempFile("temp_logo", null, getApplicationContext().getCacheDir());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
-                    Bitmap bitmap = null;
-                    try {
-                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), file);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 0 /*ignored for PNG*/, bos);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
                     byte[] bitmapdata = bos.toByteArray();
-                    //write the bytes in file
+                    
                     FileOutputStream fos = null;
                     try {
                         fos = new FileOutputStream(f);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    try {
                         fos.write(bitmapdata);
                         fos.flush();
                         fos.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
 
-                    RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), f);
-                    MultipartBody.Part body = MultipartBody.Part.createFormData("upload", f.getName(), reqFile);
+                   /* RequestBody requestFile =
+                            RequestBody.create(MediaType.parse("multipart/form-data"), f);
+
+                    MultipartBody.Part body =
+                            MultipartBody.Part.createFormData("image", f.getName(), requestFile);*/
+                    // Create a request body with file and image media type
+
+                    RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), f);
+                    // Create MultipartBody.Part using file request-body,file name and part name
+                    MultipartBody.Part part = MultipartBody.Part.createFormData("upload", f.getName(), fileReqBody);
+
+                    RequestBody dsc =
+                            RequestBody.create(MediaType.parse("multipart/form-data"), bio);
+
+                    //
+                   /* RequestParams params = new RequestParams();
+
+                        params.put("photo", bitmap);
 
 
-                    Call<ResponseBody> call2= RetrofitClient.getInstance().getApi().postImage(body);
-                    call2.enqueue(new Callback<ResponseBody>() {
+                    AsyncHttpClient client = new AsyncHttpClient();
+                    client.post("http://18.130.93.29:8000/media/files/", params, new JsonHttpResponseHandler() {
+                        ProgressDialog pd;
                         @Override
-                        public void onResponse(Call<ResponseBody> call2, Response<ResponseBody> response) {
-                            if (response.isSuccessful()){
-                                Call<ProfileObject> call= RetrofitClient.getInstance().getApi().userProfileUpdate("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[5],name,LoginActivity.getCREDENTIALS()[4]+"_logo",bio);
-                                call.enqueue(new Callback<ProfileObject>() {
-                                    @Override
-                                    public void onResponse(Call<ProfileObject> call, Response<ProfileObject> response) {
-                                        if (response.isSuccessful()){
-                                            Log.d("MyTag","Geldim");
-                                            Toast.makeText(EditProfile.this,"SUCCESSFUL EDITTING",Toast.LENGTH_LONG).show();
-                                            finish();
-                                        }else{
-                                            Toast.makeText(EditProfile.this,"EMPTY !!",Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                    @Override
-                                    public void onFailure(Call<ProfileObject> call, Throwable t) {
-                                        Log.d("MyTag","Failed");
-                                    }
-                                });
+                        public void onStart() {
+                            String uploadingMessage = "Uploading";
+                            pd = new ProgressDialog(EditProfile.this);
+                            pd.setTitle("Please Wait");
+                            pd.setMessage(uploadingMessage);
+                            pd.setIndeterminate(false);
+                            pd.show();
+                        }
 
+                        @Override
+                        public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+                            super.onFailure(statusCode, headers, responseString, throwable);
+                            Log.d("MyTag","errrrooooor: "+throwable.toString());
+                        }
+
+                        @Override
+                        public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
+                            super.onSuccess(statusCode, headers, response);
+                            try {
+                                String status =  (String) response.get("status");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
+                            try {
+                                String photoID =  (String) response.get("photoID");
+                                Log.d("MyTag","photo I>D: ::: "+photoID);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
                         }
 
                         @Override
-                        public void onFailure(Call<ResponseBody> call2, Throwable t) {
-                            Log.d("MyTag","Failed");
+                        public void onFinish() {
+                            pd.dismiss();
                         }
-                    });
+                    });*/
+                    //
+                    Call<ProfileObject> call;
+                    if(LoginActivity.getCREDENTIALS()[3].equalsIgnoreCase("freelancer")){
+                        call = RetrofitClient.getInstance().getApi().freelancerProfileUpdate("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[5],part,dsc);
 
-                }else{
-                    Call<ProfileObject> call= RetrofitClient.getInstance().getApi().userProfileUpdate("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[5],name,null,bio);
+                        Log.d("MyTag",LoginActivity.getCREDENTIALS()[5]);
+
+                    }else{
+                        call = RetrofitClient.getInstance().getApi().clientProfileUpdate("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[5],part,dsc);
+                        Log.d("MyTag",LoginActivity.getCREDENTIALS()[5]);
+                    }
+
                     call.enqueue(new Callback<ProfileObject>() {
                         @Override
                         public void onResponse(Call<ProfileObject> call, Response<ProfileObject> response) {
@@ -308,7 +338,35 @@ public class EditProfile extends AppCompatActivity {
                                 Toast.makeText(EditProfile.this,"SUCCESSFUL EDITTING",Toast.LENGTH_LONG).show();
                                 finish();
                             }else{
-                                Toast.makeText(EditProfile.this,"EMPTY !!",Toast.LENGTH_LONG).show();
+
+                                Toast.makeText(EditProfile.this,"EMPTY !!  "+response.body().toString(),Toast.LENGTH_LONG).show();
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<ProfileObject> call, Throwable t) {
+                            Log.d("MyTag","Failed");
+                        }
+                    });
+
+                }else{
+                    Call<ProfileObject> call;
+                    if(LoginActivity.getCREDENTIALS()[3].equalsIgnoreCase("freelancer")){
+                        call = RetrofitClient.getInstance().getApi().freelancerProfileUpdateImageless("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[5],bio);
+                        Log.d("MyTag",LoginActivity.getCREDENTIALS()[5]);
+
+                    }else{
+                        call= RetrofitClient.getInstance().getApi().clientProfileUpdateImageless("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[5],bio);
+                        Log.d("MyTag",LoginActivity.getCREDENTIALS()[5]);
+                    }
+                    call.enqueue(new Callback<ProfileObject>() {
+                        @Override
+                        public void onResponse(Call<ProfileObject> call, Response<ProfileObject> response) {
+                            if (response.isSuccessful()){
+                                Log.d("MyTag","Geldim");
+                                Toast.makeText(EditProfile.this,"SUCCESSFUL EDITTING",Toast.LENGTH_LONG).show();
+                                finish();
+                            }else{
+                                Toast.makeText(EditProfile.this,"EMPTY !!  "+response.body(),Toast.LENGTH_LONG).show();
                             }
                         }
 
@@ -350,6 +408,60 @@ public class EditProfile extends AppCompatActivity {
             mAuthTask = null;
         }
     }
+   /* private void upload() {
+        // Image location URL
+        Log.d("MyTag", "----------------" + file.getEncodedPath());
+
+        // Image
+        Bitmap bm = BitmapFactory.decodeFile(file.getPath());
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 90, bao);
+        byte[] ba = bao.toByteArray();
+        ba1 = Base64.encodeToString(ba, Base64.NO_WRAP);
+
+        Log.e("base64", "-----" + ba1);
+
+        // Upload image to server
+        new uploadToServer().execute();
+
+    }
+
+    public class uploadToServer extends AsyncTask<Void, Void, String> {
+
+        private ProgressDialog pd = new ProgressDialog(EditProfile.this);
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Wait image uploading!");
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+
+            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("base64", logo.getDrawable().get));
+            nameValuePairs.add(new BasicNameValuePair("ImageName", System.currentTimeMillis() + ".jpg"));
+            try {
+                HttpClient httpclient = new DefaultHttpClient();
+                HttpPost httppost = new HttpPost(URL);
+                httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                HttpResponse response = httpclient.execute(httppost);
+                String st = EntityUtils.toString(response.getEntity());
+                Log.v("log_tag", "In the try Loop" + st);
+
+            } catch (Exception e) {
+                Log.v("log_tag", "Error in http connection " + e.toString());
+            }
+            return "Success";
+
+        }
+
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.hide();
+            pd.dismiss();
+        }
+    }*/
 
     public class SendHttpRequestTask extends AsyncTask<String, Void, Bitmap> {
         @Override
@@ -371,7 +483,7 @@ public class EditProfile extends AppCompatActivity {
         @Override
         protected void onPostExecute(Bitmap result) {
             if(result!=null)
-            logo.setImageBitmap(result);
+                logo.setImageBitmap(result);
         }
     }
     @Override
@@ -382,13 +494,23 @@ public class EditProfile extends AppCompatActivity {
 
             file = data.getData();
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), file);
-
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), file);
                 logo.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+    public String getPath(Uri uri)
+    {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if (cursor == null) return null;
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String s=cursor.getString(column_index);
+        cursor.close();
+        return s;
     }
 
 }

@@ -68,7 +68,7 @@ public class RecyclerItemTouchHelper extends Callback {
         if (actionState == ACTION_STATE_SWIPE) {
             if (buttonShowedState != ButtonsState.GONE) {
                 if (buttonShowedState == ButtonsState.LEFT_VISIBLE) dX = Math.max(dX, buttonWidth);
-                if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) dX = Math.min(dX, -buttonWidth);
+                else if (buttonShowedState == ButtonsState.RIGHT_VISIBLE) dX = Math.min(dX, -buttonWidth);
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
             else {

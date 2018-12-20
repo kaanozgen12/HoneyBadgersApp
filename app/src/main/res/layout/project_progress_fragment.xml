@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <SeekBar
+        android:id="@+id/project_progress_seekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="10"
+        android:layout_margin="15dp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Activities"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/project_progress_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

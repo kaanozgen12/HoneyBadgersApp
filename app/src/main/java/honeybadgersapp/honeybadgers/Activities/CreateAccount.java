@@ -204,7 +204,7 @@ public class CreateAccount extends AppCompatActivity {
             if (success) {
               FirebaseAuth.getInstance().createUserWithEmailAndPassword(mEmail,mPassword);
 
-                Call<User> call= RetrofitClient.getInstance().getApi().userRegister(mEmail,mUsername,mPassword);
+                Call<User> call= RetrofitClient.getInstance().getApi().userRegister(mEmail,mUsername,mPassword,mUsername);
                 call.enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, final Response<User> response) {
@@ -226,9 +226,9 @@ public class CreateAccount extends AppCompatActivity {
 
                                                     if (response2.isSuccessful()) {
                                                         LoginActivity.getCREDENTIALS()[1] = mEmail;
-                                                        LoginActivity.getCREDENTIALS()[4] = "" + response2.body().getUserId();
+                                                        LoginActivity.getCREDENTIALS()[4] = "" + response2.body().getId();
                                                         LoginActivity.getCREDENTIALS()[5] = "" + response2.body().getId();
-                                                        Log.d("MyTag", "SUCCESSFUL PROFILE CREATE "+response2.body().getUserId());
+                                                        Log.d("MyTag", "SUCCESSFUL PROFILE CREATE ");
                                                     }
                                                 }
                                                 @Override

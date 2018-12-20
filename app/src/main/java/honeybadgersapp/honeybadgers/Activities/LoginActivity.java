@@ -64,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        CREDENTIALS = new String[6];
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         textanimation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.main_page_button_anim);
         overridePendingTransition (0,0);

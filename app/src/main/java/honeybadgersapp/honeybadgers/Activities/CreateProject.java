@@ -79,6 +79,8 @@ public class CreateProject extends MapsActivity implements OnMapReadyCallback, G
     private View.OnTouchListener mListener;
     final int[] marker_count = {0};
     ArrayList<Tag_Object> tag_list = new ArrayList<>();
+    final Create_project_tags_adapter[] recyclerAdapter = {new Create_project_tags_adapter(this, tag_list)};
+
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -92,10 +94,9 @@ public class CreateProject extends MapsActivity implements OnMapReadyCallback, G
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         final RecyclerView mRecylerView = findViewById(R.id.create_project_recyclerview);
-        final Create_project_tags_adapter recyclerAdapter = new Create_project_tags_adapter(this, tag_list);
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRecylerView.setLayoutManager(horizontalLayoutManager);
-        mRecylerView.setAdapter(recyclerAdapter);
+        mRecylerView.setAdapter(recyclerAdapter[0]);
 
         Call<List<Tag_Object>> call= RetrofitClient.getInstance().getApi().getTags();
         call.enqueue(new Callback<List<Tag_Object>>() {
@@ -135,7 +136,7 @@ public class CreateProject extends MapsActivity implements OnMapReadyCallback, G
                             if(!tag_list.contains(temp)){
                                 tag_list.add(temp);
                                 Objects.requireNonNull(mRecylerView.getAdapter()).notifyDataSetChanged();
-                                mRecylerView.smoothScrollToPosition(recyclerAdapter.getItemCount()-1);
+                                mRecylerView.smoothScrollToPosition(recyclerAdapter[0].getItemCount()-1);
                             }
 
                         }else{
@@ -244,6 +245,39 @@ public class CreateProject extends MapsActivity implements OnMapReadyCallback, G
             }
         });
 
+
+        if(!getIntent().getExtras().getString("project_id").equalsIgnoreCase("-1")){
+            Call<ProjectObject> call2= RetrofitClient.getInstance().getApi().getProjectbyId(Integer.parseInt(getIntent().getExtras().getString("project_id")));
+            call2.enqueue(new Callback<ProjectObject>() {
+                @Override
+                public void onResponse(@NonNull Call<ProjectObject> call2, @NonNull Response<ProjectObject> response) {
+                    if (response.isSuccessful()){
+                        mTitle.setText(response.body().getTitle());
+                        mBody.setText(response.body().getDescription());
+                        mBudgetMin.setText(""+response.body().getBudgetMin());
+                        mBudgetMax.setText(""+response.body().getBudgetMax());
+                        tag_list= turn_Integer_List_to_Tag_List(response.body().getTags());
+                        recyclerAdapter[0] = new Create_project_tags_adapter(getApplicationContext(), tag_list);
+                        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+                        mRecylerView.setLayoutManager(horizontalLayoutManager);
+                        mRecylerView.setAdapter(recyclerAdapter[0]);
+
+                        if(response.body().getLatitude()!=null&&response.body().getLongitude()!=null){
+                            map_activator.setActivated(true);
+                            m = mMap.addMarker(new MarkerOptions()
+                                    .position(
+                                            new LatLng(response.body().getLatitude(),
+                                                    response.body().getLongitude()))
+                                    .draggable(true).visible(true));
+                        }
+
+                    }
+                }
+                @Override
+                public void onFailure(@NonNull Call<ProjectObject> call2, @NonNull Throwable t) {
+                   }
+            });
+        }
     }
 
     @Override
@@ -348,7 +382,7 @@ public class CreateProject extends MapsActivity implements OnMapReadyCallback, G
             String deadline= ""+year+"-"+month+"-"+day+"T"+hour+":"+minute+":00"+"Z";
 
 
-            mAuthTask = new saveProjectTask(category, title, description,deadline,budgetMin,budgetMax,tag_list,(float) m.getPosition().latitude,(float)m.getPosition().longitude);
+            mAuthTask = new saveProjectTask(category, title, description,deadline,budgetMin,budgetMax,tag_list,( (map_activator.isChecked())?(float) m.getPosition().latitude:null )  ,( (map_activator.isChecked())?(float) m.getPosition().longitude:null ) );
             mAuthTask.execute((Void) null);
         }
     }
@@ -375,10 +409,10 @@ public class CreateProject extends MapsActivity implements OnMapReadyCallback, G
     public class saveProjectTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String category,title,description,budgetMin,budgetMax,deadline;
-        private float latitude,longitude;
+        private Float latitude,longitude;
         private final ArrayList<Tag_Object> tags;
 
-        public saveProjectTask(String category, String title, String description, String  deadline, String budgetMin,String budgetMax, ArrayList<Tag_Object> tags , float latitude , float longitude) {
+        public saveProjectTask(String category, String title, String description, String  deadline, String budgetMin,String budgetMax, ArrayList<Tag_Object> tags , Float latitude , Float longitude) {
             this.category= category;
             this.title = title;
             this.description = description;
@@ -444,6 +478,34 @@ public class CreateProject extends MapsActivity implements OnMapReadyCallback, G
         for (int i =0 ; i< s.size(); i++){
             temp[i]=s.get(i).getId();
         }
+        return temp;
+    }
+    public  ArrayList<Tag_Object> turn_Integer_List_to_Tag_List(final int[] s){
+        final ArrayList<Tag_Object> temp= new ArrayList<>();
+        Call<List<Tag_Object>> call= RetrofitClient.getInstance().getApi().getTags();
+        call.enqueue(new Callback<List<Tag_Object>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Tag_Object>> call, @NonNull Response<List<Tag_Object>> response0) {
+                if (response0.isSuccessful()){
+                    tags = new String[response0.body().size()];
+                    for (int x = 0 ; x< response0.body().size(); x++){
+                        tags[x]=response0.body().get(x).getTitle();
+                    }
+                    TagAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.hint_completion_layout, R.id.tvHintCompletion, tags);
+                    autoCompleteTag.setAdapter(TagAdapter);
+
+                    for (int i =0 ; i< s.length; i++){
+                        temp.add(new Tag_Object(s[i],tags[s[i]-1]));
+                        recyclerAdapter[0].notifyDataSetChanged();
+                    }
+
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Tag_Object>> call, Throwable t) {
+
+            }
+        });
         return temp;
     }
 

@@ -37,10 +37,10 @@ public class ProjectObject implements Serializable
     private String updatedAt;
     @SerializedName("tags")
     @Expose
-    private int[] tags = null;
+    private int[] tags;
     @SerializedName("category")
     @Expose
-    private int categories = 1;
+    private int categories;
     @SerializedName("budget_min")
     @Expose
     private int budgetMin;
@@ -74,7 +74,6 @@ public class ProjectObject implements Serializable
     }*/
 
     /**
-     *
      * @param tags
      * @param updatedAt
      * @param id
@@ -175,16 +174,13 @@ public class ProjectObject implements Serializable
         this.updatedAt = updatedAt;
     }
 
-    public String getFile() {
-        return file;
+    public int getCategories() {
+        return categories;
     }
 
-    public void setFile(String file) {
-        this.file = file;
+    public void setCategories(int categories) {
+        this.categories = categories;
     }
-
-
-
 
     public int getAccepted_bid() {
         return accepted_bid;
@@ -193,6 +189,15 @@ public class ProjectObject implements Serializable
     public void setAccepted_bid(int accepted_bid) {
         this.accepted_bid = accepted_bid;
     }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
 
     public int[] getTags() {
         return tags;

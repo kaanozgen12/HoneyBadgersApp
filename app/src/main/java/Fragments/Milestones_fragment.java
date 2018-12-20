@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import Adapters.Milestones_adapter;
 import RetrofitModels.Milestone_Object;
@@ -24,6 +26,7 @@ public class Milestones_fragment extends Fragment {
 
 
     View view;
+    public Timer timer= new Timer();
     protected Boolean mVisibleToUserFlag = null;
     public Button create_project;
     private TextView requested_text;
@@ -71,28 +74,22 @@ public class Milestones_fragment extends Fragment {
         recyclerAdapter_verified =new Milestones_adapter(getContext(),verified_milestones);
         myrecyclerview_verified.setLayoutManager(new LinearLayoutManager(getActivity()));
         myrecyclerview_verified.setAdapter(recyclerAdapter_verified);
-
-        if(LoginActivity.getCREDENTIALS()[3]!=null && LoginActivity.getCREDENTIALS()[3].equals("Client")){
-            create_project.setText("  Create Milestone  ");
-        }else if(LoginActivity.getCREDENTIALS()[3]!=null && LoginActivity.getCREDENTIALS()[3].equals("Freelancer")){
-            create_project.setText("  Propose Milestone  ");
-        }
-        if (proposed_milestones.size()==0){
-            requested_text.setVisibility(View.VISIBLE);
-        }else{
-            requested_text.setVisibility(View.GONE);
-        }if (verified_milestones.size()==0){
-            verified_text.setVisibility(View.VISIBLE);
-        }else{
-            verified_text.setVisibility(View.GONE);
-        }
-
+        addTimerActivity();
     }
+
     @Override
     public void onResume() {
         super.onResume();
 
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        timer.purge();
+        timer.cancel();
+        timer=null;
     }
 
     @Override
@@ -111,9 +108,38 @@ public class Milestones_fragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
         mVisibleToUserFlag = null;
     }
+
+    public void addTimerActivity() throws NullPointerException{
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(LoginActivity.getCREDENTIALS()[3]!=null && LoginActivity.getCREDENTIALS()[3].equals("Client")){
+                            create_project.setText("  Create Milestone  ");
+                        }else if(LoginActivity.getCREDENTIALS()[3]!=null && LoginActivity.getCREDENTIALS()[3].equals("Freelancer")){
+                            create_project.setText("  Propose Milestone  ");
+                        }
+                        if (proposed_milestones.size()==0){
+                            requested_text.setVisibility(View.VISIBLE);
+                        }else{
+                            requested_text.setVisibility(View.GONE);
+                        }
+                        if (verified_milestones.size()==0){
+                            verified_text.setVisibility(View.VISIBLE);
+                        }else{
+                            verified_text.setVisibility(View.GONE);
+                        }
+                    }
+                });
+            }
+        }, 0, 1000);
+    }
+
 
 
 

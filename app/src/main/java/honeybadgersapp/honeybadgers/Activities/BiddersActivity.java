@@ -36,12 +36,12 @@ public class BiddersActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.choose_bidder_viewpager);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        Call<List<Bid_Object>> call2 = RetrofitClient.getInstance().getApi().getAllBidsOfProject("token " + LoginActivity.getCREDENTIALS()[0],getIntent().getIntExtra("project_id",-1));
+        Call<List<Bid_Object>> call2 = RetrofitClient.getInstance().getApi().getAllBidsOfProject("token " + LoginActivity.getCREDENTIALS()[0],Integer.parseInt(getIntent().getStringExtra("project_id")));
         call2.enqueue(new Callback<List<Bid_Object>>() {
             @Override
             public void onResponse(Call<List<Bid_Object>> call2, Response<List<Bid_Object>> response) {
                 for (int i= 0 ;i< response.body().size(); i++){
-                    adapter.addFragment(new BidderInfoFragment(response.body().get(i).getUserId(),response.body().get(i).getId(),response.body().get(i).getDescription()),""+i);
+                    adapter.addFragment(new BidderInfoFragment(response.body().get(i).getUserId(),response.body().get(i).getId(),response.body().get(i).getDescription(),response.body().get(i).getProjectId()),""+(i+1));
                     adapter.notifyDataSetChanged();
 
                 }
