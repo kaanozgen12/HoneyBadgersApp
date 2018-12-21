@@ -23,6 +23,7 @@ public class CategoryActivity extends AppCompatActivity {
                 i.putExtra("project_id", "-1");
                 startActivity(i);
                 finish();
+
             }
         });
         RelativeLayout relative2 = (RelativeLayout) findViewById(R.id.button_with_image_above_text2);
@@ -35,6 +36,7 @@ public class CategoryActivity extends AppCompatActivity {
                 i.putExtra("project_id", "-1");
                 startActivity(i);
                 finish();
+
 
             }
         });
@@ -49,6 +51,7 @@ public class CategoryActivity extends AppCompatActivity {
                 startActivity(i);
                 finish();
 
+
             }
         });
         RelativeLayout relative4 = (RelativeLayout) findViewById(R.id.button_with_image_above_text4);
@@ -61,6 +64,7 @@ public class CategoryActivity extends AppCompatActivity {
                 i.putExtra("project_id", "-1");
                 startActivity(i);
                 finish();
+
             }
         });
         RelativeLayout relative5 = (RelativeLayout) findViewById(R.id.button_with_image_above_text5);
@@ -73,6 +77,7 @@ public class CategoryActivity extends AppCompatActivity {
                 i.putExtra("project_id", "-1");
                 startActivity(i);
                 finish();
+
             }
         });
         RelativeLayout relative6 = (RelativeLayout) findViewById(R.id.button_with_image_above_text6);
@@ -85,6 +90,7 @@ public class CategoryActivity extends AppCompatActivity {
                 i.putExtra("project_id", "-1");
                 startActivity(i);
                 finish();
+
             }
         });
         RelativeLayout relative7 = (RelativeLayout) findViewById(R.id.button_with_image_above_text7);
@@ -92,11 +98,12 @@ public class CategoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 Intent i = new Intent(CategoryActivity.this, CreateProject.class);
-                i.putExtra("categoryname","Design, Media and Architecture");
+                i.putExtra("categoryname","Photography");
                 i.putExtra("category",7);
                 i.putExtra("project_id", "-1");
                 startActivity(i);
                 finish();
+
             }
         });
         RelativeLayout relative8 = (RelativeLayout) findViewById(R.id.button_with_image_above_text8);
@@ -104,11 +111,25 @@ public class CategoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 Intent i = new Intent(CategoryActivity.this, CreateProject.class);
-                i.putExtra("categoryname","Other");
+                i.putExtra("categoryname","Design, Media and Architecture");
                 i.putExtra("category",8);
                 i.putExtra("project_id", "-1");
                 startActivity(i);
                 finish();
+
+            }
+        });
+        RelativeLayout relative9 = (RelativeLayout) findViewById(R.id.button_with_image_above_text9);
+        relative9.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent i = new Intent(CategoryActivity.this, CreateProject.class);
+                i.putExtra("categoryname","Other");
+                i.putExtra("category",9);
+                i.putExtra("project_id", "-1");
+                startActivity(i);
+                finish();
+
             }
         });
     }
