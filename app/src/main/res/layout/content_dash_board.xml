@@ -2,6 +2,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,47 +12,51 @@
     tools:context=".Activities.DashBoard"
     android:layout_gravity="start"
     >
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dip"
-        android:layout_marginEnd="5dp"
-        android:elevation="10dp">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Trending Projects"
-            android:background="#c7c7c7"
-            android:textSize="17dp"
-            android:textStyle="bold"
-            android:id="@+id/content_dash_title_1"/>
-    </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.RecyclerView
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:clipToPadding="false"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layoutAnimation="@anim/layout_animation_fall_down"
-            android:id="@+id/dashboard_recyclerview_1"
-            >
-        </android.support.v7.widget.RecyclerView>
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:elevation="10dp">
+        android:background="@drawable/rounded_corner"
+        android:elevation="10dp"
+        app:cardCornerRadius="8dp">
+
         <TextView
+            android:id="@+id/content_dash_title_1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:background="#c7c7c7"
+            android:layout_height="30dp"
+            android:background="@drawable/rounded_corner"
+            android:text=" Trending Projects"
             android:textSize="17dp"
-            android:text="Recommended Projects"
-            android:id="@+id/content_dash_title_2" />
+            android:textStyle="bold" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/dashboard_recyclerview_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:fadingEdge="none|horizontal|vertical"
+        android:layoutAnimation="@anim/layout_animation_fall_down"
+        android:orientation="vertical"></android.support.v7.widget.RecyclerView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_corner"
+        android:elevation="10dp"
+        app:cardCornerRadius="8dp">
+
+        <TextView
+            android:id="@+id/content_dash_title_2"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@drawable/rounded_corner"
+            android:text=" Recommended Projects"
+            android:textSize="17dp"
+            android:textStyle="bold" />
+
     </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.RecyclerView
@@ -59,6 +64,7 @@
             android:clipToPadding="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:layoutAnimation="@anim/layout_animation_fall_down"
             android:orientation="vertical"
             android:id="@+id/dashboard_recyclerview_2"
