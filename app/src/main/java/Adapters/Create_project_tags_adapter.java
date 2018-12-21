@@ -75,7 +75,7 @@ public class Create_project_tags_adapter extends RecyclerView.Adapter<Create_pro
         }
         void bindData(final Tag_Object viewModel){
             int temp = 1+viewModel.getId();
-            String[] array = {"#FF007F", "#FF0000", "#FF7F00", "#FFABAB17", "#7FFF00", "#00FF00", "#00FF7F", "#00FFFF", "#007FFF", "#0000FF", "#7F00FF", "#FF00FF"};
+            String[] array = {"#8E443D", "#511730", "#6A4C93", "#1982C4", "#86BA90", "#376996", "#1D3461", "#42858C", "#397367", "#E7BB41", "#DE6B48", "#8C5383"};
             String color = array[temp%12];
             Tag_Text.setText(viewModel.getTitle()+ " ⓧ");
             Tag_Text.setTextColor(Color.parseColor(color));
