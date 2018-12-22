@@ -145,14 +145,14 @@
         <activity
             android:name=".Activities.MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".Activities.CategoryActivity"
+        <activity
+            android:name=".Activities.CategoryActivity"
             android:alwaysRetainTaskState="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
     </application>
 

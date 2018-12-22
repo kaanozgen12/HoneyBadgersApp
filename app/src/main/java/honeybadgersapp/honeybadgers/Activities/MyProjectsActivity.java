@@ -1,4 +1,5 @@
 package honeybadgersapp.honeybadgers.Activities;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.DialogInterface;
@@ -7,6 +8,7 @@ import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +16,6 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,7 +44,7 @@ public class MyProjectsActivity extends AppCompatActivity {
     RecyclerView mRecylerView;
     Dashboard_Notifications_adapter recyclerAdapter;
     public Timer timer= new Timer();
-    private Button mNewProjectButton;
+    private FloatingActionButton mButton;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,8 +55,8 @@ public class MyProjectsActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecylerView.setLayoutManager(linearLayoutManager);
         mRecylerView.setAdapter(recyclerAdapter);
-        mNewProjectButton = (Button) findViewById(R.id.new_project_button);
-        mNewProjectButton.setOnClickListener(new View.OnClickListener() {
+        mButton = findViewById(R.id.floatingActionButton2);
+        mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(MyProjectsActivity.this, CategoryActivity.class);
@@ -64,6 +65,7 @@ public class MyProjectsActivity extends AppCompatActivity {
                 finish();
             }
         });
+
 
         Call<List<Accepted_Project>> call2 = RetrofitClient.getInstance().getApi().getMyAcceptedProjects(Integer.parseInt(LoginActivity.getCREDENTIALS()[4]));
         call2.enqueue(new Callback<List<Accepted_Project>>() {

@@ -19,13 +19,18 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +63,7 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
     private Toolbar mToolbar;
     private DrawerLayout mDrawerlayout;
     private ActionBarDrawerToggle mToggle;
+    private ImageButton mButton;
     private RecyclerView DashBoardRecyclerView1;
     private RecyclerView DashBoardRecyclerView2;
     public  ImageView logo;
@@ -107,6 +113,42 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
 //                    mDrawerlayout.setElevation(1);
 
                 }
+            }
+        });
+        ImageButton mButton = findViewById(R.id.filter_button) ;
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(DashBoard.this);
+// ...Irrelevant code for customizing the buttons and title
+                LayoutInflater inflater = DashBoard.this.getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.filter_dialog, null);
+                dialogBuilder.setView(dialogView);
+
+                EditText editText = (EditText) dialogView.findViewById(R.id.min_budget_edit);
+                editText.setText("0");
+                EditText editText2 = (EditText) dialogView.findViewById(R.id.max_budget_edit);
+                editText2.setText("0");
+                Spinner mSpinner = dialogView.findViewById(R.id.ordering_spinner);
+                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(dialogView.getContext(), R.array.Ordering, android.R.layout.simple_spinner_item);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mSpinner.setAdapter(adapter);
+                Button filterButton = (Button) dialogView.findViewById(R.id.filter_button2);
+
+                Button cancelButton = (Button) dialogView.findViewById(R.id.cancel_button);
+                final AlertDialog alertDialog = dialogBuilder.create();
+                alertDialog.show();
+                cancelButton.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss();
+
+                    }
+
+                });
+
             }
         });
 

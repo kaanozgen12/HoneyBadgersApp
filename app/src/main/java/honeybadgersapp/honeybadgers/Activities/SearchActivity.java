@@ -17,8 +17,10 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,6 +53,7 @@ public class SearchActivity extends AppCompatActivity {
     ViewPagerAdapter adapter;
     private ActionBarDrawerToggle mToggleSettings;
     private ImageView mToggleBack;
+    private Spinner mSpinner;
     private Search_page_tab_fragment category_search =new Search_page_tab_fragment();
     private  Search_page_tab_fragment trending_search= new Search_page_tab_fragment();
     private  Search_page_tab_fragment recommended_search= new Search_page_tab_fragment();
@@ -139,7 +142,21 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+        mSpinner = findViewById(R.id.ordering_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Ordering, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(adapter);
+        /*mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                category = ""+(i+1);
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                category = "1";
+            }
+        });*/
 
 
         //getSupportFragmentManager().beginTransaction().detach(adapter.getItem(1)).attach(adapter.getItem(1)).commit();
