@@ -20,6 +20,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.Spinner;
 
 import java.text.ParseException;
@@ -44,7 +45,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
 
     private TabLayout tabLayout;
@@ -57,6 +58,7 @@ public class SearchActivity extends AppCompatActivity {
     private Search_page_tab_fragment category_search =new Search_page_tab_fragment();
     private  Search_page_tab_fragment trending_search= new Search_page_tab_fragment();
     private  Search_page_tab_fragment recommended_search= new Search_page_tab_fragment();
+    private SearchView editsearch;
     boolean first;
     boolean second;
     boolean third;
@@ -119,6 +121,8 @@ public class SearchActivity extends AppCompatActivity {
                 finish();
             }
         });
+        editsearch = (SearchView) findViewById(R.id.search_page_search_bar);
+        editsearch.setOnQueryTextListener(this);
 
 
         // This method ensures that tab selection events update the ViewPager and page changes update the selected tab.
@@ -250,6 +254,64 @@ public class SearchActivity extends AppCompatActivity {
         });
 
     }
+    public  void filter_trending(String search_name) throws NullPointerException{
+        ((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.clear();
+        Call<List<ProjectObject>> call = RetrofitClient.getInstance().getApi().search(search_name);
+        call.enqueue(new Callback<List<ProjectObject>>() {
+            @Override
+            public void onResponse(Call<List<ProjectObject>> call, Response<List<ProjectObject>> response) {
+                List<ProjectObject> editResponse = response.body();
+                if (response.isSuccessful()) {
+                    for (int i = 0; i < editResponse.size(); i++) {
+                        final ArrayList <Tag_Object> t = new ArrayList<>();
+
+                        Compact_Project_Object temp = new Compact_Project_Object(editResponse.get(i).getId(),editResponse.get(i).getTitle(),editResponse.get(i).getBudgetMin()+"-"+editResponse.get(i).getBudgetMax(),"0",t,false,false);
+                        Log.d("MyTag", "onResponse: " + editResponse.get(i).getTitle());
+                        for (int j =0 ; j<editResponse.get(i).getTags().length;j++){
+                            Call<Tag_Object> call2 = RetrofitClient.getInstance().getApi().getTag(editResponse.get(i).getTags()[j]);
+                            call2.enqueue(new Callback<Tag_Object>() {
+                                @Override
+                                public void onResponse(Call<Tag_Object> call2, Response<Tag_Object> response) {
+                                    Tag_Object editResponse = response.body();
+                                    if (response.isSuccessful()) {
+                                        t.add(editResponse);
+                                        ((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyDataSetChanged();
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<Tag_Object> call2, Throwable t) {
+                                }
+                            });
+
+                        }
+                        ((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.add(temp);
+                        ((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyItemInserted(((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.getItemCount()-1);
+                    }
+                    addTimerActivity(((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects,((Search_page_tab_fragment)adapter.getItem(1)).myrecyclerview);
+                    for (int i = 0; i < editResponse.size(); i++) {
+                        Log.d("MyTag", "onResponse: " + editResponse.size());
+                        final ArrayList <Tag_Object> t = new ArrayList<>();
+                        Compact_Project_Object temp = new Compact_Project_Object(editResponse.get(i).getId(),editResponse.get(i).getTitle(),editResponse.get(i).getBudgetMin()+"-"+editResponse.get(i).getBudgetMax(),"0",t,false,false);
+
+                        ((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.add(temp);
+
+                        ((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyItemInserted(i);
+                        ((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyItemChanged(i);
+                       // getSupportFragmentManager().beginTransaction().detach(adapter.getItem(1)).attach(adapter.getItem(1)).commit();
+                       }
+
+                }
+
+                getSupportFragmentManager().beginTransaction().detach(adapter.getItem(1)).attach(adapter.getItem(1)).commit();
+                 Log.d("MyTag", "Search success: " + editResponse.size());
+            }
+            @Override
+            public void onFailure(Call<List<ProjectObject>> call, Throwable t) {
+                Log.d("MyTag", "Search failed "+ t.getMessage());
+            }
+        });
+
+    }
 
     public void addTimerActivity(final List<Compact_Project_Object> list_of_projects, final RecyclerView recycler) throws NullPointerException{
         timer_treanding.schedule(new TimerTask() {
@@ -370,6 +432,19 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         }, 0, 1000);
+    }
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        Log.d("MyTag","search text");
+        filter_trending(query);
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        String text = newText;
+        //adapter.filter(text);
+        return false;
     }
 
 }
