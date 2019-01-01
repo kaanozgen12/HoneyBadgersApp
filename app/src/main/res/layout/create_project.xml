@@ -36,12 +36,11 @@
                     android:layout_gravity="top"/>
                 <TextView
                     android:id="@+id/create_project_category_user"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="None"
                     android:textColor="@color/item_name"
                     android:textSize="15sp"
-                    android:layout_marginStart="0dp"
+                    android:layout_marginStart="5dp"
                     android:layout_gravity="center"/>
 
 

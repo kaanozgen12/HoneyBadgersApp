@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -53,14 +55,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashboard_Notifications_adapter.MyViewHolder>{
+public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashboard_Notifications_adapter.MyViewHolder> implements Filterable{
 
 
     private Dialog myDialog;
     private Context mContext;
     private List<Compact_Project_Object> notification_cards;
+    private List<Compact_Project_Object> notification_cards_filtered;
     private Timer timer = new Timer();
-    boolean timer_running=false;
     //private int lastAnimatedPosition = -1;
 
     public Dashboard_Notifications_adapter(Context mContext, List<Compact_Project_Object> notification_cards) {
@@ -403,10 +405,40 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
 
     }
 
+    @Override
+    public Filter getFilter() {
+            return new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence charSequence) {
+                    String charString = charSequence.toString();
+                    if (charString.isEmpty()) {
+                        notification_cards_filtered = notification_cards;
+                    } else {
+                        List<Compact_Project_Object> filteredList = new ArrayList<>();
+                        for (Compact_Project_Object row : notification_cards) {
 
+                            // name match condition. this might differ depending on your requirement
 
+                            if (row.getName().toLowerCase().contains(charString.toLowerCase()) || row.getTags().contains(charSequence)) {
+                                filteredList.add(row);
+                            }
+                        }
 
+                        notification_cards_filtered = filteredList;
+                    }
 
+                    FilterResults filterResults = new FilterResults();
+                    filterResults.values = notification_cards_filtered;
+                    return filterResults;
+                }
+
+                @Override
+                protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                    notification_cards_filtered = (ArrayList<Compact_Project_Object>) filterResults.values;
+                    notifyDataSetChanged();
+                }
+            };
+    }
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder{

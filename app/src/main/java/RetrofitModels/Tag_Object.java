@@ -56,6 +56,8 @@ public class Tag_Object implements Serializable
     public boolean equals(Object obj) {
         if(obj.getClass()==Tag_Object.class){
             return this.id==((Tag_Object)obj).getId();
+        }else if(obj.getClass()==String.class){
+            return this.getTitle().equalsIgnoreCase((String) obj);
         }else{
             return super.equals(obj);
         }

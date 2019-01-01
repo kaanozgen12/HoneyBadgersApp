@@ -122,7 +122,7 @@ public class CreateProject extends MapsActivity implements OnMapReadyCallback, G
         // TagAdapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_item, tags);
         autoCompleteTag = findViewById(R.id.create_project_tags_edit);
         map_activator = findViewById(R.id.create_project_map_switch);
-        //scrollview= findViewById(R.id.create_project_scroll_view);
+        scrollview= findViewById(R.id.create_project_scroll_view);
         mapView = findViewById(R.id.create_project_map_edit);
         autoCompleteTag.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -217,11 +217,11 @@ public class CreateProject extends MapsActivity implements OnMapReadyCallback, G
             }
         });
 
-        //mSpinner = findViewById(R.id.create_project_category_edit);
-        //ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Categories, android.R.layout.simple_spinner_item);
-        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //mSpinner.setAdapter(adapter);
-        /*mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+       /* mSpinner = findViewById(R.id.create_project_category_edit);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.Categories, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(adapter);
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 category = ""+(i+1);
@@ -259,6 +259,7 @@ public class CreateProject extends MapsActivity implements OnMapReadyCallback, G
                 @Override
                 public void onResponse(@NonNull Call<ProjectObject> call2, @NonNull Response<ProjectObject> response) {
                     if (response.isSuccessful()){
+                        mcategory.setText(getResources().getStringArray(R.array.Categories)[response.body().getCategories()]);
                         mTitle.setText(response.body().getTitle());
                         mBody.setText(response.body().getDescription());
                         mBudgetMin.setText(""+response.body().getBudgetMin());

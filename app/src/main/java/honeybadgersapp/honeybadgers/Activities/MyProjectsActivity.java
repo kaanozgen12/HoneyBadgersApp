@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -44,7 +45,7 @@ public class MyProjectsActivity extends AppCompatActivity {
     RecyclerView mRecylerView;
     Dashboard_Notifications_adapter recyclerAdapter;
     public Timer timer= new Timer();
-    private FloatingActionButton mButton;
+     FloatingActionButton mButton;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +56,10 @@ public class MyProjectsActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecylerView.setLayoutManager(linearLayoutManager);
         mRecylerView.setAdapter(recyclerAdapter);
-        mButton = findViewById(R.id.floatingActionButton2);
+        mButton = findViewById(R.id.my_projects_floatingActionButton);
+        if(LoginActivity.getCREDENTIALS()[3].equalsIgnoreCase("freelancer")){
+            mButton.hide();
+        }
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,7 +81,7 @@ public class MyProjectsActivity extends AppCompatActivity {
                     Log.d("MyTag", "size response :"+response.body().size());
                     for (int i = 0; i < editResponse.size(); i++) {
                         Log.d("MyTag", "iiiiii "+editResponse.get(i).getId());
-                        final Compact_Project_Object temp = new Compact_Project_Object(0,editResponse.get(i).getTitle(),""+editResponse.get(i).acceptedBid,"0",new ArrayList<Tag_Object>(),false,true);
+                        final Compact_Project_Object temp = new Compact_Project_Object(editResponse.get(i).id,editResponse.get(i).getTitle(),""+editResponse.get(i).acceptedBid,"0",new ArrayList<Tag_Object>(),false,true);
                         listOfProjects.add(temp);
                         recyclerAdapter.notifyItemInserted(listOfProjects.size()-1);
                         Log.d("MyTag", "listofproject size  :"+listOfProjects.size());
@@ -179,6 +183,28 @@ public class MyProjectsActivity extends AppCompatActivity {
                 swipeController.onDraw(c);
             }
         });
+        mRecylerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                int action = e.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_MOVE:
+                        rv.getParent().requestDisallowInterceptTouchEvent(true);
+                        break;
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
         ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeController);
         itemTouchhelper.attachToRecyclerView(mRecylerView);
         addTimerActivity(listOfProjects,mRecylerView);
@@ -244,11 +270,11 @@ public class MyProjectsActivity extends AppCompatActivity {
                                         creation = format.parse(editresponse.get(j).getUpdatedAt());
                                     } catch (ParseException e) {
                                         e.printStackTrace();
-                                    }if(difference[0]==0){
-                                        difference[0] =  currentdate.getTime()-creation.getTime();
                                     }
-                                    else if (currentdate.getTime() -creation.getTime() < difference[0]) {
-                                        difference[0] =  currentdate.getTime()-creation.getTime();
+                                    if (difference[0] == 0) {
+                                        difference[0] = currentdate.getTime() - creation.getTime() - 10730000 ;
+                                    } else if (currentdate.getTime() - creation.getTime() -10730000 < difference[0]) {
+                                        difference[0] = currentdate.getTime() - creation.getTime() - 10730000;
                                     }
                                 }
                                 long days = ((difference[0] / (1000 * 60 * 60 * 24)));

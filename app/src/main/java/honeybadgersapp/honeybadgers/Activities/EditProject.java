@@ -93,6 +93,7 @@ public class EditProject extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<List<Accepted_Milestone>> call2, Response<List<Accepted_Milestone>> response2) {
                                 List<Accepted_Milestone> editResponse2 = response2.body();
+                                Log.d("MyTag","success to get verified milestones: ");
                                 if (response2.isSuccessful()) {
                                     for (int i=0; i<editResponse2.size(); i++){
                                         Log.d("MyTag","verified milestones size: "+editResponse2.size());
@@ -103,13 +104,17 @@ public class EditProject extends AppCompatActivity {
                             }
                             @Override
                             public void onFailure(Call<List<Accepted_Milestone>> call2, Throwable t) {
+                                Log.d("MyTag","failed to get verified milestones: "+t.getMessage());
                             }
                         });
                     }
                 }
                 @Override
                 public void onFailure(Call<Accepted_Project> call, Throwable t) {
+                    Log.d("MyTag","failed to get verified milestones: "+t.getMessage());
                 }
+
+
             });
 
         }else{

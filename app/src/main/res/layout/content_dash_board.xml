@@ -9,6 +9,7 @@
     tools:showIn="@layout/activity_dash_board"
     android:orientation="vertical"
     android:weightSum="2"
+    android:background="#00ffffff"
     tools:context=".Activities.DashBoard"
     android:layout_gravity="start"
     >
@@ -39,7 +40,8 @@
         android:clipToPadding="false"
         android:fadingEdge="none|horizontal|vertical"
         android:layoutAnimation="@anim/layout_animation_fall_down"
-        android:orientation="vertical"></android.support.v7.widget.RecyclerView>
+        android:orientation="vertical">
+    </android.support.v7.widget.RecyclerView>
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"

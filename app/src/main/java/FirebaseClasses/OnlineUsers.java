@@ -3,6 +3,7 @@ package FirebaseClasses;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -34,7 +35,8 @@ import retrofit2.Response;
 public class OnlineUsers extends AppCompatActivity {
         ListView listView;
         public  ArrayList<String> my_conversations = new ArrayList<>();
-    public  ArrayList<String> my_conversations_ids = new ArrayList<>();
+        public  ArrayList<String> my_conversations_ids = new ArrayList<>();
+        private SharedPreferences prefs ;
         public static ArrayAdapter<String> mAdapter = null;
         Firebase firebase_onlineusers = new Firebase("https://honeybadgers-12976.firebaseio.com").child("Conversations").child(""+ LoginActivity.getCREDENTIALS()[4]);
         private int SIGN_IN_REQUEST_CODE = 99;
@@ -56,12 +58,16 @@ public class OnlineUsers extends AppCompatActivity {
 
             if(FirebaseAuth.getInstance().getCurrentUser() == null) {
                 // Start sign in/sign up activity
-                startActivityForResult(
-                        AuthUI.getInstance()
-                                .createSignInIntentBuilder()
-                                .build(),
-                        SIGN_IN_REQUEST_CODE
-                );
+                if(checkExistingAccount()){
+                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(prefs.getString("accountname",null),prefs.getString("password",null));
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .build(),
+                            SIGN_IN_REQUEST_CODE
+                    );
+                }
+
             } else {
                 // User is already signed in. Therefore, display
                 // a welcome Toast
@@ -181,5 +187,10 @@ public class OnlineUsers extends AppCompatActivity {
             }
         });
 
+    }
+    private boolean checkExistingAccount(){
+        String username= prefs.getString("accountname",null);
+        String password= prefs.getString("password",null);
+        return (!(username==null)&&!(password==null));
     }
 }

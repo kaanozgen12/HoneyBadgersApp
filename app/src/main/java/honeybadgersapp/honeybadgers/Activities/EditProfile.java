@@ -36,7 +36,6 @@ import RetrofitModels.ProfileObject;
 import api.RetrofitClient;
 import honeybadgersapp.honeybadgers.R;
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -74,6 +73,7 @@ public class EditProfile extends AppCompatActivity {
         overridePendingTransition (0,0);
         mBio=findViewById(R.id.edit_profile_description);
         mEmail=findViewById(R.id.edit_profile_email);
+        mEmail.setText(LoginActivity.getCREDENTIALS()[1]);
         mEditPhoto=findViewById(R.id.edit_photo_photo_button);
         mEditPhoto.setOnClickListener(new OnClickListener() {
             @Override
@@ -264,12 +264,14 @@ public class EditProfile extends AppCompatActivity {
                             MultipartBody.Part.createFormData("image", f.getName(), requestFile);*/
                     // Create a request body with file and image media type
 
-                    RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), f);
-                    // Create MultipartBody.Part using file request-body,file name and part name
-                    MultipartBody.Part part = MultipartBody.Part.createFormData("upload", f.getName(), fileReqBody);
 
+                    RequestBody fileReqBody = RequestBody.create(MediaType.parse("multipart/form-data"), f);
+                    Log.d("MyTag","CONTENT TYPE: "+fileReqBody.contentType());
+                    // Create MultipartBody.Part using file request-body,file name and part name
+                    //MultipartBody.Part part = MultipartBody.Part.createFormData("image/*", f.getName(), fileReqBody);
+                    RequestBody part = RequestBody.create(MediaType.parse("Image"),f);
                     RequestBody dsc =
-                            RequestBody.create(MediaType.parse("multipart/form-data"), bio);
+                            RequestBody.create(MediaType.parse("text/plain"), bio);
 
                     //
                    /* RequestParams params = new RequestParams();
@@ -319,7 +321,7 @@ public class EditProfile extends AppCompatActivity {
                         }
                     });*/
                     //
-                    Call<ProfileObject> call;
+                    Call<Void> call;
                     if(LoginActivity.getCREDENTIALS()[3].equalsIgnoreCase("freelancer")){
                         call = RetrofitClient.getInstance().getApi().freelancerProfileUpdate("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[5],part,dsc);
 
@@ -330,20 +332,20 @@ public class EditProfile extends AppCompatActivity {
                         Log.d("MyTag",LoginActivity.getCREDENTIALS()[5]);
                     }
 
-                    call.enqueue(new Callback<ProfileObject>() {
+                    call.enqueue(new Callback<Void>() {
                         @Override
-                        public void onResponse(Call<ProfileObject> call, Response<ProfileObject> response) {
+                        public void onResponse(Call<Void> call, Response<Void> response) {
                             if (response.isSuccessful()){
                                 Log.d("MyTag","Geldim");
                                 Toast.makeText(EditProfile.this,"SUCCESSFUL EDITTING",Toast.LENGTH_LONG).show();
                                 finish();
                             }else{
 
-                                Toast.makeText(EditProfile.this,"EMPTY !!  "+response.body().toString(),Toast.LENGTH_LONG).show();
+                                Log.d("MyTag","----------  "+response.message().toString());
                             }
                         }
                         @Override
-                        public void onFailure(Call<ProfileObject> call, Throwable t) {
+                        public void onFailure(Call<Void> call, Throwable t) {
                             Log.d("MyTag","Failed");
                         }
                     });
@@ -512,6 +514,7 @@ public class EditProfile extends AppCompatActivity {
         cursor.close();
         return s;
     }
+
 
 }
 

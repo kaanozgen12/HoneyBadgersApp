@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
     <RelativeLayout
-
+    xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -16,19 +12,15 @@
             android:background="@drawable/button_color"
             android:layout_alignParentEnd="true"
             android:layout_margin="20dp"/>
-        <android.support.v4.widget.NestedScrollView
+        <EditText
             android:layout_width="match_parent"
-            android:id="@+id/my_projects_project_description_scrollview"
-            android:layout_height="200dp"
-            android:layout_below="@id/my_projects_project_description_edit_button">
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:layout_margin="3dp"
-                android:id="@+id/my_projects_project_description_edit"/>
-        </android.support.v4.widget.NestedScrollView>
+            android:layout_height="300dp"
+            android:layout_margin="3dp"
+            android:focusable="false"
+            android:inputType="textMultiLine"
+            android:scrollHorizontally="false"
+            android:layout_below="@+id/my_projects_project_description_edit_button"
+            android:id="@+id/my_projects_project_description_edit"/>
 
     </RelativeLayout>
-</ScrollView>
 

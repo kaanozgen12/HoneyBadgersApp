@@ -34,7 +34,7 @@
         android:layout_marginTop="10dp"
         android:text="0"
         android:textStyle="bold"
-        android:drawableRight="@drawable/moneysign"/>
+        android:drawableRight="@drawable/hmoneysign"/>
     <Switch
         android:id="@+id/switch_profile"
         android:layout_width="match_parent"

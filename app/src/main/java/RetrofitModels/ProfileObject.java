@@ -42,6 +42,14 @@ public class ProfileObject {
         this.body = body;
     }
 
+    public String getAvatar() {
+        return (String) avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     public int getId () {
         return id;
     }
@@ -59,13 +67,6 @@ public class ProfileObject {
         this.name = name;
     }
 
-    public String getAvatar () {
-        return avatar;
-    }
-
-    public void setAvatar (String avatar){
-        this.avatar = avatar;
-    }
 
     public String getBody () {
         return body;

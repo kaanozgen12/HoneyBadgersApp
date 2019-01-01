@@ -89,15 +89,20 @@ public interface Api {
 
     @Multipart
     @PATCH("api/v1/user/freelancerprofile/{id}/")
-    Call<ProfileObject> freelancerProfileUpdate(@Header("Authorization") String token,@Path("id") String id,
-                                                @Part MultipartBody.Part avatar,
+    Call<Void> freelancerProfileUpdate(@Header("Authorization") String token,@Path("id") String id,
+                                                @Part("avatar") RequestBody avatar,
                                                 @Part("body") RequestBody body);
 
+    //      @Part MultipartBody.Part avatar,
     @Multipart
     @PATCH("api/v1/user/clientprofile/{id}/")
-    Call<ProfileObject> clientProfileUpdate(@Header("Authorization") String token,@Path("id") String id,
-                                            @Part MultipartBody.Part avatar,
-                                            @Part("body") RequestBody body);
+    Call<Void> clientProfileUpdate(@Header("Authorization") String token, @Path("id") String id,
+                                   @Part("avatar") RequestBody avatar,
+                                       @Part("body") RequestBody body);
+    @Multipart
+    @POST("/media/images/")
+    Call<Void> ImageUpload(@Part("avatar") RequestBody avatar);
+
     @FormUrlEncoded
     @POST("/api/v1/comment/freelancer/")
     Call<Void> post_freelancer_comment(@Header("Authorization") String token, @Field("profile_id") int profile_id,
