@@ -213,6 +213,8 @@ public interface Api {
     Call<ProjectObject> getProjectbyId(
             @Path("id") int id
     );
+    @GET("api/v1/project/create/")
+    Call<List<ProjectObject>> search(@Query("search") String search);
 
    /* @FormUrlEncoded
     @POST("api/v1/project/create/")
