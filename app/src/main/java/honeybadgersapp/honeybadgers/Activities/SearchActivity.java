@@ -34,6 +34,7 @@ import java.util.TimerTask;
 
 import Adapters.Dashboard_Notifications_adapter;
 import Adapters.ViewPagerAdapter;
+import Fragments.Categories_Fragment;
 import Fragments.Search_page_tab_fragment;
 import Models.Compact_Project_Object;
 import RetrofitModels.Bid_Object;
@@ -55,7 +56,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     private ActionBarDrawerToggle mToggleSettings;
     private ImageView mToggleBack;
     private Spinner mSpinner;
-    private Search_page_tab_fragment category_search =new Search_page_tab_fragment();
+    private Categories_Fragment category_search =new Categories_Fragment();
     private  Search_page_tab_fragment trending_search= new Search_page_tab_fragment();
     private  Search_page_tab_fragment recommended_search= new Search_page_tab_fragment();
     private SearchView editsearch;
@@ -348,9 +349,9 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                                         e.printStackTrace();
                                     }
                                     if (difference[0] == 0) {
-                                        difference[0] = currentdate.getTime() - creation.getTime() - 10800;
+                                        difference[0] = currentdate.getTime() - creation.getTime() - 10796000;
                                     } else if (currentdate.getTime() - creation.getTime() < difference[0]) {
-                                        difference[0] = currentdate.getTime() - creation.getTime() - 10800;
+                                        difference[0] = currentdate.getTime() - creation.getTime() - 10796000;
                                     }
                                 }
 

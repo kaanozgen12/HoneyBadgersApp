@@ -229,6 +229,7 @@ public class CreateAccount extends AppCompatActivity {
                                                         LoginActivity.getCREDENTIALS()[4] = "" + response2.body().getId();
                                                         LoginActivity.getCREDENTIALS()[5] = "" + response2.body().getId();
                                                         Log.d("MyTag", "SUCCESSFUL PROFILE CREATE ");
+                                                        finish();
                                                     }
                                                 }
                                                 @Override
@@ -249,7 +250,7 @@ public class CreateAccount extends AppCompatActivity {
                                     }
                                 });
 
-                            Thread timer = new Thread(){
+                            /*Thread timer = new Thread(){
                                 @Override
                                 public void run() {
                                     Intent intent = new Intent(getApplicationContext(),InitialLogin.class);
@@ -258,7 +259,7 @@ public class CreateAccount extends AppCompatActivity {
                                     super.run();
                                 }
                             };
-                            timer.start();
+                            timer.start();*/
 
                         }else{
                             Log.d("MyTag","FAIL USER REGISTER");
