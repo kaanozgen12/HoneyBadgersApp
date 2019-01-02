@@ -89,4 +89,12 @@ public class Compact_Project_Object {
     public void setApproved(boolean approved) {
         isApproved = approved;
     }
+
+    @Override
+    public boolean equals( Object obj) {
+        if(obj.getClass()==Compact_Project_Object.class){
+           return id == ( (Compact_Project_Object) obj).id;
+        }
+        return false;
+    }
 }

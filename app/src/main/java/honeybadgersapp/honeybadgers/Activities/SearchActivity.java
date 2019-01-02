@@ -200,6 +200,9 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         super.onPostCreate(savedInstanceState);
     }
 
+    private void fill_recommended() throws NullPointerException {
+
+    }
     public  void fill_trending() throws NullPointerException{
         //((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.clear();
         Call<List<ProjectObject>> call = RetrofitClient.getInstance().getApi().getProjects();
@@ -256,13 +259,21 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
     }
     public  void filter_trending(String search_name) throws NullPointerException{
+        timer_treanding.purge();
+        timer_treanding.cancel();
+        timer_treanding=null;
+        timer_treanding = new Timer();
         ((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.clear();
+        Log.d("MyTag", "search name: " + search_name);
         Call<List<ProjectObject>> call = RetrofitClient.getInstance().getApi().search(search_name);
+
         call.enqueue(new Callback<List<ProjectObject>>() {
             @Override
             public void onResponse(Call<List<ProjectObject>> call, Response<List<ProjectObject>> response) {
+
                 List<ProjectObject> editResponse = response.body();
                 if (response.isSuccessful()) {
+                    Log.d("MyTag", "size: " + editResponse.size());
                     for (int i = 0; i < editResponse.size(); i++) {
                         final ArrayList <Tag_Object> t = new ArrayList<>();
 
@@ -285,11 +296,15 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                             });
 
                         }
-                        ((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.add(temp);
-                        ((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyItemInserted(((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.getItemCount()-1);
+                        if(!((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.contains(temp))
+                        {
+                            ((Search_page_tab_fragment) adapter.getItem(1)).list_of_projects.add(temp);
+                            ((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyItemInserted(((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.getItemCount()-1);
+
+                        }
                     }
                     addTimerActivity(((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects,((Search_page_tab_fragment)adapter.getItem(1)).myrecyclerview);
-                    for (int i = 0; i < editResponse.size(); i++) {
+               /*        for (int i = 0; i < editResponse.size(); i++) {
                         Log.d("MyTag", "onResponse: " + editResponse.size());
                         final ArrayList <Tag_Object> t = new ArrayList<>();
                         Compact_Project_Object temp = new Compact_Project_Object(editResponse.get(i).getId(),editResponse.get(i).getTitle(),editResponse.get(i).getBudgetMin()+"-"+editResponse.get(i).getBudgetMax(),"0",t,false,false);
@@ -298,13 +313,13 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
                         ((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyItemInserted(i);
                         ((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyItemChanged(i);
-                       // getSupportFragmentManager().beginTransaction().detach(adapter.getItem(1)).attach(adapter.getItem(1)).commit();
-                       }
-
+                        // getSupportFragmentManager().beginTransaction().detach(adapter.getItem(1)).attach(adapter.getItem(1)).commit();
+                    }
+ */
                 }
 
                 getSupportFragmentManager().beginTransaction().detach(adapter.getItem(1)).attach(adapter.getItem(1)).commit();
-                 Log.d("MyTag", "Search success: " + editResponse.size());
+                Log.d("MyTag", "Search success: " + editResponse.size());
             }
             @Override
             public void onFailure(Call<List<ProjectObject>> call, Throwable t) {
@@ -327,13 +342,15 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                     lastVisiblePosition=0;
                 if (lastVisiblePosition>=list_of_projects.size())
                     lastVisiblePosition=list_of_projects.size();
-                Log.d("MyTag","::::::firstvisible::::: "+firstVisiblePosition+"last::::: "+lastVisiblePosition);
+                Log.d("MyTag","::::::firstvisible::::: "+firstVisiblePosition+"last::::: "+list_of_projects.size());
 
-                if(list_of_projects.size()!=0) {
-                    for (int i = firstVisiblePosition; i <= lastVisiblePosition; i++) {
+                if(list_of_projects.size() > 0) {
+                    for (int i = firstVisiblePosition; i < lastVisiblePosition; i++) {
                         final Calendar cal = Calendar.getInstance();
                         final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
                         final long[] difference = new long[1];
+                        Log.d("MyTag",":::1"+list_of_projects.size() );
+                        Log.d("MyTag",":::i "+i );
                         Call<List<Bid_Object>> call0 = RetrofitClient.getInstance().getApi().getAllBidsOfProject("token " + LoginActivity.getCREDENTIALS()[0], list_of_projects.get(i).getId());
                         final int finalI = i;
                         call0.enqueue(new Callback<List<Bid_Object>>() {
@@ -349,12 +366,17 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                                         e.printStackTrace();
                                     }
                                     if (difference[0] == 0) {
-                                        difference[0] = currentdate.getTime() - creation.getTime() - 10796000;
+                                        difference[0] = currentdate.getTime() - creation.getTime() - 10800;
                                     } else if (currentdate.getTime() - creation.getTime() < difference[0]) {
-                                        difference[0] = currentdate.getTime() - creation.getTime() - 10796000;
+                                        difference[0] = currentdate.getTime() - creation.getTime() - 10800;
                                     }
-                                }
 
+                                    if(list_of_projects.size() > 0) {
+                                        break;
+                                    }
+
+                                }
+                                Log.d("MyTag",":::2"+list_of_projects.size());
 
                                 long days = ((difference[0] / (1000 * 60 * 60 * 24)));
                                 long hours = (((difference[0] - 1000 * 60 * 60 * 24 * days) / (1000 * 60 * 60)));
@@ -371,7 +393,8 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                                         time += minutes + " minutes ago ";
                                     }
                                 }
-                                if (list_of_projects.get(finalI).isMoneySignFirst() && ((recycler.findViewHolderForAdapterPosition(finalI)) != null)&& editresponse.size() > Integer.parseInt(list_of_projects.get(finalI).getNumberofbidsandlastupdate().substring(0, list_of_projects.get(finalI).getNumberofbidsandlastupdate().indexOf(" ")))) {
+                                Log.d("MyTag",":::3"+list_of_projects.size());
+                                if (list_of_projects.size() >0 && list_of_projects.get(finalI).isMoneySignFirst() && ((recycler.findViewHolderForAdapterPosition(finalI)) != null)&& editresponse.size() > Integer.parseInt(list_of_projects.get(finalI).getNumberofbidsandlastupdate().substring(0, list_of_projects.get(finalI).getNumberofbidsandlastupdate().indexOf(" ")))) {
                                     Log.d("MyTag", "----------------------------------------");
                                     final String finalTime = time;
                                     runOnUiThread(new Runnable() {
@@ -413,15 +436,21 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                                     Log.d("MyTag", "----------------------------------------2");
                                     stable[0] = false;
                                 }*/
-                                list_of_projects.get(finalI).setMoneySignFirst(true);
-                               try {
-                                   if ((recycler.findViewHolderForAdapterPosition(finalI)) != null && !((Dashboard_Notifications_adapter.MyViewHolder) recycler.findViewHolderForAdapterPosition(finalI)).getUpdateinfo().getText().toString().equals(String.format("%d bids - %s", editresponse.size(), time))) {
-                                       ((Dashboard_Notifications_adapter.MyViewHolder) recycler.findViewHolderForAdapterPosition(finalI)).getUpdateinfo().setText(String.format("%d bids - %s", editresponse.size(), time));
-                                       list_of_projects.get(finalI).setNumberofbidsandlastupdate(String.format("%d bids - %s", editresponse.size(), time));
-                                   }
-                               }catch (NullPointerException e){
-                                   Log.d("MyTag","null pointer dereferencing caught");
-                               }
+                                Log.d("MyTag",":::4"+list_of_projects.size());
+                                if(list_of_projects.size() > 0) {
+
+
+                                    list_of_projects.get(finalI).setMoneySignFirst(true);
+
+                                    try {
+                                        if ((recycler.findViewHolderForAdapterPosition(finalI)) != null && !((Dashboard_Notifications_adapter.MyViewHolder) recycler.findViewHolderForAdapterPosition(finalI)).getUpdateinfo().getText().toString().equals(String.format("%d bids - %s", editresponse.size(), time))) {
+                                            ((Dashboard_Notifications_adapter.MyViewHolder) recycler.findViewHolderForAdapterPosition(finalI)).getUpdateinfo().setText(String.format("%d bids - %s", editresponse.size(), time));
+                                            list_of_projects.get(finalI).setNumberofbidsandlastupdate(String.format("%d bids - %s", editresponse.size(), time));
+                                        }
+                                    }catch (NullPointerException e){
+                                        Log.d("MyTag","null pointer dereferencing caught");
+                                    }
+                                }
                             }
 
                             @Override
@@ -432,6 +461,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
                 }
             }
+
         }, 0, 1000);
     }
     @Override
