@@ -35,6 +35,7 @@ import java.util.TimerTask;
 import Adapters.Dashboard_Notifications_adapter;
 import Adapters.ViewPagerAdapter;
 import Fragments.Categories_Fragment;
+import Fragments.Recommended_Search_Fragment;
 import Fragments.Search_page_tab_fragment;
 import Models.Compact_Project_Object;
 import RetrofitModels.Bid_Object;
@@ -58,7 +59,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     private Spinner mSpinner;
     private Categories_Fragment category_search =new Categories_Fragment();
     private  Search_page_tab_fragment trending_search= new Search_page_tab_fragment();
-    private  Search_page_tab_fragment recommended_search= new Search_page_tab_fragment();
+    private Recommended_Search_Fragment recommended_search= new Recommended_Search_Fragment();
     private SearchView editsearch;
     boolean first;
     boolean second;
@@ -80,7 +81,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment( category_search, "Categories");
-        adapter.addFragment(trending_search, "Trending");
+        adapter.addFragment(trending_search, "All Projects");
         adapter.addFragment(recommended_search, "Recommended");
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(3);
@@ -265,7 +266,12 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         timer_treanding = new Timer();
         ((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.clear();
         Log.d("MyTag", "search name: " + search_name);
-        Call<List<ProjectObject>> call = RetrofitClient.getInstance().getApi().search(search_name);
+        Call<List<ProjectObject>> call;
+        if(editsearch.getQuery().length() != 0) {
+             call = RetrofitClient.getInstance().getApi().search(search_name);
+        }else{
+             call = RetrofitClient.getInstance().getApi().getProjects();
+        }
 
         call.enqueue(new Callback<List<ProjectObject>>() {
             @Override
@@ -330,6 +336,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     }
 
     public void addTimerActivity(final List<Compact_Project_Object> list_of_projects, final RecyclerView recycler) throws NullPointerException{
+        timer_treanding=new Timer();
         timer_treanding.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -473,8 +480,12 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        String text = newText;
-        //adapter.filter(text);
+        if (editsearch.getQuery().length() == 0) {
+            filter_trending("");
+            timer_treanding.cancel();
+            timer_treanding.purge();
+            timer_treanding=null;
+        }
         return false;
     }
 
