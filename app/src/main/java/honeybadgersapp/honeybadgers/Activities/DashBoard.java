@@ -50,6 +50,7 @@ import Adapters.Dashboard_Notifications_adapter;
 import FirebaseClasses.OnlineUsers;
 import Models.Compact_Project_Object;
 import RetrofitModels.ProfileObject;
+import RetrofitModels.Recommended_Project_Object;
 import RetrofitModels.Tag_Object;
 import RetrofitModels.Wallet;
 import api.RetrofitClient;
@@ -157,23 +158,48 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         Dashboard_Notifications_adapter recyclerAdapter1 =new Dashboard_Notifications_adapter(this,list1);
         DashBoardRecyclerView1.setLayoutManager(new LinearLayoutManager(this));
         DashBoardRecyclerView1.setAdapter(recyclerAdapter1);
-        Dashboard_Notifications_adapter recyclerAdapter2 =new Dashboard_Notifications_adapter(this,list2);
+        final Dashboard_Notifications_adapter recyclerAdapter2 =new Dashboard_Notifications_adapter(this,list2);
         DashBoardRecyclerView2.setLayoutManager(new LinearLayoutManager(this));
         DashBoardRecyclerView2.setAdapter(recyclerAdapter2);
 
-        ArrayList<Tag_Object> temp1= new ArrayList<Tag_Object>();
-        ArrayList<Tag_Object> temp2= new ArrayList<Tag_Object>();
-        ArrayList<Tag_Object> temp3= new ArrayList<Tag_Object>();
-        temp1.add(new Tag_Object(1,"HTML"));
-        temp1.add(new Tag_Object(2,"PHP"));
-        temp1.add(new Tag_Object(3,"CSS"));
-        temp2.add(new Tag_Object(4,"3D Design"));
-        temp2.add(new Tag_Object(5,"Photoshop"));
-        temp3.add(new Tag_Object(6,"Article Writing"));
+        Call<List<Recommended_Project_Object>> call = RetrofitClient.getInstance().getApi().getRecommendedProjects("token "+LoginActivity.getCREDENTIALS()[0]);
+        call.enqueue(new Callback<List<Recommended_Project_Object>>() {
+            @Override
+            public void onResponse(Call<List<Recommended_Project_Object>> call, Response<List<Recommended_Project_Object>> response) {
+                List<Recommended_Project_Object> editResponse = response.body();
+                if (response.isSuccessful()) {
+                    for (int i = 0; i < editResponse.size(); i++) {
+                        final ArrayList<Tag_Object> t = new ArrayList<>();
+                        Compact_Project_Object temp = new Compact_Project_Object(editResponse.get(i).getId(), editResponse.get(i).getTitle(), editResponse.get(i).getBudgetMin() + "-" + editResponse.get(i).getBudgetMax(), "0", t, false, false);
+                        for (int j = 0; j < editResponse.get(i).getTags().length; j++) {
+                            Call<Tag_Object> call2 = RetrofitClient.getInstance().getApi().getTag(editResponse.get(i).getTags()[j]);
+                            call2.enqueue(new Callback<Tag_Object>() {
+                                @Override
+                                public void onResponse(Call<Tag_Object> call2, Response<Tag_Object> response) {
+                                    Tag_Object editResponse = response.body();
+                                    if (response.isSuccessful()) {
+                                        t.add(editResponse);
+                                        recyclerAdapter2.notifyDataSetChanged();
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<Tag_Object> call2, Throwable t) {
+                                }
+                            });
 
-        list2.add(new Compact_Project_Object(999,"We need help in HTML design","50-100","2 bids-3 hours ago",temp1,false,false));
-        list2.add(new Compact_Project_Object(999,"We are looking for a 3D designer","500-600","3 bids-3 hours ago",temp2,false,false));
-        list1.add(new Compact_Project_Object(999,"We have 10 excel files","20-40","4 bids-3 hours ago",temp3,false,false));
+                        }
+                        list2.add(temp);
+                        recyclerAdapter2.notifyItemInserted(recyclerAdapter2.getItemCount() - 1);
+                        if(i==4){
+                            break;
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Recommended_Project_Object>> call, Throwable t) {
+            }
+        });
 
         logo = headerView.findViewById(R.id.person_logo);
         user_email= headerView.findViewById(R.id.useremail_text);

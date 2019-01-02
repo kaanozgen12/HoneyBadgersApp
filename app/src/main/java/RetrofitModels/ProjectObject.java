@@ -109,7 +109,6 @@ public class ProjectObject implements Serializable
         this.accepted_bid= accepted_bid;
     }
 
-
     public Float getLatitude() {
         return latitude;
     }

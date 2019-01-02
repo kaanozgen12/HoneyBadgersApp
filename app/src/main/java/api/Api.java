@@ -12,6 +12,7 @@ import RetrofitModels.LoginResponse;
 import RetrofitModels.Milestone_Object;
 import RetrofitModels.ProfileObject;
 import RetrofitModels.ProjectObject;
+import RetrofitModels.Recommended_Project_Object;
 import RetrofitModels.Tag_Object;
 import RetrofitModels.User;
 import RetrofitModels.Wallet;
@@ -222,6 +223,11 @@ public interface Api {
 
     @GET("api/v1/project/create/")
     Call<List<ProjectObject>> getProjects();
+
+    @GET("api/v1/recommend/dashboard/")
+    Call<List<Recommended_Project_Object>> getRecommendedProjects( @Header("Authorization") String token);
+
+
 
     @GET("api/v1/project/tag/")
     Call<List<Tag_Object>> getTags();
