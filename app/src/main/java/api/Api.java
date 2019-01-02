@@ -224,6 +224,9 @@ public interface Api {
     @GET("api/v1/project/create/")
     Call<List<ProjectObject>> getProjects();
 
+    @GET("api/v1/project/create/?ordering=-created_at")
+    Call<List<ProjectObject>> getProjectsRecent();
+
     @GET("api/v1/recommend/dashboard/")
     Call<List<Recommended_Project_Object>> getRecommendedProjects( @Header("Authorization") String token);
 
@@ -237,7 +240,17 @@ public interface Api {
             @Path("id") int id
     );
     @GET("api/v1/project/create/")
-    Call<List<ProjectObject>> search(@Query("search") String search);
+    Call<List<ProjectObject>> search(@Query("search") String search,
+                                     @Query("ordering") String deadline,
+                                     @Query("ordering") String title,
+                                     @Query("ordering") String created_at,
+                                     @Query("ordering") String updated_at,
+                                     @Query("budget_min") String budget_min,
+                                     @Query("budget_min__gte") String budget_min__gte,
+                                     @Query("budget_max__lte") String budget_max__lte
+                                     );
+
+
 
    /* @FormUrlEncoded
     @POST("api/v1/project/create/")

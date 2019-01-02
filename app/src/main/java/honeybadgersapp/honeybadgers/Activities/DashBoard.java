@@ -50,6 +50,7 @@ import Adapters.Dashboard_Notifications_adapter;
 import FirebaseClasses.OnlineUsers;
 import Models.Compact_Project_Object;
 import RetrofitModels.ProfileObject;
+import RetrofitModels.ProjectObject;
 import RetrofitModels.Recommended_Project_Object;
 import RetrofitModels.Tag_Object;
 import RetrofitModels.Wallet;
@@ -155,15 +156,55 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
 
         DashBoardRecyclerView1= (findViewById(R.id.dashboard_recyclerview_1));
         DashBoardRecyclerView2= (findViewById(R.id.dashboard_recyclerview_2));
-        Dashboard_Notifications_adapter recyclerAdapter1 =new Dashboard_Notifications_adapter(this,list1);
+        final Dashboard_Notifications_adapter recyclerAdapter1 =new Dashboard_Notifications_adapter(this,list1);
         DashBoardRecyclerView1.setLayoutManager(new LinearLayoutManager(this));
         DashBoardRecyclerView1.setAdapter(recyclerAdapter1);
+
+        Call<List<ProjectObject>> call = RetrofitClient.getInstance().getApi().getProjectsRecent();
+        call.enqueue(new Callback<List<ProjectObject>>() {
+            @Override
+            public void onResponse(Call<List<ProjectObject>> call, Response<List<ProjectObject>> response) {
+                List<ProjectObject> editResponse = response.body();
+                if (response.isSuccessful()) {
+                    for (int i = 0; i < editResponse.size(); i++) {
+                        final ArrayList<Tag_Object> t = new ArrayList<>();
+                        Compact_Project_Object temp = new Compact_Project_Object(editResponse.get(i).getId(), editResponse.get(i).getTitle(), editResponse.get(i).getBudgetMin() + "-" + editResponse.get(i).getBudgetMax(), "0", t, false, false);
+                        for (int j = 0; j < editResponse.get(i).getTags().length; j++) {
+                            Call<Tag_Object> call2 = RetrofitClient.getInstance().getApi().getTag(editResponse.get(i).getTags()[j]);
+                            call2.enqueue(new Callback<Tag_Object>() {
+                                @Override
+                                public void onResponse(Call<Tag_Object> call2, Response<Tag_Object> response) {
+                                    Tag_Object editResponse = response.body();
+                                    if (response.isSuccessful()) {
+                                        t.add(editResponse);
+                                        recyclerAdapter1.notifyDataSetChanged();
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<Tag_Object> call2, Throwable t) {
+                                }
+                            });
+
+                        }
+                        list1.add(temp);
+                        recyclerAdapter1.notifyItemInserted(recyclerAdapter1.getItemCount() - 1);
+                        if(i==4){
+                            break;
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<List<ProjectObject>> call, Throwable t) {
+            }
+        });
+
         final Dashboard_Notifications_adapter recyclerAdapter2 =new Dashboard_Notifications_adapter(this,list2);
         DashBoardRecyclerView2.setLayoutManager(new LinearLayoutManager(this));
         DashBoardRecyclerView2.setAdapter(recyclerAdapter2);
 
-        Call<List<Recommended_Project_Object>> call = RetrofitClient.getInstance().getApi().getRecommendedProjects("token "+LoginActivity.getCREDENTIALS()[0]);
-        call.enqueue(new Callback<List<Recommended_Project_Object>>() {
+        Call<List<Recommended_Project_Object>> call2 = RetrofitClient.getInstance().getApi().getRecommendedProjects("token "+LoginActivity.getCREDENTIALS()[0]);
+        call2.enqueue(new Callback<List<Recommended_Project_Object>>() {
             @Override
             public void onResponse(Call<List<Recommended_Project_Object>> call, Response<List<Recommended_Project_Object>> response) {
                 List<Recommended_Project_Object> editResponse = response.body();

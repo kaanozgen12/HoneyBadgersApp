@@ -18,6 +18,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
@@ -65,6 +66,9 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     boolean second;
     boolean third;
     Timer timer_treanding = new Timer();
+
+    EditText min_budget;
+    EditText max_budget;
 
 
     @Override
@@ -117,6 +121,9 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                 }
             }
         });
+        min_budget= mDrawerlayout.findViewById(R.id.min_budget_edit);
+        max_budget= mDrawerlayout.findViewById(R.id.max_budget_edit);
+
         mToggleBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -260,15 +267,15 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
     }
     public  void filter_trending(String search_name) throws NullPointerException{
-        timer_treanding.purge();
-        timer_treanding.cancel();
         timer_treanding=null;
         timer_treanding = new Timer();
         ((Search_page_tab_fragment)adapter.getItem(1)).list_of_projects.clear();
         Log.d("MyTag", "search name: " + search_name);
         Call<List<ProjectObject>> call;
         if(editsearch.getQuery().length() != 0) {
-             call = RetrofitClient.getInstance().getApi().search(search_name);
+            call = RetrofitClient.getInstance().getApi().search(search_name,"","","","","","","");
+
+            //call = RetrofitClient.getInstance().getApi().search(search_name,"",(mSpinner.getSelectedItemPosition()==5)?"title":"",(mSpinner.getSelectedItemPosition()==0)?"-created_at":"",(mSpinner.getSelectedItemPosition()==1)?"-updated_at":"",(mSpinner.getSelectedItemPosition()==3)?"-budget_min":"budget_min",((min_budget!=null&&min_budget.getText().toString().isEmpty())?"":min_budget.getText().toString()),((max_budget!=null&&max_budget.getText().toString().isEmpty())?"":max_budget.getText().toString()));
         }else{
              call = RetrofitClient.getInstance().getApi().getProjects();
         }
@@ -481,10 +488,11 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     @Override
     public boolean onQueryTextChange(String newText) {
         if (editsearch.getQuery().length() == 0) {
-            filter_trending("");
             timer_treanding.cancel();
             timer_treanding.purge();
             timer_treanding=null;
+            ((Search_page_tab_fragment)adapter.getItem(1)).recyclerAdapter.notifyDataSetChanged();
+            filter_trending("");
         }
         return false;
     }
