@@ -180,8 +180,11 @@ public class Categories_Fragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
     }
-    public  void fill_category(final int x) throws NullPointerException{
+
+    public  void fill_category(int x) throws NullPointerException{
+        final int y=x;
         list_of_projects.clear();
+        recyclerAdapter.notifyDataSetChanged();
         Call<List<ProjectObject>> call = RetrofitClient.getInstance().getApi().getProjects();
         call.enqueue(new Callback<List<ProjectObject>>() {
             @Override
@@ -189,7 +192,7 @@ public class Categories_Fragment extends Fragment {
                 List<ProjectObject> editResponse = response.body();
                 if (response.isSuccessful()) {
                     for (int i = 0; i < editResponse.size(); i++) {
-                        if (editResponse.get(0).getCategories() == x) {
+                        if (editResponse.get(i).getCategories() == y) {
                             final ArrayList<Tag_Object> t = new ArrayList<>();
                             Compact_Project_Object temp = new Compact_Project_Object(editResponse.get(i).getId(), editResponse.get(i).getTitle(), editResponse.get(i).getBudgetMin() + "-" + editResponse.get(i).getBudgetMax(), "0", t, false, false);
 

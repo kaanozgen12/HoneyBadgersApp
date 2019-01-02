@@ -380,9 +380,9 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
                                         e.printStackTrace();
                                     }
                                     if (difference[0] == 0) {
-                                        difference[0] = currentdate.getTime() - creation.getTime() - 10800;
-                                    } else if (currentdate.getTime() - creation.getTime() < difference[0]) {
-                                        difference[0] = currentdate.getTime() - creation.getTime() - 10800;
+                                        difference[0] = currentdate.getTime() - creation.getTime() - 10730000 ;
+                                    } else if (currentdate.getTime() - creation.getTime() -10730000 < difference[0]) {
+                                        difference[0] = currentdate.getTime() - creation.getTime() - 10730000;
                                     }
 
                                     if(list_of_projects.size() > 0) {
