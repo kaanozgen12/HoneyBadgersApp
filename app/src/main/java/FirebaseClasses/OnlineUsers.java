@@ -1,11 +1,13 @@
 package FirebaseClasses;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -16,7 +18,6 @@ import android.widget.Toast;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -25,6 +26,7 @@ import java.util.List;
 
 import RetrofitModels.User;
 import api.RetrofitClient;
+import api.SimpleCredentialCrypting;
 import honeybadgersapp.honeybadgers.Activities.ChatActivity;
 import honeybadgersapp.honeybadgers.Activities.LoginActivity;
 import honeybadgersapp.honeybadgers.R;
@@ -49,7 +51,7 @@ public class OnlineUsers extends AppCompatActivity {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
             listView = findViewById(R.id.active_users_list_view);
             Firebase.setAndroidContext(this);
-
+            prefs = new SimpleCredentialCrypting(this, this.getSharedPreferences("HONEY_BADGERS_PREFS_FILE", Context.MODE_PRIVATE) );
             mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,my_conversations);
             listView.setAdapter(mAdapter);
 
@@ -59,13 +61,17 @@ public class OnlineUsers extends AppCompatActivity {
             if(FirebaseAuth.getInstance().getCurrentUser() == null) {
                 // Start sign in/sign up activity
                 if(checkExistingAccount()){
-                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(prefs.getString("accountname",null),prefs.getString("password",null));
-                    startActivityForResult(
+
+                    String username = prefs.getString("accountname", null);
+                    String password = prefs.getString("password", null);
+                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(username,password);
+                    Log.d("MyTag","USER CREATE FIREBASE");
+                    /*startActivityForResult(
                             AuthUI.getInstance()
                                     .createSignInIntentBuilder()
                                     .build(),
                             SIGN_IN_REQUEST_CODE
-                    );
+                    );*/
                 }
 
             } else {
@@ -74,7 +80,7 @@ public class OnlineUsers extends AppCompatActivity {
                 Toast.makeText(this,
                         "Welcome " + FirebaseAuth.getInstance()
                                 .getCurrentUser()
-                                .getDisplayName(),
+                                .getEmail(),
                         Toast.LENGTH_LONG)
                         .show();
 
@@ -189,8 +195,8 @@ public class OnlineUsers extends AppCompatActivity {
 
     }
     private boolean checkExistingAccount(){
-        String username= prefs.getString("accountname",null);
-        String password= prefs.getString("password",null);
-        return (!(username==null)&&!(password==null));
+                String username = prefs.getString("accountname", null);
+                String password = prefs.getString("password", null);
+                return (!(username == null) && !(password == null));
     }
 }

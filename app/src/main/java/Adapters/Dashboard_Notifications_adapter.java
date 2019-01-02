@@ -168,7 +168,6 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                                     });
                                 }
                                 Button see_bidders_button= myDialog.findViewById(R.id.project_dialog_see_bidders_button);
-                                bidbutton.setVisibility( ((LoginActivity.getCREDENTIALS()[3].equals("Freelancer")&&editResponse.getUserId()!=Integer.parseInt(LoginActivity.getCREDENTIALS()[4]))?View.VISIBLE:View.INVISIBLE) );
                                 see_bidders_button.setVisibility( ((LoginActivity.getCREDENTIALS()[3].equals("Client")&&editResponse.getUserId()==Integer.parseInt(LoginActivity.getCREDENTIALS()[4]))?View.VISIBLE:View.INVISIBLE) );
                                 see_bidders_button.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -324,6 +323,7 @@ public class Dashboard_Notifications_adapter extends RecyclerView.Adapter<Dashbo
                                         public void onFailure(@NonNull Call<Tag_Object> call3, Throwable t) { }
                                     });
                                 }
+                                bidbutton.setVisibility( ((LoginActivity.getCREDENTIALS()[3].equals("Freelancer")&&!remainingtime.getText().toString().equalsIgnoreCase("OVER")&&editResponse.getUserId()!=Integer.parseInt(LoginActivity.getCREDENTIALS()[4]))?View.VISIBLE:View.INVISIBLE) );
                                 skills.setLayoutManager(horizontalLayoutManager);
                                 skills.setAdapter(recyclerAdapter);
                                 recyclerAdapter.notifyDataSetChanged();

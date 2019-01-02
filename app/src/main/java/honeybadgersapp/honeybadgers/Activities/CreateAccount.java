@@ -1,6 +1,5 @@
 package honeybadgersapp.honeybadgers.Activities;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -260,6 +259,7 @@ public class CreateAccount extends AppCompatActivity {
                                 }
                             };
                             timer.start();*/
+                            finish();
 
                         }else{
                             Log.d("MyTag","FAIL USER REGISTER");
