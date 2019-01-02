@@ -180,23 +180,30 @@ public class DashBoard extends AppCompatActivity implements NavigationView.OnNav
         user_name= headerView.findViewById(R.id.username_text);
         user_role = headerView.findViewById(R.id.switch_profile);
         money = headerView.findViewById(R.id.money_text);
-        if(prefs.getString("userrole",null)!=null && prefs.getString("userrole",null).equalsIgnoreCase("Client")){
-            LoginActivity.getCREDENTIALS()[3]="Client";
+        if(LoginActivity.getCREDENTIALS()[3].equalsIgnoreCase("Client")){
             user_role.setChecked(true);
-        }else {
-            LoginActivity.getCREDENTIALS()[3]="Freelancer";
         }
         user_role.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 user_role.setText(((LoginActivity.getCREDENTIALS()[3].equals("Freelancer"))?"Client":"Freelancer"));
-                prefs.edit().remove("userrole").commit();
-                prefs.edit().putString("userrole",((LoginActivity.getCREDENTIALS()[3].equalsIgnoreCase("Freelancer"))?"Client":"Freelancer")).commit();
-
                 LoginActivity.getCREDENTIALS()[3]=((LoginActivity.getCREDENTIALS()[3].equals("Freelancer"))?"Client":"Freelancer");
+
+                Call<Void> call2 = RetrofitClient.getInstance().getApi().userRegisterRoleChange("token "+LoginActivity.getCREDENTIALS()[0],Integer.parseInt(LoginActivity.getCREDENTIALS()[4]),(LoginActivity.getCREDENTIALS()[3].equalsIgnoreCase("Freelancer")?0:1));
+                call2.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call2, Response<Void> response2) {
+
+                    }
+                    @Override
+                    public void onFailure(Call<Void> call2, Throwable t) {
+
+                    }
+                });
+
                 mDrawerlayout.closeDrawer(Gravity.END,true);
                 setNavigationViewListener();
-                Log.d("MyTag",prefs.getString("userrole",null));
+
             }
         });
         user_name.setText(LoginActivity.getCREDENTIALS()[2]);

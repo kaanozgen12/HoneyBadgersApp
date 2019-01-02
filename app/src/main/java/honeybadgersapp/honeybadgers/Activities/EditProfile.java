@@ -9,13 +9,21 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,9 +38,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import Adapters.Create_project_tags_adapter;
 import RetrofitModels.ProfileObject;
+import RetrofitModels.Tag_Object;
 import api.RetrofitClient;
 import honeybadgersapp.honeybadgers.R;
 import okhttp3.MediaType;
@@ -54,6 +66,18 @@ public class EditProfile extends AppCompatActivity {
     private EditText mEmail;
     private ImageView logo;
     private TextView mEditPhoto;
+
+    String tags[];
+    ArrayAdapter<String> TagAdapter = null;
+    private AutoCompleteTextView autoCompleteTag;
+    private  RecyclerView mRecylerView ;
+
+    private TextView mSkillsTitle;
+    //private Spinner mSpinner;
+    ArrayList<Tag_Object> tag_list = new ArrayList<>();
+    final Create_project_tags_adapter[] recyclerAdapter = {new Create_project_tags_adapter(this, tag_list)};
+
+
     private Button mSaveButton;
     private Uri file = null;
     Bitmap bitmap;
@@ -72,9 +96,96 @@ public class EditProfile extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         overridePendingTransition (0,0);
         mBio=findViewById(R.id.edit_profile_description);
+
+        mRecylerView = findViewById(R.id.edit_profile_recycler_view);
+        LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mRecylerView.setLayoutManager(horizontalLayoutManager);
+        mRecylerView.setAdapter(recyclerAdapter[0]);
+
+        Call<List<Tag_Object>> call= RetrofitClient.getInstance().getApi().getTags();
+        call.enqueue(new Callback<List<Tag_Object>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Tag_Object>> call, @NonNull Response<List<Tag_Object>> response0) {
+                if (response0.isSuccessful()){
+                    tags = new String[response0.body().size()];
+                    for (int x = 0 ; x< response0.body().size(); x++){
+                        tags[x]=response0.body().get(x).getTitle();
+                    }
+                    TagAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.hint_completion_layout, R.id.tvHintCompletion, tags);
+                    autoCompleteTag.setAdapter(TagAdapter);
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Tag_Object>> call, Throwable t) {
+
+            }
+        });
+        autoCompleteTag = findViewById(R.id.edit_profile_tags_edit);
+        autoCompleteTag.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                Call<ArrayList<Tag_Object>> call0= RetrofitClient.getInstance().getApi().getTagbyTitle((String)adapterView.getItemAtPosition(i));
+                call0.enqueue(new Callback<ArrayList<Tag_Object>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ArrayList<Tag_Object>> call0, @NonNull Response<ArrayList<Tag_Object>> response0) {
+                        if (response0.isSuccessful()){
+                            Tag_Object temp = new Tag_Object(response0.body().get(0).getId(),response0.body().get(0).getTitle());
+                            if(!tag_list.contains(temp)){
+                                tag_list.add(temp);
+                                Objects.requireNonNull(mRecylerView.getAdapter()).notifyDataSetChanged();
+                                mRecylerView.smoothScrollToPosition(recyclerAdapter[0].getItemCount()-1);
+                            }
+
+                        }else{
+                            Toast.makeText(EditProfile.this,"Create Tag Failed",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<ArrayList<Tag_Object>> call0, Throwable t) {
+                        Toast.makeText(EditProfile.this,"Create Tag Failed Response from server",Toast.LENGTH_LONG).show();
+                    }
+                });
+                autoCompleteTag.setText("");
+                mSkillsTitle.clearFocus();
+            }
+        });
+        autoCompleteTag.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+
+                    Call<Tag_Object> call= RetrofitClient.getInstance().getApi().postTag("token "+LoginActivity.getCREDENTIALS()[0],autoCompleteTag.getText().toString());
+                    call.enqueue(new Callback<Tag_Object>() {
+                        @Override
+                        public void onResponse(@NonNull Call<Tag_Object> call, @NonNull Response<Tag_Object> response) {
+                            if (response.isSuccessful()){
+                                Toast.makeText(EditProfile.this,"Create Tag Successful",Toast.LENGTH_LONG).show();
+                                tag_list.add(new Tag_Object(response.body().getId(),autoCompleteTag.getText().toString()));
+                                autoCompleteTag.setText("");
+                                Objects.requireNonNull(mRecylerView.getAdapter()).notifyDataSetChanged();
+                            }else{
+                                Toast.makeText(EditProfile.this,"Create Tag Failed",Toast.LENGTH_LONG).show();
+                            }
+                        }
+                        @Override
+                        public void onFailure(@NonNull Call<Tag_Object> call, @NonNull Throwable t) {
+                            Toast.makeText(EditProfile.this,"Create Tag Failed Response from server",Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        mSkillsTitle= findViewById(R.id.edit_profile_skills_or_interests);
+        mSkillsTitle.setText((LoginActivity.getCREDENTIALS()[3].equalsIgnoreCase("Freelancer"))?"Skills":"Interests");
         mEmail=findViewById(R.id.edit_profile_email);
         mEmail.setText(LoginActivity.getCREDENTIALS()[1]);
         mEditPhoto=findViewById(R.id.edit_photo_photo_button);
+
         mEditPhoto.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,6 +229,12 @@ public class EditProfile extends AppCompatActivity {
                     mEmail.setText(LoginActivity.getCREDENTIALS()[1]);
                     new SendHttpRequestTask().execute(editResponse.get(0).getAvatar());
                     avatar_string= editResponse.get(0).getAvatar();
+                    tag_list= turn_Integer_List_to_Tag_List(editResponse.get(0).getTags());
+                    recyclerAdapter[0] = new Create_project_tags_adapter(getApplicationContext(), tag_list);
+                    LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+                    mRecylerView.setLayoutManager(horizontalLayoutManager);
+                    mRecylerView.setAdapter(recyclerAdapter[0]);
+
                     LoginActivity.getCREDENTIALS()[5]=""+editResponse.get(0).getId();
                     Log.d("MyTag","success profile load");
                     Toast.makeText(EditProfile.this,"SUCCESS LOAD PROFILE !!",Toast.LENGTH_LONG).show();
@@ -353,11 +470,11 @@ public class EditProfile extends AppCompatActivity {
                 }else{
                     Call<ProfileObject> call;
                     if(LoginActivity.getCREDENTIALS()[3].equalsIgnoreCase("freelancer")){
-                        call = RetrofitClient.getInstance().getApi().freelancerProfileUpdateImageless("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[5],bio);
+                        call = RetrofitClient.getInstance().getApi().freelancerProfileUpdateImageless("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[5],bio,turnTags_List_to_Integer_List(tag_list));
                         Log.d("MyTag",LoginActivity.getCREDENTIALS()[5]);
 
                     }else{
-                        call= RetrofitClient.getInstance().getApi().clientProfileUpdateImageless("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[5],bio);
+                        call= RetrofitClient.getInstance().getApi().clientProfileUpdateImageless("token "+LoginActivity.getCREDENTIALS()[0],LoginActivity.getCREDENTIALS()[5],bio,turnTags_List_to_Integer_List(tag_list));
                         Log.d("MyTag",LoginActivity.getCREDENTIALS()[5]);
                     }
                     call.enqueue(new Callback<ProfileObject>() {
@@ -515,6 +632,42 @@ public class EditProfile extends AppCompatActivity {
         return s;
     }
 
+    public  ArrayList<Tag_Object> turn_Integer_List_to_Tag_List(final int[] s){
+        final ArrayList<Tag_Object> temp= new ArrayList<>();
+        Call<List<Tag_Object>> call= RetrofitClient.getInstance().getApi().getTags();
+        call.enqueue(new Callback<List<Tag_Object>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Tag_Object>> call, @NonNull Response<List<Tag_Object>> response0) {
+                if (response0.isSuccessful()){
+                    tags = new String[response0.body().size()];
+                    for (int x = 0 ; x< response0.body().size(); x++){
+                        tags[x]=response0.body().get(x).getTitle();
+                    }
+                    TagAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.hint_completion_layout, R.id.tvHintCompletion, tags);
+                    autoCompleteTag.setAdapter(TagAdapter);
+
+                    for (int i =0 ; i< s.length; i++){
+                        temp.add(new Tag_Object(s[i],tags[s[i]-1]));
+                        recyclerAdapter[0].notifyDataSetChanged();
+                    }
+
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Tag_Object>> call, Throwable t) {
+
+            }
+        });
+        return temp;
+    }
+    public static int[] turnTags_List_to_Integer_List(ArrayList<Tag_Object> s){
+
+        int[] temp= new int[s.size()];
+        for (int i =0 ; i< s.size(); i++){
+            temp[i]=s.get(i).getId();
+        }
+        return temp;
+    }
 
 }
 

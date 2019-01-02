@@ -18,6 +18,9 @@ public class User {
     @SerializedName("username")
     @Expose
     private String username;
+    @SerializedName("role")
+    @Expose
+    public int role;
     private final static long serialVersionUID = -5100373384939090994L;
 
     /**
@@ -33,13 +36,15 @@ public class User {
      * @param username
      * @param email
      * @param name
+     * @param role
      */
-    public User(int id, String email, String name, String username) {
+    public User(int id, String email, String name, String username, int role) {
         super();
         this.id = id;
         this.email = email;
         this.name = name;
         this.username = username;
+        this.role = role;
     }
 
     public int getId() {

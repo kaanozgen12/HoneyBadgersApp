@@ -26,7 +26,8 @@
             android:id="@+id/edit_photo_photo_button"
             android:layout_centerHorizontal="true"
             android:textSize="20sp"/>
-    </RelativeLayout><TextView
+    </RelativeLayout>
+    <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="Email"
@@ -72,7 +73,32 @@
             />
 
     </android.support.design.widget.TextInputLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_profile_skills_or_interests"
+        android:text="Skills"
+        android:layout_marginStart="10dp"
+        android:textSize="20sp"/>
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/edit_profile_recycler_view">
 
+    </android.support.v7.widget.RecyclerView>
+    <AutoCompleteTextView
+        android:id="@+id/edit_profile_tags_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:background="@drawable/textinputborder"
+        android:completionHintView="@layout/hint_completion_layout"
+        />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -86,6 +112,7 @@
             android:text="Save"
             android:background="#e9982e"/>
     </RelativeLayout>
+
 
 
 

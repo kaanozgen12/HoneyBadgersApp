@@ -203,7 +203,7 @@ public class CreateAccount extends AppCompatActivity {
             if (success) {
               FirebaseAuth.getInstance().createUserWithEmailAndPassword(mEmail,mPassword);
 
-                Call<User> call= RetrofitClient.getInstance().getApi().userRegister(mEmail,mUsername,mPassword,mUsername);
+                Call<User> call= RetrofitClient.getInstance().getApi().userRegister(mEmail,mUsername,mPassword,mUsername,0);
                 call.enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, final Response<User> response) {

@@ -18,6 +18,12 @@ public class ProfileObject {
     @SerializedName("body")
     @Expose
     private String body;
+    @SerializedName("user_info")
+    @Expose
+    private User user_info;
+    @SerializedName("tags")
+    @Expose
+    private int[] tags;
     private final static long serialVersionUID = 2297952749881170354L;
 
     /**
@@ -33,13 +39,17 @@ public class ProfileObject {
      * @param body
      * @param name
      * @param avatar
+     * @param user_info
+     * @param tags
      */
-    public ProfileObject( int id, String name, String avatar, String body){
+    public ProfileObject( int id, String name, String avatar, String body, User user_info, int[] tags){
         super();
         this.id = id;
         this.name = name;
         this.avatar = avatar;
         this.body = body;
+        this.user_info = user_info;
+        this.tags = tags;
     }
 
     public String getAvatar() {
@@ -76,6 +86,20 @@ public class ProfileObject {
         this.body = body;
     }
 
+    public User getUser_info() {
+        return user_info;
+    }
 
+    public void setUser_info(User user_info) {
+        this.user_info = user_info;
+    }
+
+    public int[] getTags() {
+        return tags;
+    }
+
+    public void setTags(int[] tags) {
+        this.tags = tags;
+    }
 }
 

@@ -116,12 +116,14 @@ public interface Api {
     @FormUrlEncoded
     @PATCH("api/v1/user/freelancerprofile/{id}/")
     Call<ProfileObject> freelancerProfileUpdateImageless(@Header("Authorization") String token,@Path("id") String id,
-                                                @Field("body") String body);
+                                                @Field("body") String body,
+                                                         @Field("tags") int[] tags);
 
     @FormUrlEncoded
     @PATCH("api/v1/user/clientprofile/{id}/")
     Call<ProfileObject> clientProfileUpdateImageless(@Header("Authorization") String token,@Path("id") String id,
-                                            @Field("body") String body);
+                                            @Field("body") String body,
+                                                     @Field("tags") int[] tags);
 
 
     @FormUrlEncoded
@@ -167,7 +169,16 @@ public interface Api {
             @Field("email") String email,
             @Field("name") String name,
             @Field("password") String password,
-            @Field("username") String username
+            @Field("username") String username,
+            @Field("role") int role
+
+    );
+    @FormUrlEncoded
+    @PATCH("api/v1/user/register/{id}/")
+    Call<Void> userRegisterRoleChange(
+            @Header("Authorization") String token,
+            @Path("id") int project_id,
+            @Field("role") int role
 
     );
 
@@ -181,6 +192,7 @@ public interface Api {
             @Field("rating") int rating
 
     );
+
     @FormUrlEncoded
     @POST("api/v1/project/tag/")
     Call<Tag_Object> postTag(

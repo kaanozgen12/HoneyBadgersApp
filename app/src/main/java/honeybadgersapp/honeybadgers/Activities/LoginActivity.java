@@ -376,6 +376,7 @@ public class LoginActivity extends AppCompatActivity {
                                                     CREDENTIALS[4] = "" + editResponse2.getId();
                                                     // Get all conversations to static array list beforehand
                                                     CREDENTIALS[2] = editResponse2.getName();
+                                                    CREDENTIALS[3]=((editResponse2.role==0)?"Freelancer":"Client");
                                                     Intent intent = new Intent(getApplicationContext(),DashBoard.class);
                                                     startActivity(intent);
                                                     finish();
